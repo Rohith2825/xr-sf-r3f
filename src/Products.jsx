@@ -5,18 +5,18 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 const LazyMannequin = React.lazy(() => import("./Mannequin"));
 
 const mannequinData = [
-  {
-    id: 9658662388005,
-    position: [-2, -4, -77],
-    modelPath: "/models/finalastro.glb",
-    scale: 1.2,
-  },
-  {
-    id: 9658662420773,
-    position: [0, -4, -77],
-    modelPath: "/models/men.glb",
-    scale: 1,
-  },
+  // {
+  //   id: 9658662388005,
+  //   position: [-2, -4, -77],
+  //   modelPath: "/models/finalastro.glb",
+  //   scale: 1.2,
+  // },
+  // {
+  //   id: 9658662420773,
+  //   position: [0, -4, -77],
+  //   modelPath: "/models/men.glb",
+  //   scale: 1,
+  // },
   {
     id: 9658662322469,
     position: [2, -4, -77],
@@ -35,30 +35,30 @@ const mannequinData = [
     modelPath: "/models/inter_elem.glb",
     scale: 1.2,
   },
-  {
-    id: 9658662060325,
-    position: [8, -4, -77],
-    modelPath: "/models/women.glb",
-    scale: 0.35,
-  },
-  {
-    id: 9658662060325,
-    position: [-4, -4, -77],
-    modelPath: "/models/final_women_gym.glb",
-    scale: 0.22,
-  },
-  {
-    id: 9658662060325,
-    position: [-6, -4, -77],
-    modelPath: "/models/final_sports.glb",
-    scale: 0.35,
-  },
-  {
-    id: 9658662060325,
-    position: [-8, -4, -77],
-    modelPath: "/models/finalblack_suit.glb",
-    scale: 0.3,
-  },
+  // {
+  //   id: 9658662060325,
+  //   position: [8, -4, -77],
+  //   modelPath: "/models/women.glb",
+  //   scale: 0.35,
+  // },
+  // {
+  //   id: 9658662060325,
+  //   position: [-4, -4, -77],
+  //   modelPath: "/models/final_women_gym.glb",
+  //   scale: 0.22,
+  // },
+  // {
+  //   id: 9658662060325,
+  //   position: [-6, -4, -77],
+  //   modelPath: "/models/final_sports.glb",
+  //   scale: 0.35,
+  // },
+  // {
+  //   id: 9658662060325,
+  //   position: [-8, -4, -77],
+  //   modelPath: "/models/finalblack_suit.glb",
+  //   scale: 0.3,
+  // },
   // { id: 9658662060325, position: [45.76, -11.05, 40.64], modelPath: "/models/final_girl.glb", scale: 0.25 },
   // { id: 9658662060325, position: [-21.19, -3, 7.86], modelPath: "/models/finalblack_suit.glb", scale: 0.3 },
   // { id: 9658662060325, position: [-17.57, -4.8, 33.33], modelPath: "/models/final_women_gym.glb", scale: 0.22 },
