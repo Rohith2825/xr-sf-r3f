@@ -7,8 +7,9 @@ import {
   IconButton,
   Button,
   Box,
+  Input,
 } from "@mui/material";
-import Input from "@mui/joy/Input";
+// import Input from "@mui/joy/Input";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactMarkdown from "react-markdown";
 
@@ -70,6 +71,14 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
 
     // Clear the input field
     setCurrentMessage("");
+  };
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus(); // Focus the input programmatically
+    }
   };
 
   // Scroll to the bottom whenever a new message is added
@@ -187,9 +196,16 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         <Input
           placeholder="Enter your message"
           value={currentMessage}
+          inputRef={inputRef}
           onChange={(e) => setCurrentMessage(e.target.value)}
           onKeyPress={(e) => {
             if (e.key === "Enter") handleSendMessage();
+          }}
+          onTouchStart={(e) => {
+            console.log("Input field touched");
+            focusInput();
+            console.log(inputRef);
+            e.stopPropagation(); // Prevent touch event interference
           }}
           sx={{
             flex: 1,
@@ -209,6 +225,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             fontFamily: "SF Pro Display",
           }}
           onClick={handleSendMessage}
+          onTouchStart={handleSendMessage}
         >
           Send
         </Button>
