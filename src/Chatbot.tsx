@@ -118,6 +118,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         </Box>
         <IconButton
           onClick={props.onChatbotModalClose}
+          onTouchStart={props.onChatbotModalClose}
           sx={{ marginLeft: "auto" }}
         >
           <CloseIcon />
