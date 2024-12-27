@@ -11,7 +11,7 @@ export default function Television({
   rotation = [0, 0, 0],
 }) {
   
-  const { nodes, materials } = useGLTF('/models/tv_modified.glb');
+  const { nodes, materials } = useGLTFWithKTX2('/models/tv_modified.glb');
   
   // Load the video texture
   const videoTexture = useVideoTexture(videoPath, {
@@ -57,4 +57,4 @@ export default function Television({
   );
 }
 
-useGLTF.preload('/models/tv_modified.glb');
+// useGLTF.preload('/models/tv_modified.glb');

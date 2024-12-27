@@ -4,7 +4,7 @@ import { RigidBody } from '@react-three/rapier';
 import { useGLTFWithKTX2 } from './useGTLFwithKTX';
 
 export function Ground() {
-  const { nodes, materials } = useGLTF('/Castle4.glb');
+  const { nodes, materials } = useGLTFWithKTX2('/Castle4.glb');
   
   return (
     <RigidBody type="fixed" colliders="trimesh">
@@ -39,4 +39,4 @@ export function Ground() {
 }
 
 
-useGLTF.preload('/Castle4.glb');
+// useGLTF.preload('/Castle4.glb');

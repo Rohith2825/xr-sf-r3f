@@ -1,0 +1,29 @@
+<svg width="99" height="93" viewBox="0 0 99 93" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0_2_12228" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="99" height="93">
+<path d="M98.9843 0.15332H0.783203V93H98.9843V0.15332Z" fill="white"/>
+</mask>
+<g mask="url(#mask0_2_12228)">
+<mask id="mask1_2_12228" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="1" y="0" width="98" height="93">
+<path d="M1.32812 0.745117H98.137V92.4217H1.32812V0.745117Z" fill="white"/>
+</mask>
+<g mask="url(#mask1_2_12228)">
+<mask id="mask2_2_12228" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="1" y="0" width="98" height="93">
+<path d="M20.3757 0.745117H79.0464C84.0993 0.745117 88.9439 2.82199 92.5153 6.51724C96.0867 10.2125 98.094 15.225 98.094 20.4531V72.7136C98.094 77.9417 96.0867 82.9543 92.5153 86.6496C88.9439 90.3448 84.0993 92.4217 79.0464 92.4217H20.3757C15.3261 92.4217 10.4816 90.3448 6.90683 86.6496C3.3354 82.9543 1.32812 77.9417 1.32812 72.7136V20.4531C1.32812 15.225 3.3354 10.2125 6.90683 6.51724C10.4816 2.82199 15.3261 0.745117 20.3757 0.745117Z" fill="white"/>
+</mask>
+<g mask="url(#mask2_2_12228)">
+<path d="M1.32812 0.745117H98.2395V92.4217H1.32812V0.745117Z" fill="black"/>
+</g>
+</g>
+</g>
+<mask id="mask3_2_12228" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="27" y="26" width="45" height="41">
+<path d="M27.9648 26.7422H71.5197V66.2712H27.9648V26.7422Z" fill="white"/>
+</mask>
+<g mask="url(#mask3_2_12228)">
+<mask id="mask4_2_12228" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="27" y="26" width="45" height="41">
+<path d="M29.6918 33.1817C26.1634 39.1933 28.6502 45.0441 31.7719 48.1509L50.0258 66.2713L67.8929 48.2159C70.7963 44.873 71.9108 41.3317 71.2924 37.3867C70.4392 31.9294 66.0907 27.6935 60.7236 27.0879C57.4299 26.7218 54.2487 27.6867 51.7653 29.8217C51.0973 30.3965 50.4987 31.0364 49.9795 31.7343C49.3612 30.9406 48.637 30.2152 47.8168 29.5685C44.963 27.324 41.3288 26.4344 37.8367 27.1255C34.5298 27.7859 31.5602 29.9928 29.6918 33.1817Z" fill="white"/>
+</mask>
+<g mask="url(#mask4_2_12228)">
+<path d="M27.9648 26.896H71.5197V66.271H27.9648V26.896Z" fill="white"/>
+</g>
+</g>
+</svg>
