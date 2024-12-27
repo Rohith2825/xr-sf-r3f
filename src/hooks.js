@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 export const usePersonControls = () => {
     const keys = {
         KeyW: "forward",
+        ArrowUp: "forward",
         KeyS: "backward",
+        ArrowDown: "backward",
         KeyA: "left",
+        ArrowLeft: "left",
         KeyD: "right",
-        Space: "jump"
+        ArrowRight: "right",
+        Space: "jump",
     }
 
     const moveFieldByKey = (key) => keys[key];

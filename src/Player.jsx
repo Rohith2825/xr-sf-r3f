@@ -67,13 +67,13 @@ export const Player = () => {
         playerRef.current.setTranslation(START_POSITION); // Reset position to start position
         playerRef.current.setLinvel({ x: 0, y: 0, z: 0 }); // Reset velocity to stop movement
     };
-
+    //HeightModifcation just change CapsuleCollider Height
     return (
         <>
             <RigidBody colliders={false} mass={1} ref={playerRef} lockRotations>
                 <mesh castShadow>
                     <capsuleGeometry args={[0.5, 0.5]}/>
-                    <CapsuleCollider args={[0.75, 0.5]} />
+                    <CapsuleCollider args={[1.7, 0.5]} /> 
                 </mesh>
             </RigidBody>
         </>
