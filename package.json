@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^6.3.0",
+    "@mui/joy": "^5.0.0-beta.51",
+    "@mui/material": "^6.3.0",
     "@react-three/drei": "^9.85.0",
     "@react-three/fiber": "^8.14.3",
     "@react-three/rapier": "^1.1.1",
@@ -18,6 +23,7 @@
     "@use-gesture/react": "^10.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-markdown": "^9.0.1",
     "three": "^0.156.1",
     "zustand": "^4.4.1"
   },

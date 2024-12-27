@@ -11,7 +11,6 @@
   z-index: 2;
 }
 
-
 /* Top-right icons container */
 .iconsContainer {
   position: absolute;
@@ -30,7 +29,7 @@
   transition: transform 0.2s ease;
 
   &:hover {
-      transform: scale(1.1);
+    transform: scale(1.1);
   }
 }
 
@@ -44,7 +43,6 @@
 .brandLogo {
   width: 8vw;
   height: auto;
-  
 }
 
 /* Chat logo on bottom-right */
@@ -68,34 +66,34 @@
 /* Mobile responsiveness */
 @media screen and (max-width: 768px) {
   .iconsContainer {
-      top: 3%; /* Slightly lower than desktop but closer to the top */
-      right: 5%; /* More padding from the edge for smaller screens */
-      gap: 2vh; /* Keep spacing consistent */
+    top: 3%; /* Slightly lower than desktop but closer to the top */
+    right: 5%; /* More padding from the edge for smaller screens */
+    gap: 2vh; /* Keep spacing consistent */
   }
 
   .icon {
-      width: 7vw; /* Slightly larger icons for mobile */
+    width: 7vw; /* Slightly larger icons for mobile */
   }
 
   .brandLogo,
   .chatLogo {
-      width: 10vw; /* Larger logos for mobile */
+    width: 10vw; /* Larger logos for mobile */
   }
 }
 
 @media screen and (max-width: 480px) {
   .iconsContainer {
-      top: 2%; /* Closer to the top for very small devices */
-      right: 5%;
-      gap: 2vh; /* Maintain consistent spacing */
+    top: 2%; /* Closer to the top for very small devices */
+    right: 5%;
+    gap: 2vh; /* Maintain consistent spacing */
   }
 
   .icon {
-      width: 10vw; /* Larger icons for mobile */
+    width: 10vw; /* Larger icons for mobile */
   }
 
   .brandLogo,
   .chatLogo {
-      width: 15vw; /* Adjust logos for smaller screens */
+    width: 15vw; /* Adjust logos for smaller screens */
   }
 }
