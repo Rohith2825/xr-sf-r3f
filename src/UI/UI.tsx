@@ -22,12 +22,6 @@ const UI = () => {
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} />
         <img src="/icons/Info.svg" alt="Info" className={styles.icon} />
-        <img
-          src="/icons/Chatbot.svg"
-          alt="Chatbot"
-          className={styles.icon}
-          onClick={openChatbotModal}
-        />
       </div>
 
       {/* Brand logo on bottom-left */}
@@ -38,6 +32,22 @@ const UI = () => {
           className={styles.brandLogo}
         />
       </div>
+
+      {/* Chat logo on bottom-right */}
+      <div className={styles.chatLogoContainer}>
+        <img
+          src="/icons/Chatbot.svg"
+          alt="Chatbot"
+          className={styles.chatLogo}
+          onTouchStart={(e) => {
+            openChatbotModal();
+          }}
+          onClick={(e) => {
+            openChatbotModal();
+          }}
+        />
+      </div>
+
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}

@@ -92,7 +92,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         height: "60vh",
         backdropFilter: "blur(10px)",
         borderRadius: "10px",
-        zIndex: { xs: 1005 },
+        // zIndex: { xs: 0 },
       }}
     >
       {/* Header */}
@@ -103,6 +103,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           justifyContent: "space-between",
           paddingBottom: 1,
           borderBottom: "3px solid rgba(0, 0, 0, 0.1)",
+          flexShrink: 0,
         }}
       >
         <Box display="flex" alignItems="center" gap={1}>
@@ -179,6 +180,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           padding: "8px",
           borderTop: "3px solid rgba(0, 0, 0, 0.1)",
           gap: 1,
+          flexShrink: 0,
         }}
       >
         <Input
