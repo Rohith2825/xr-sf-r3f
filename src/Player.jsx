@@ -45,11 +45,11 @@ export const Player = () => {
             doJump();
             setCanJump(false); // Prevent jumping again until cooldown period is over
 
-            // Re-enable jumping after a short cooldown period (e.g., 500ms)
-            setTimeout(() => {
-                setCanJump(true);
-            }, 500); // 500ms cooldown
-        }
+      // Re-enable jumping after a short cooldown period (e.g., 500ms)
+      setTimeout(() => {
+        setCanJump(true);
+      }, 500);
+    }
 
         // Moving camera
         const { x, y, z } = playerRef.current.translation();
