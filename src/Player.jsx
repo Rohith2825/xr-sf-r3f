@@ -5,13 +5,13 @@ import { useRef, useState } from "react";
 import { usePersonControls } from "@/hooks.js";
 import { useFrame } from "@react-three/fiber";
 
-const MOVE_SPEED = 10;
+const MOVE_SPEED = 12;
 const direction = new THREE.Vector3();
 const frontVector = new THREE.Vector3();
 const sideVector = new THREE.Vector3();
 
 const RESPAWN_HEIGHT = -5; // The Y position threshold for respawning
-const START_POSITION = new THREE.Vector3(0, 5, 0); // Example respawn position
+const START_POSITION = new THREE.Vector3(0, 5,-5); // Example respawn position
 
 export const Player = () => {
     const playerRef = useRef();
