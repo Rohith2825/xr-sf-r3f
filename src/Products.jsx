@@ -121,21 +121,55 @@
 
 // export default Products;
 
-
 import React, { Suspense } from "react";
-import { useGLTFWithKTX2 } from './useGTLFwithKTX';
+import { useGLTFWithKTX2 } from "./useGTLFwithKTX";
 const LazyMannequin = React.lazy(() => import("./Mannequin"));
 
 // Your mannequin data
 const mannequinData = [
-  { id: 9658662322469, position: [2, -4, -77], modelPath: "/models/inter_elem1.glb", scale: 1.2 },
-  { id: 9658662060325, position: [4, -4, -77], modelPath: "/models/inter_elem2.glb", scale: 1.2 },
-  { id: 9658662060325, position: [6, -4, -77], modelPath: "/models/inter_elem.glb", scale: 1.2 },
-  { id: 9658662060325, position: [0, -4, -77], modelPath: "/models/women.glb", scale: 0.35 },
-  { id: 9658662060325, position: [-2, -4, -77], modelPath: "/models/final_women_gym.glb", scale: 0.22 },
-  { id: 9658662060325, position: [-4, -4, -77], modelPath: "/models/final_sports.glb", scale: 0.35 },
-  { id: 9658662060325, position: [-6, -4, -77], modelPath: "/models/finalblack_suit.glb", scale: 0.3 },
-    // { id: 9658662060325, position: [45.76, -11.05, 40.64], modelPath: "/models/final_girl.glb", scale: 0.25 },
+  {
+    id: 9658662584613,
+    position: [2, -4, -77],
+    modelPath: "/models/inter_elem1.glb",
+    scale: 1.2,
+  },
+  {
+    id: 9689001328933,
+    position: [4, -4, -77],
+    modelPath: "/models/inter_elem2.glb",
+    scale: 1.2,
+  },
+  {
+    id: 9658662519077,
+    position: [6, -4, -77],
+    modelPath: "/models/inter_elem.glb",
+    scale: 1.2,
+  },
+  {
+    id: 9658662682917,
+    position: [0, -4, -77],
+    modelPath: "/models/women.glb",
+    scale: 0.35,
+  },
+  {
+    id: 9658662813989,
+    position: [-2, -4, -77],
+    modelPath: "/models/final_women_gym.glb",
+    scale: 0.22,
+  },
+  {
+    id: 9689001328933,
+    position: [-4, -4, -77],
+    modelPath: "/models/final_sports.glb",
+    scale: 0.35,
+  },
+  {
+    id: 9658661732645,
+    position: [-6, -4, -77],
+    modelPath: "/models/finalblack_suit.glb",
+    scale: 0.3,
+  },
+  // { id: 9658662060325, position: [45.76, -11.05, 40.64], modelPath: "/models/final_girl.glb", scale: 0.25 },
   // { id: 9658662060325, position: [-21.19, -3, 7.86], modelPath: "/models/finalblack_suit.glb", scale: 0.3 },
   // { id: 9658662060325, position: [-17.57, -4.8, 33.33], modelPath: "/models/final_women_gym.glb", scale: 0.22 },
   // { id: 9658662060325, position: [23.78, -4, 38.54], modelPath: "/models/final_sports.glb", scale: 0.35 },
@@ -152,6 +186,7 @@ const Products = ({ onCubeClick = () => {} }) => {
       {mannequinData.map((data, index) => (
         <ModelWrapper
           key={index}
+          productId={data.id}
           modelPath={data.modelPath}
           position={data.position}
           scale={data.scale}
@@ -163,11 +198,12 @@ const Products = ({ onCubeClick = () => {} }) => {
 };
 
 // The ModelWrapper component
-const ModelWrapper = ({ modelPath, position, scale, onClick }) => {
+const ModelWrapper = ({ productId, modelPath, position, scale, onClick }) => {
   const { scene } = useGLTFWithKTX2(modelPath); // Use the custom hook to load the model
 
   return scene ? ( // Render LazyMannequin only if the model is loaded
     <LazyMannequin
+      productId={productId}
       position={position}
       modelPath={modelPath}
       onClick={onClick}
