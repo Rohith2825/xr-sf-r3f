@@ -22,7 +22,7 @@ const frontVector = new THREE.Vector3();
 const sideVector = new THREE.Vector3();
 
 const RESPAWN_HEIGHT = -5;
-const START_POSITION = new THREE.Vector3(0, 5, -5);
+const START_POSITION = new THREE.Vector3(0, 7, -5);
 
 export const Player = () => {
     const playerRef = useRef();
@@ -155,7 +155,7 @@ export const Player = () => {
             <RigidBody colliders={false} mass={1} ref={playerRef} lockRotations>
                 <mesh castShadow>
                     {/* <capsuleGeometry args={[0.5, 0.5]}/> */}
-                    <CapsuleCollider args={[1.7, 0.5]} /> 
+                    <CapsuleCollider args={[1.7, 0.7]} /> 
                 </mesh>
             </RigidBody>
         </>
