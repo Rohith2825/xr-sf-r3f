@@ -12,8 +12,8 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { Environment, OrbitControls } from "@react-three/drei";
-import { Canvas, useLoader } from "@react-three/fiber";
+// import { Environment, OrbitControls } from "@react-three/drei";
+import { useLoader } from "@react-three/fiber";
 import DOMPurify from "dompurify";
 import { Suspense, useEffect, useState } from "react";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
@@ -583,7 +583,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     </div>
                   }
                 >
-                  <Canvas camera={{ position: [0, 0, 10] }}>
+                  {/* <Canvas camera={{ position: [0, 0, 10] }}>
                     <ambientLight intensity={0.5} />
                     <spotLight
                       position={[10, 10, 10]}
@@ -600,7 +600,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                       maxPolarAngle={Math.PI / 1.5}
                     />
                     <Environment preset="warehouse" blur={2} />
-                  </Canvas>
+                  </Canvas> */}
                 </Suspense>
               )}
             </CanvasContainer>
