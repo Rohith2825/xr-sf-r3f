@@ -4,6 +4,7 @@ export const useProductStore = create((set) => ({
   products: [],
   selectedProduct: {},
   isModalOpen: false,
+  crosshairVisible: false,
   setProducts: (products: any) => set({ products }),
   setSelectedProduct: (productId: number) =>
     set((state) => {
@@ -14,4 +15,6 @@ export const useProductStore = create((set) => ({
     }),
   openModal: () => set({ isModalOpen: true }),
   closeModal: () => set({ isModalOpen: false }),
+  showCrosshair: () => set({ crosshairVisible: false }),
+  hideCrosshair: () => set({ crosshairVisible: true }),
 }));

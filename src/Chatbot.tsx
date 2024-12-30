@@ -7,11 +7,11 @@ import {
   IconButton,
   Button,
   Box,
-  Input,
 } from "@mui/material";
-// import Input from "@mui/joy/Input";
+import Input from "@mui/joy/Input";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactMarkdown from "react-markdown";
+import { useProductStore } from "../store/productStore";
 
 interface ChatbotProps {
   isChatbotModalOpen: boolean;
@@ -23,7 +23,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
     { type: "user" | "bot"; text: string }[]
   >([]);
   const [currentMessage, setCurrentMessage] = useState("");
-
+  const { showCrosshair } = useProductStore();
   // Ref to track the chat container
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -126,8 +126,14 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           </Typography>
         </Box>
         <IconButton
-          onClick={props.onChatbotModalClose}
-          onTouchStart={props.onChatbotModalClose}
+          onClick={() => {
+            props.onChatbotModalClose();
+            showCrosshair();
+          }}
+          onTouchStart={() => {
+            props.onChatbotModalClose();
+            showCrosshair();
+          }}
           sx={{ marginLeft: "auto" }}
         >
           <CloseIcon />
@@ -143,7 +149,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           padding: 2,
           display: "flex",
           flexDirection: "column",
-          height: "55%",
+          height: "57%",
           "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar for Webkit browsers
           scrollbarWidth: "none", // Hide scrollbar for Firefox
         }}
@@ -196,7 +202,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         <Input
           placeholder="Enter your message"
           value={currentMessage}
-          inputRef={inputRef}
+          ref={inputRef}
           onChange={(e) => setCurrentMessage(e.target.value)}
           onKeyPress={(e) => {
             if (e.key === "Enter") handleSendMessage();

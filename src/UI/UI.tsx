@@ -12,7 +12,13 @@ const shopifyConfig = {
 };
 
 const UI = () => {
-  const { isModalOpen, selectedProduct, closeModal } = useProductStore();
+  const {
+    isModalOpen,
+    selectedProduct,
+    closeModal,
+    hideCrosshair,
+    crosshairVisible,
+  } = useProductStore();
 
   const isAiming = false;
   const [ChatbotOpen, setChatbotOpen] = useState(false);
@@ -27,7 +33,7 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {!isAiming && <div className={styles.aim} />}
+      {!crosshairVisible && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} />
@@ -52,9 +58,11 @@ const UI = () => {
           className={styles.chatLogo}
           onTouchStart={(e) => {
             openChatbotModal();
+            hideCrosshair();
           }}
           onClick={(e) => {
             openChatbotModal();
+            hideCrosshair();
           }}
         />
       </div>
