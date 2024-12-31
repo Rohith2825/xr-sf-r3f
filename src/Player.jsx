@@ -57,6 +57,8 @@ export const Player = () => {
     joystickZone.id = "joystickZone";
     joystickZone.style.position = "absolute";
     joystickZone.style.bottom = "20px";
+    joystickZone.style.paddingLeft = "20px";
+    joystickZone.style.paddingBottom = "20px";
     joystickZone.style.left = "20px";
     joystickZone.style.width = "150px";
     joystickZone.style.height = "150px";
