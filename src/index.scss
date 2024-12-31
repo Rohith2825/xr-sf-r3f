@@ -9,6 +9,7 @@ html, body, #root, #container, canvas {
     width: 100vw;
     overflow: hidden;
     position: relative; 
+    touch-action: none 
 }
 
 canvas {
