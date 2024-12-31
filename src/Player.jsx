@@ -68,9 +68,10 @@ export const Player = () => {
     const manager = nipplejs.create({
       zone: joystickZone,
       size: 100,
-      mode: "static",
+      mode: "dynamic",
       position: { bottom: "60px", left: "60px" },
-      color: "linear-gradient(to bottom, #ce09ff, #ffa34e)",
+      multitouch: true,
+      color: "black",
     });
 
     const handleMove = (evt, data) => {
