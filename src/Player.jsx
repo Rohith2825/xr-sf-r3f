@@ -132,7 +132,7 @@ export const Player = () => {
     };
 
     const handleTouchMove = (e) => {
-      if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
+      //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
 
       const touch = Array.from(e.touches).find(
         t => t.identifier === touchRef.current.cameraTouch
