@@ -7,6 +7,7 @@ import { useFrame } from "@react-three/fiber";
 import { create } from "zustand";
 import Television from "./Television";
 import Products from "./Products";
+import { Suspense } from "react";
 
 
 const shadowOffset = 50;
@@ -51,7 +52,9 @@ export const App = () => {
 
       <Physics gravity={[0, -20, 0]}>
         <Ground />
+        <Suspense fallback = {null}>
         <Player />
+        </Suspense>
         <Products />
         <Television
           videoPath="/media/backhome.mp4"
