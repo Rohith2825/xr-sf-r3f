@@ -27,7 +27,10 @@ const START_POSITION = new THREE.Vector3(0, 7, -5);
 
 export const Player = () => {
   const playerRef = useRef();
-  const touchRef = useRef({ isDragging: false, previousTouch: null });
+  const touchRef = useRef({
+    cameraTouch: null,
+    previousCameraTouch: null
+  });
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
   const [isMobile, setIsMobile] = useState(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
@@ -56,20 +59,18 @@ export const Player = () => {
     const joystickZone = document.createElement("div");
     joystickZone.id = "joystickZone";
     joystickZone.style.position = "absolute";
-    joystickZone.style.bottom = "4vh";
-    joystickZone.style.paddingLeft = "5vw";
-    joystickZone.style.paddingBottom = "5vh";
-    joystickZone.style.left = "4vw";
+    joystickZone.style.bottom = "15vh"; // Adjust for visibility
+    joystickZone.style.left = "13vw"; // Adjust for visibility
     joystickZone.style.width = "150px";
     joystickZone.style.height = "150px";
     joystickZone.style.zIndex = "5";
+    joystickZone.style.pointerEvents = "all"; // Ensure interactions are captured
     document.body.appendChild(joystickZone);
 
     const manager = nipplejs.create({
       zone: joystickZone,
       size: 100,
-      mode: "dynamic",
-      position: { bottom: "60px", left: "60px" },
+      mode: "semi",
       multitouch: true,
       color: "black",
     });
@@ -104,20 +105,33 @@ export const Player = () => {
   useEffect(() => {
     const handleTouchStart = (e) => {
       if (e.target.closest("#joystickZone")) return;
+      
+      // Find the rightmost touch for camera control
+      const touches = Array.from(e.touches);
+      const rightmostTouch = touches.reduce((rightmost, touch) => {
+        return (!rightmost || touch.clientX > rightmost.clientX) ? touch : rightmost;
+      }, null);
 
-      touchRef.current.isDragging = true;
-      touchRef.current.previousTouch = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      };
+      if (rightmostTouch) {
+        touchRef.current.cameraTouch = rightmostTouch.identifier;
+        touchRef.current.previousCameraTouch = {
+          x: rightmostTouch.clientX,
+          y: rightmostTouch.clientY,
+        };
+      }
     };
 
     const handleTouchMove = (e) => {
-      if (!touchRef.current.isDragging || !touchRef.current.previousTouch) return;
-      const touch = e.touches[0];
+      if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
 
-      const deltaX = touch.clientX - touchRef.current.previousTouch.x;
-      const deltaY = touch.clientY - touchRef.current.previousTouch.y;
+      const touch = Array.from(e.touches).find(
+        t => t.identifier === touchRef.current.cameraTouch
+      );
+
+      if (!touch) return;
+
+      const deltaX = touch.clientX - touchRef.current.previousCameraTouch.x;
+      const deltaY = touch.clientY - touchRef.current.previousCameraTouch.y;
 
       const sensitivity = isPortrait ? TOUCH_SENSITIVITY.PORTRAIT : TOUCH_SENSITIVITY.LANDSCAPE;
 
@@ -128,15 +142,18 @@ export const Player = () => {
         Math.min(Math.PI / 2, camera.rotation.x - deltaY * sensitivity.y)
       );
 
-      touchRef.current.previousTouch = {
+      touchRef.current.previousCameraTouch = {
         x: touch.clientX,
         y: touch.clientY,
       };
     };
 
-    const handleTouchEnd = () => {
-      touchRef.current.isDragging = false;
-      touchRef.current.previousTouch = null;
+    const handleTouchEnd = (e) => {
+      const remainingTouches = Array.from(e.touches);
+      if (!remainingTouches.some(t => t.identifier === touchRef.current.cameraTouch)) {
+        touchRef.current.cameraTouch = null;
+        touchRef.current.previousCameraTouch = null;
+      }
     };
 
     document.addEventListener("touchstart", handleTouchStart);
@@ -162,7 +179,7 @@ export const Player = () => {
   
     // Combine joystick and keyboard inputs
     frontVector.set(0, 0, backward - forward);
-    sideVector.set(left - right, 0, 0);
+    sideVector.set(right - left, 0, 0);
   
     // Combine inputs into a single movement direction
     const combinedInput = new THREE.Vector3()
