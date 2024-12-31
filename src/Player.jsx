@@ -102,6 +102,16 @@ export const Player = () => {
     };
   }, [isMobile]);
 
+    // Ensure the player is respawned when the component is mounted
+    useEffect(() => {
+      if (playerRef.current) {
+        // Delay slightly to ensure physics world is initialized
+        setTimeout(() => {
+          respawnPlayer();
+        }, 100);
+      }
+    }, []);
+
   useEffect(() => {
     const handleTouchStart = (e) => {
       if (e.target.closest("#joystickZone")) return;
