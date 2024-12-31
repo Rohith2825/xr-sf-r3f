@@ -69,7 +69,7 @@ export const Player = () => {
 
     const manager = nipplejs.create({
       zone: joystickZone,
-      size: 100,
+      size: 130,
       mode: "semi",
       multitouch: true,
       color: "black",
