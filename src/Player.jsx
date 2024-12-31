@@ -56,13 +56,13 @@ export const Player = () => {
     const joystickZone = document.createElement("div");
     joystickZone.id = "joystickZone";
     joystickZone.style.position = "absolute";
-    joystickZone.style.bottom = "20px";
-    joystickZone.style.paddingLeft = "20px";
-    joystickZone.style.paddingBottom = "20px";
-    joystickZone.style.left = "20px";
+    joystickZone.style.bottom = "4vh";
+    joystickZone.style.paddingLeft = "5vw";
+    joystickZone.style.paddingBottom = "5vh";
+    joystickZone.style.left = "4vw";
     joystickZone.style.width = "150px";
     joystickZone.style.height = "150px";
-    joystickZone.style.zIndex = "1000";
+    joystickZone.style.zIndex = "5";
     document.body.appendChild(joystickZone);
 
     const manager = nipplejs.create({
