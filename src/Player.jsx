@@ -152,47 +152,51 @@ export const Player = () => {
 
   useFrame((state) => {
     if (!playerRef.current) return;
-
+  
     const { y: playerY } = playerRef.current.translation();
     if (playerY < RESPAWN_HEIGHT) {
       respawnPlayer();
     }
-
+  
     const velocity = playerRef.current.linvel();
-
-    if (isMobile) {
-      // Use joystick for movement
-      playerRef.current.setLinvel({
-        x: direction.x,
-        y: velocity.y,
-        z: direction.z,
-      });
-    } else {
-      // Use keyboard for movement
-      frontVector.set(0, 0, backward - forward);
-      sideVector.set(left - right, 0, 0);
-      direction
-        .subVectors(frontVector, sideVector)
-        .normalize()
-        .multiplyScalar(MOVE_SPEED)
-        .applyEuler(state.camera.rotation);
-
-      playerRef.current.setLinvel({
-        x: direction.x,
-        y: velocity.y,
-        z: direction.z,
-      });
-    }
-
+  
+    // Combine joystick and keyboard inputs
+    frontVector.set(0, 0, backward - forward);
+    sideVector.set(left - right, 0, 0);
+  
+    // Combine inputs into a single movement direction
+    const combinedInput = new THREE.Vector3()
+      .add(frontVector)
+      .add(sideVector)
+      .add(direction) // Add joystick input
+      .normalize();
+  
+    // Apply camera's rotation to align movement with camera orientation
+    const movementDirection = new THREE.Vector3()
+      .copy(combinedInput)
+      .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
+      .normalize()
+      .multiplyScalar(MOVE_SPEED);
+  
+    // Set the player's velocity based on movement direction
+    playerRef.current.wakeUp();
+    playerRef.current.setLinvel({
+      x: movementDirection.x,
+      y: velocity.y,
+      z: movementDirection.z,
+    });
+  
     if (jump && canJump) {
       doJump();
       setCanJump(false);
       setTimeout(() => setCanJump(true), 500);
     }
-
+  
+    // Sync the camera's position with the player
     const { x, y, z } = playerRef.current.translation();
     state.camera.position.set(x, y, z);
   });
+  
 
   const doJump = () => {
     playerRef.current.setLinvel({ x: 0, y: 5, z: 0 });
@@ -204,7 +208,7 @@ export const Player = () => {
   };
 
   return (
-    <RigidBody colliders={false} mass={1} ref={playerRef} lockRotations>
+    <RigidBody colliders={false} mass={1} ref={playerRef} lockRotations canSleep={false}>
       <mesh castShadow>
         <CapsuleCollider args={[1.7, 1]} />
       </mesh>
@@ -212,3 +216,4 @@ export const Player = () => {
   );
 };
 
+//canSleep={false} - Sleeping caused problem :(((())))
