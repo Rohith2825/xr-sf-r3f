@@ -205,7 +205,7 @@ export const Player = () => {
   return (
     <RigidBody colliders={false} mass={1} ref={playerRef} lockRotations>
       <mesh castShadow>
-        <CapsuleCollider args={[1.7, 0.7]} />
+        <CapsuleCollider args={[1.7, 1]} />
       </mesh>
     </RigidBody>
   );

@@ -7,8 +7,7 @@ import { useFrame } from "@react-three/fiber";
 import { create } from "zustand";
 import Television from "./Television";
 import Products from "./Products";
-import { Suspense } from "react";
-
+import { Suspense, useState, useEffect } from "react";
 
 const shadowOffset = 50;
 
@@ -17,6 +16,13 @@ export const usePointerLockControlsStore = create(() => ({
 }));
 
 export const App = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile devices
+  useEffect(() => {
+    setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+  }, []);
+
   useFrame(() => {
     TWEEN.update();
   });
@@ -29,14 +35,15 @@ export const App = () => {
     usePointerLockControlsStore.setState({ isLock: false });
   };
 
-  
-
   return (
     <>
-      <PointerLockControls
-        onLock={pointerLockControlsLockHandler}
-        onUnlock={pointerLockControlsUnlockHandler}
-      />
+      {/* Conditionally render PointerLockControls */}
+      {!isMobile && (
+        <PointerLockControls
+          onLock={pointerLockControlsLockHandler}
+          onUnlock={pointerLockControlsUnlockHandler}
+        />
+      )}
       <Sky sunPosition={[100, 20, 100]} />
       <ambientLight intensity={3.5} />
       <directionalLight
@@ -52,7 +59,8 @@ export const App = () => {
 
       <Physics gravity={[0, -20, 0]}>
         <Ground />
-        <Player />
+        <Suspense fallback={null}>
+          <Player />
         </Suspense>
         <Products />
         <Television
