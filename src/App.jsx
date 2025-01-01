@@ -65,8 +65,8 @@ export const App = () => {
         <Products />
         <Television
           videoPath="/media/backhome.mp4"
-          scale={[0.9, 0.9, 0.9]}
-          position={[-4.5, 11, -91]}
+          scale={[1.5, 1.5, 1.5]}
+          position={[-5.1, 13, -90]}
           rotation={[0, -82.79, 0]}
         />
       </Physics>
