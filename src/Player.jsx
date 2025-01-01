@@ -181,6 +181,10 @@ export const Player = () => {
     };
   }, [camera, isPortrait]);
 
+
+  const tempCameraPosition = new THREE.Vector3();
+  const combinedInput = new THREE.Vector3();
+  const movementDirection = new THREE.Vector3();
   useFrame((state) => {
     if (!playerRef.current) return;
   
@@ -196,18 +200,14 @@ export const Player = () => {
     sideVector.set(right - left, 0, 0);
   
     // Combine inputs into a single movement direction
-    const combinedInput = new THREE.Vector3()
-      .add(frontVector)
-      .add(sideVector)
-      .add(direction) // Add joystick input
-      .normalize();
+    combinedInput.copy(frontVector).add(sideVector).add(direction).normalize();
   
     // Apply camera's rotation to align movement with camera orientation
-    const movementDirection = new THREE.Vector3()
-      .copy(combinedInput)
-      .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
-      .normalize()
-      .multiplyScalar(MOVE_SPEED);
+    movementDirection
+    .copy(combinedInput)
+    .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
+    .normalize()
+    .multiplyScalar(MOVE_SPEED); 
   
     // Set the player's velocity based on movement direction
     playerRef.current.wakeUp();
@@ -225,7 +225,8 @@ export const Player = () => {
   
     // Sync the camera's position with the player
     const { x, y, z } = playerRef.current.translation();
-    state.camera.position.set(x, y, z);
+    tempCameraPosition.set(x, y, z); // Reuse the temporary vector
+    state.camera.position.lerp(tempCameraPosition, 0.2);
   });
   
 
