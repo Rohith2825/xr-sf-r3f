@@ -9,12 +9,12 @@ import nipplejs from "nipplejs";
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
     PORTRAIT: {
-      x: 0.002, // Reduced horizontal sensitivity in landscape
-      y: 0.002  // Reduced vertical sensitivity in portrait
+      x: 0.004, // Reduced horizontal sensitivity in landscape
+      y: 0.004  // Reduced vertical sensitivity in portrait
     },
     LANDSCAPE: {
-        x: 0.002, // Reduced horizontal sensitivity in landscape
-        y: 0.002  // Increased vertical sensitivity in landscape
+        x: 0.004, // Reduced horizontal sensitivity in landscape
+        y: 0.004  // Increased vertical sensitivity in landscape
     }
 };
 
