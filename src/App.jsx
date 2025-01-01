@@ -6,6 +6,7 @@ import { Player } from "@/Player.jsx";
 import { useFrame } from "@react-three/fiber";
 import { create } from "zustand";
 import Television from "./Television";
+import WebPlane from "./WebPlane";
 import Products from "./Products";
 import { Suspense, useState, useEffect } from "react";
 
@@ -68,6 +69,11 @@ export const App = () => {
           scale={[0.9, 0.9, 0.9]}
           position={[-4.5, 11, -91]}
           rotation={[0, -82.79, 0]}
+        />
+        <WebPlane
+          scale={[0.2, 0.2, 0.1]}
+          position={[-5, 0, 5.1]}
+          rotation={[0, 161, 0]} 
         />
       </Physics>
     </>
