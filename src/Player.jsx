@@ -33,7 +33,11 @@ export const Player = () => {
   });
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
-  const [isMobile, setIsMobile] = useState(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+  const [isMobile, setIsMobile] = useState(
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
+      navigator.userAgent
+    )
+  );
   const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
   const { camera } = useThree();
 
@@ -143,7 +147,7 @@ export const Player = () => {
       const deltaX = touch.clientX - touchRef.current.previousCameraTouch.x;
       const deltaY = touch.clientY - touchRef.current.previousCameraTouch.y;
 
-      const sensitivity = isPortrait ? TOUCH_SENSITIVITY.PORTRAIT : TOUCH_SENSITIVITY.LANDSCAPE;
+      const sensitivity = TOUCH_SENSITIVITY.PORTRAIT ;
 
       camera.rotation.order = "YXZ";
       camera.rotation.y -= deltaX * sensitivity.x;
