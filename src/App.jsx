@@ -70,11 +70,11 @@ export const App = () => {
           position={[-4.5, 11, -91]}
           rotation={[0, -82.79, 0]}
         />
-        <WebPlane
+        {/* <WebPlane
           scale={[0.2, 0.2, 0.1]}
           position={[-5, 0, 5.1]}
           rotation={[0, 161, 0]} 
-        />
+        /> */}
       </Physics>
     </>
   );
