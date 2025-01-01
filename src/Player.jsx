@@ -13,8 +13,8 @@ const TOUCH_SENSITIVITY = {
         y: 0.006  // Reduced vertical sensitivity in portrait
     },
     LANDSCAPE: {
-        x: 0.008, // Reduced horizontal sensitivity in landscape
-        y: 0.015  // Increased vertical sensitivity in landscape
+        x: 0.002, // Reduced horizontal sensitivity in landscape
+        y: 0.002  // Increased vertical sensitivity in landscape
     }
 };
 
