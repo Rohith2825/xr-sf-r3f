@@ -182,7 +182,7 @@ export const Player = () => {
   }, [camera, isPortrait]);
 
 
-  const tempCameraPosition = new THREE.Vector3();
+  
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
   useFrame((state) => {
@@ -225,8 +225,7 @@ export const Player = () => {
   
     // Sync the camera's position with the player
     const { x, y, z } = playerRef.current.translation();
-    tempCameraPosition.set(x, y, z); // Reuse the temporary vector
-    state.camera.position.lerp(tempCameraPosition, 0.2);
+    state.camera.position.set(x, y, z);
   });
   
 
