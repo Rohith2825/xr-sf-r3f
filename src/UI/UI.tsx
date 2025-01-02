@@ -20,8 +20,14 @@ const UI = () => {
     crosshairVisible,
   } = useProductStore();
 
-  const isAiming = false;
+
   const [ChatbotOpen, setChatbotOpen] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
+      navigator.userAgent
+    )
+  );
 
   const openChatbotModal = () => {
     setChatbotOpen(true);
@@ -33,7 +39,7 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {!crosshairVisible && <div className={styles.aim} />}
+      {!crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} />
