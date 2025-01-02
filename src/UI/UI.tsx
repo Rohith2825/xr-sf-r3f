@@ -4,10 +4,11 @@ import { useState } from "react";
 import { useProductStore } from "../../store/productStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
+import Cart from "../Cart";
 
 const shopifyConfig = {
-  storeDomain: "gsv01y-gx.myshopify.com" || "", // Replace with your Shopify store domain
-  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110" || "",
+  storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
+  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110",
   storefrontApiVersion: "2024-10",
 };
 
@@ -17,6 +18,7 @@ const UI = () => {
     selectedProduct,
     closeModal,
     hideCrosshair,
+    showCrosshair,
     crosshairVisible,
   } = useProductStore();
 
@@ -31,12 +33,25 @@ const UI = () => {
     setChatbotOpen(false);
   };
 
+  // Cart handling
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const handleCartOpen = () => {
+    setIsCartOpen(true);
+    hideCrosshair();
+  }
+
+  const handleCartClose = () => {
+    setIsCartOpen(false);
+    showCrosshair(false);
+  }
+
   return (
     <div className="ui-root">
       {!crosshairVisible && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
-        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} />
+        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={handleCartOpen}/>
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} />
         <img src="/icons/Info.svg" alt="Info" className={styles.icon} />
       </div>
@@ -67,21 +82,22 @@ const UI = () => {
         />
       </div>
 
-      {isModalOpen && (
-        <ShopifyProvider
-          countryIsoCode="ID"
-          languageIsoCode="ID"
-          {...shopifyConfig}
-        >
-          <CartProvider>
+      <ShopifyProvider
+        countryIsoCode="ID"
+        languageIsoCode="ID"
+        {...shopifyConfig}
+      >
+        <CartProvider>
+          {isModalOpen && (
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}
               data={selectedProduct}
             />
-          </CartProvider>
-        </ShopifyProvider>
-      )}
+          )}
+          <Cart isOpen={isCartOpen} onClose={handleCartClose}></Cart>
+        </CartProvider>
+      </ShopifyProvider>
 
       <div>
         <ChatbotModal
