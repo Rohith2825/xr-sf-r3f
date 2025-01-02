@@ -69,7 +69,7 @@ export const Player = () => {
     joystickZone.style.left = "13vw"; // Adjust for visibility
     joystickZone.style.width = "150px";
     joystickZone.style.height = "150px";
-    joystickZone.style.zIndex = "5";
+    joystickZone.style.zIndex = "3"; //Higher than UI wafer z index = 2
     joystickZone.style.pointerEvents = "all"; // Ensure interactions are captured
     document.body.appendChild(joystickZone);
 
