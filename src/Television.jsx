@@ -36,6 +36,15 @@ export default function Television({
     [rotation]
   );
 
+  // Modify materials to handle z-fighting
+  useEffect(() => {
+    if (memoizedMaterials.phong15) {
+      memoizedMaterials.phong15.polygonOffset = true;
+      memoizedMaterials.phong15.polygonOffsetFactor = 1;
+      memoizedMaterials.phong15.polygonOffsetUnits = 1;
+    }
+  }, [memoizedMaterials]);
+
   return (
     <group
       dispose={null}
@@ -53,8 +62,16 @@ export default function Television({
           castShadow
           receiveShadow
           geometry={memoizedNodes['monitor-screen'].geometry}
+          renderOrder={1} // Ensure screen renders first
         >
-          <meshBasicMaterial map={videoTexture} toneMapped={false} />
+          <meshBasicMaterial 
+            map={videoTexture} 
+            toneMapped={false}
+            depthWrite={true}
+            polygonOffset={true}
+            polygonOffsetFactor={-1}
+            polygonOffsetUnits={-1}
+          />
         </mesh>
 
         {/* TV Frame */}
@@ -63,7 +80,16 @@ export default function Television({
           receiveShadow
           geometry={memoizedNodes.tv_frame.geometry}
           material={memoizedMaterials.phong15}
-        />
+          renderOrder={2} // Frame renders after screen
+        >
+          <meshStandardMaterial
+            {...memoizedMaterials.phong15}
+            depthWrite={true}
+            polygonOffset={true}
+            polygonOffsetFactor={1}
+            polygonOffsetUnits={1}
+          />
+        </mesh>
       </group>
     </group>
   );
