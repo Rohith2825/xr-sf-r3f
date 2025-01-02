@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
-import { useGLTF, useVideoTexture } from '@react-three/drei';
+import React, { useEffect, useMemo } from 'react';
+import { useVideoTexture } from '@react-three/drei';
 import { useGLTFWithKTX2 } from './useGTLFwithKTX';
-
 
 // Television component
 export default function Television({
@@ -10,9 +9,12 @@ export default function Television({
   position = [0, 0, 0],
   rotation = [0, 0, 0],
 }) {
-  
   const { nodes, materials } = useGLTFWithKTX2('/models/tv_modified.glb');
-  
+
+  // Memoize nodes and materials to avoid unnecessary re-computations
+  const memoizedNodes = useMemo(() => nodes, [nodes]);
+  const memoizedMaterials = useMemo(() => materials, [materials]);
+
   // Load the video texture
   const videoTexture = useVideoTexture(videoPath, {
     crossOrigin: 'anonymous',
@@ -28,12 +30,18 @@ export default function Television({
     }
   }, [videoTexture]);
 
+  // Memoize the computed rotation in radians
+  const memoizedRotation = useMemo(
+    () => rotation.map((r) => r * (Math.PI / 180)),
+    [rotation]
+  );
+
   return (
     <group
       dispose={null}
       scale={scale}
       position={position}
-      rotation={rotation.map((r) => r * (Math.PI / 180))} // Convert to radians
+      rotation={memoizedRotation} // Use memoized rotation
     >
       <group
         position={[-0.577, 0.192, -0.479]}
@@ -41,7 +49,11 @@ export default function Television({
         scale={[0.004, 16, 9]}
       >
         {/* Monitor Screen with Video Texture */}
-        <mesh castShadow receiveShadow geometry={nodes['monitor-screen'].geometry}>
+        <mesh
+          castShadow
+          receiveShadow
+          geometry={memoizedNodes['monitor-screen'].geometry}
+        >
           <meshBasicMaterial map={videoTexture} toneMapped={false} />
         </mesh>
 
@@ -49,8 +61,8 @@ export default function Television({
         <mesh
           castShadow
           receiveShadow
-          geometry={nodes.tv_frame.geometry}
-          material={materials.phong15}
+          geometry={memoizedNodes.tv_frame.geometry}
+          material={memoizedMaterials.phong15}
         />
       </group>
     </group>

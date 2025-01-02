@@ -1,3 +1,4 @@
+import React, { useMemo } from "react";
 import { PivotControls } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useProductStore } from "../store/productStore";
@@ -12,8 +13,10 @@ const DraggableMannequin = ({
   onClick,
   model,
 }) => {
-  const { openModal, setSelectedProduct, selectedProduct } = useProductStore();
+  const { openModal, setSelectedProduct, selectedProduct } =
+    useProductStore();
 
+    
   // const findProductById = (id) => {
   //   return products.find(
   //     (product) => product.node.id === `gid://shopify/Product/${id}`
@@ -30,8 +33,10 @@ const DraggableMannequin = ({
     return rotation.map((deg) => (deg * Math.PI) / 180);
   }, [rotation]);
 
+
+
   // Memoize the model.scene
-  // const memoizedModelScene = useMemo(() => model.scene, [model.scene]);
+  const memoizedModelScene = useMemo(() => model.scene, [model.scene]);
 
   return (
     <RigidBody type="fixed">
@@ -41,7 +46,7 @@ const DraggableMannequin = ({
         activeAxes={[false, false, false]}
       >
         <primitive
-          object={model.scene}
+          object={memoizedModelScene}
           position={position}
           rotation={computedRotation}
           scale={computedScale}
