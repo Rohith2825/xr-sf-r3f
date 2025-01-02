@@ -7,8 +7,10 @@ import { useFrame } from "@react-three/fiber";
 import { create } from "zustand";
 import Television from "./Television";
 import WebPlane from "./WebPlane";
+import BrandPoster from "./BrandPoster";
 import Products from "./Products";
 import { Suspense, useState, useEffect } from "react";
+import Skybox from "./Skybox";
 
 const shadowOffset = 50;
 
@@ -45,7 +47,7 @@ export const App = () => {
           onUnlock={pointerLockControlsUnlockHandler}
         />
       )}
-      <Sky sunPosition={[100, 20, 100]} />
+        <Skybox />
       <ambientLight intensity={3.5} />
       <directionalLight
         castShadow
@@ -73,7 +75,14 @@ export const App = () => {
         <WebPlane
           scale={[0.2, 0.2, 0.1]}
           position={[-5, 0, 5.1]}
-          rotation={[0, 162.5, 0]} 
+          rotation={[0, 162.5, 0]}
+        />
+        <BrandPoster
+          imageUrl="https://th.bing.com/th/id/OIP.SNik-SOwvsExn4HNF47l2gHaEK?rs=1&pid=ImgDetMain"
+          width={192 * 4} // Width in pixels
+          height={108 * 4} // Height in pixels
+          position={[-2.2, 3.2, -55.35]}
+          rotation={[0, 90, 1]}
         />
       </Physics>
     </>
