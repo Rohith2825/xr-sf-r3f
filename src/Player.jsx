@@ -75,11 +75,11 @@ export const Player = () => {
 
     const JOYSTICK_SIZE = 130; // pixels
     const PORTRAIT_MARGIN = {
-      bottom: 80,  // pixels from edge
+      bottom: 70,  // pixels from edge
       left: 80
     };
     const LANDSCAPE_MARGIN = {
-      bottom: 40,  // smaller bottom margin for landscape
+      bottom: 80,  // smaller bottom margin for landscape
       left: 120    // larger left margin for landscape
     };
     
@@ -97,7 +97,7 @@ export const Player = () => {
       
       // Calculate position with orientation-specific adjustments
       const bottom = isLandscape
-        ? Math.min(margins.bottom, viewportHeight * 0.15)  // 15% in landscape
+        ? Math.min(margins.bottom, viewportHeight * 0.45)  // 15% in landscape
         : Math.min(margins.bottom, viewportHeight * 0.1);  // 10% in portrait
         
       const left = isLandscape
