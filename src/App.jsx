@@ -12,6 +12,7 @@ import Products from "./Products";
 import { Suspense, useState, useEffect } from "react";
 import Skybox from "./Skybox";
 import { useProductStore } from "../store/productStore";
+import { useInfoModalStore } from "./InfoModal";
 
 const shadowOffset = 50;
 
@@ -22,6 +23,7 @@ export const usePointerLockControlsStore = create(() => ({
 export const App = () => {
   const [isMobile, setIsMobile] = useState(false);
   const { isModalOpen } = useProductStore();
+  const { isInfoModalOpen } = useInfoModalStore();
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
 
   // Detect mobile devices
@@ -34,7 +36,7 @@ export const App = () => {
   });
 
   const pointerLockControlsLockHandler = () => {
-    if (!isModalOpen && !isChatbotOpen) {
+    if (!isModalOpen && !isChatbotOpen && !isInfoModalOpen) {
       usePointerLockControlsStore.setState({ isLock: true });
     } else {
       document.exitPointerLock?.();

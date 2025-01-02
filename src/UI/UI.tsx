@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useProductStore } from "../../store/productStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
+import InfoModal, { useInfoModalStore } from "../InfoModal";
 
 const shopifyConfig = {
   storeDomain: "gsv01y-gx.myshopify.com" || "", // Replace with your Shopify store domain
@@ -20,8 +21,9 @@ const UI = () => {
     crosshairVisible,
   } = useProductStore();
 
-
   const [ChatbotOpen, setChatbotOpen] = useState(false);
+  const { isInfoModalOpen, openInfoModal, closeInfoModal } =
+    useInfoModalStore();
 
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
@@ -44,7 +46,12 @@ const UI = () => {
       <div className={styles.iconsContainer}>
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} />
-        <img src="/icons/Info.svg" alt="Info" className={styles.icon} />
+        <img
+          src="/icons/Info.svg"
+          alt="Info"
+          className={styles.icon}
+          onClick={openInfoModal}
+        />
       </div>
 
       {/* Brand logo on bottom-left */}
@@ -88,6 +95,8 @@ const UI = () => {
           </CartProvider>
         </ShopifyProvider>
       )}
+
+      <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
 
       <div>
         <ChatbotModal
