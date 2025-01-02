@@ -492,6 +492,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                   fontSize: { md: "1rem", lg: "1.5rem", xl: "1.5rem" }, // Adjust the size as needed
                   color: "white", // Set the color to white
                   fontFamily: "'Poppins', sans-serif",
+                  paddingBottom: 1,
                 }}
               >
                 {props.data["node"]["title"]}
@@ -503,6 +504,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                   flexDirection: "row",
                   alignItems: "center",
                   gap: "10px",
+                  paddingBottom: 1,
                 }}
               >
                 <Typography
@@ -567,7 +569,7 @@ const Modal: React.FC<ModalProps> = (props) => {
 
               {/* Sizes Selector */}
               <Box
-                sx={{ display: "flex", alignItems: "center", paddingTop: 1 }}
+                sx={{ display: "flex", alignItems: "center", paddingBottom: 1 }}
               >
                 <Box sx={{ display: "flex", gap: 1, flexWrap: { xs: "wrap" } }}>
                   {sizes.map((size) => (
@@ -581,6 +583,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                           selectedSize === size ? "black" : "#424147",
                         color: "white",
                         fontWeight: "bold",
+                        borderColor: "#424147",
                       }}
                       onClick={() => handleSizeClick(size)}
                     >
@@ -682,7 +685,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 <IconButton
                   sx={{
                     backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    borderRadius: "50%", // Circular button
+                    borderRadius: { sx: "25%", lg: "50%" }, // Circular button
                   }}
                 >
                   <FavoriteIcon sx={{ color: "white" }} />
