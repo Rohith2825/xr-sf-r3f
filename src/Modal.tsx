@@ -19,6 +19,7 @@ import { Suspense, useEffect, useState } from "react";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useCart } from "@shopify/hydrogen-react";
+import { ModelViewer } from "@shopify/hydrogen-react";
 
 const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -135,141 +136,21 @@ const QuantityCounter = () => {
   );
 };
 
-const RightColumn = ({ props, sizes }: { props: any; sizes: string[] }) => {
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const sanitizedHtml = DOMPurify.sanitize(props.data["body_html"]);
-  const handleSizeClick = (size: string) => {
-    setSelectedSize(size);
-  };
-
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        flex: 1,
-        padding: 0,
-      }}
-    >
-      <CardContent sx={{ zIndex: 1000 }}>
-        <Typography
-          sx={{
-            fontSize: {
-              sm: "1rem",
-              md: "1.5rem",
-              lg: "1.5rem",
-              xl: "1.5rem",
-            }, // Adjust the size as needed
-            color: "white", // Set the color to white
-            fontFamily: "'Poppins', sans-serif",
-            // paddingBottom: 1,
-            fontWeight: "bold",
-          }}
-        >
-          {props.data.title}
-        </Typography>
-
-        <Typography
-          sx={{
-            fontSize: { md: "1rem", lg: "1.5rem" },
-            color: "white",
-            fontFamily: "'Poppins', sans-serif",
-            // paddingTop: 1,
-          }}
-        >
-          ₹ {props.data.variants[0].price}
-        </Typography>
-
-        {/* Quantity Picker */}
-
-        <QuantityCounter />
-
-        {/* Sizes Selector */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            paddingTop: 1,
-            paddingBottom: 1,
-          }}
-        >
-          <Box sx={{ display: "flex", gap: 1, flexWrap: { xs: "wrap" } }}>
-            {sizes.map((size) => (
-              <Button
-                key={size}
-                variant="outlined"
-                size="small"
-                sx={{
-                  fontFamily: "'Poppins', sans-serif",
-                  backgroundColor:
-                    selectedSize === size
-                      ? "black"
-                      : "rgba(255, 255, 255, 0.2)",
-                  color: "white",
-                  border: "0px",
-                }}
-                onClick={() => handleSizeClick(size)}
-              >
-                {size}
-              </Button>
-            ))}
-          </Box>
-        </Box>
-        {/* <Typography
-          sx={{
-            fontFamily: "'Poppins', sans-serif",
-            color: "white",
-            fontSize: {
-              xs: "1.5rem",
-              sm: "1.5rem",
-              md: "1rem",
-              lg: "1.5rem",
-              xl: "1.5rem",
-            },
-          }}
-        >
-          Description
-        </Typography> */}
-        <Box
-          sx={{
-            // backgroundColor: "rgba(0 0 0 / 10%)",
-            borderRadius: 1,
-            padding: 1,
-            marginTop: 1,
-            backdropFilter: "blur(10px)",
-            maxHeight: {
-              xs: "225px",
-              sm: "210px",
-              md: "225px",
-              lg: "250px",
-              xl: "180px",
-            },
-            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
-            overflowY: "auto", // Enable vertical scrolling
-            scrollbarWidth: "none", // Firefox - hide scrollbar
-            "&::-webkit-scrollbar": {
-              display: "none", // Chrome, Safari, Edge - hide scrollbar
-            },
-          }}
-        >
-          <Typography
-            sx={{
-              fontFamily: "'Poppins', sans-serif",
-              color: "white",
-            }}
-            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-          />
-        </Box>
-      </CardContent>
-    </Box>
-  );
-};
-
 const Modal: React.FC<ModalProps> = (props) => {
-
   const sizes: string[] = [];
   const images: string[] = [];
-  let modelUrl: string = "";
+  let modelData: unknown = {};
+
+  modelData = {
+    id: "gid://shopify/Model3d/40614140838181",
+    sources: [
+      {
+        url: "https://cdn.shopify.com/3d/models/o/bdbf80f479b9210c/selveless_tshirt.glb",
+        mimeType: "model/gltf-binary",
+      },
+    ],
+    alt: "A cloth",
+  };
 
   const [view, setView] = useState<"photos" | "3d">("3d");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -298,7 +179,17 @@ const Modal: React.FC<ModalProps> = (props) => {
 
   props.data["node"]["media"]["edges"].forEach((edge: any) => {
     if (edge.node.mediaContentType === "MODEL_3D") {
-      modelUrl = edge.node.sources[0].url;
+      // modelUrl = edge.node.sources[0].url;
+      modelData = {
+        id: edge.node.id,
+        sources: [
+          {
+            url: edge.node.sources[0].url,
+            mimeType: "model/gltf-binary",
+          },
+        ],
+        alt: edge.node.alt,
+      };
     }
   });
 
@@ -583,24 +474,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     </div>
                   }
                 >
-                  {/* <Canvas camera={{ position: [0, 0, 10] }}>
-                    <ambientLight intensity={0.5} />
-                    <spotLight
-                      position={[10, 10, 10]}
-                      angle={0.15}
-                      penumbra={1}
-                    />
-                    <ModelColumn modelUrl={modelUrl} />
-                    <OrbitControls
-                      autoRotate
-                      autoRotateSpeed={0.5}
-                      enableZoom={false}
-                      enablePan={false}
-                      minPolarAngle={Math.PI / 4}
-                      maxPolarAngle={Math.PI / 1.5}
-                    />
-                    <Environment preset="warehouse" blur={2} />
-                  </Canvas> */}
+                  <ModelViewer data={modelData} />
                 </Suspense>
               )}
             </CanvasContainer>
