@@ -8,14 +8,14 @@ import nipplejs from "nipplejs";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
-    PORTRAIT: {
-      x: 0.004, // Reduced horizontal sensitivity in landscape
-      y: 0.004  // Reduced vertical sensitivity in portrait
-    },
-    LANDSCAPE: {
-        x: 0.004, // Reduced horizontal sensitivity in landscape
-        y: 0.004  // Increased vertical sensitivity in landscape
-    }
+  PORTRAIT: {
+    x: 0.004, // Reduced horizontal sensitivity in landscape
+    y: 0.004, // Reduced vertical sensitivity in portrait
+  },
+  LANDSCAPE: {
+    x: 0.004, // Reduced horizontal sensitivity in landscape
+    y: 0.004, // Increased vertical sensitivity in landscape
+  },
 };
 
 const direction = new THREE.Vector3();
@@ -29,7 +29,7 @@ export const Player = () => {
   const playerRef = useRef();
   const touchRef = useRef({
     cameraTouch: null,
-    previousCameraTouch: null
+    previousCameraTouch: null,
   });
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
@@ -38,7 +38,9 @@ export const Player = () => {
       navigator.userAgent
     )
   );
-  const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
+  const [isPortrait, setIsPortrait] = useState(
+    window.innerHeight > window.innerWidth
+  );
   const { camera } = useThree();
 
   const rapier = useRapier();
@@ -71,11 +73,49 @@ export const Player = () => {
     joystickZone.style.pointerEvents = "all"; // Ensure interactions are captured
     document.body.appendChild(joystickZone);
 
+    const JOYSTICK_SIZE = 130; // pixels
+    const PORTRAIT_MARGIN = {
+      bottom: 80,  // pixels from edge
+      left: 80
+    };
+    const LANDSCAPE_MARGIN = {
+      bottom: 40,  // smaller bottom margin for landscape
+      left: 120    // larger left margin for landscape
+    };
+    
+    // Function to calculate position based on screen size and orientation
+    const calculatePosition = () => {
+      // Get current viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Determine if we're in landscape mode
+      const isLandscape = viewportWidth > viewportHeight;
+      
+      // Use different margins based on orientation
+      const margins = isLandscape ? LANDSCAPE_MARGIN : PORTRAIT_MARGIN;
+      
+      // Calculate position with orientation-specific adjustments
+      const bottom = isLandscape
+        ? Math.min(margins.bottom, viewportHeight * 0.15)  // 15% in landscape
+        : Math.min(margins.bottom, viewportHeight * 0.1);  // 10% in portrait
+        
+      const left = isLandscape
+        ? Math.min(margins.left, viewportWidth * 0.08)    // 8% in landscape
+        : Math.min(margins.left, viewportWidth * 0.12);   // 12% in portrait
+    
+      return { 
+        bottom: `${bottom}px`, 
+        left: `${left}px` 
+      };
+    };
+
     const manager = nipplejs.create({
       zone: joystickZone,
-      size: 130,
-      mode: "semi",
-      multitouch: true,
+      size: JOYSTICK_SIZE,
+      mode: "static",
+      // position: { bottom: "10vh", left: "12vw" },
+      position: calculatePosition(),
       color: "black",
     });
 
@@ -83,14 +123,10 @@ export const Player = () => {
       if (!data) return;
 
       const { angle, distance } = data;
-      const radian = angle.radian ; // Align with THREE.js coordinate system
+      const radian = angle.radian; // Align with THREE.js coordinate system
       const speed = (distance / 100) * MOVE_SPEED;
 
-      direction.set(
-        Math.cos(radian) * speed,
-        0,
-        -Math.sin(radian) * speed * 2
-      );
+      direction.set(Math.cos(radian) * speed, 0, -Math.sin(radian) * speed * 2);
     };
 
     const handleEnd = () => {
@@ -106,24 +142,26 @@ export const Player = () => {
     };
   }, [isMobile]);
 
-    // Ensure the player is respawned when the component is mounted
-    useEffect(() => {
-      if (playerRef.current) {
-        // Delay slightly to ensure physics world is initialized
-        setTimeout(() => {
-          respawnPlayer();
-        }, 100);
-      }
-    }, []);
+  // Ensure the player is respawned when the component is mounted
+  useEffect(() => {
+    if (playerRef.current) {
+      // Delay slightly to ensure physics world is initialized
+      setTimeout(() => {
+        respawnPlayer();
+      }, 100);
+    }
+  }, []);
 
   useEffect(() => {
     const handleTouchStart = (e) => {
       if (e.target.closest("#joystickZone")) return;
-      
+
       // Find the rightmost touch for camera control
       const touches = Array.from(e.touches);
       const rightmostTouch = touches.reduce((rightmost, touch) => {
-        return (!rightmost || touch.clientX > rightmost.clientX) ? touch : rightmost;
+        return !rightmost || touch.clientX > rightmost.clientX
+          ? touch
+          : rightmost;
       }, null);
 
       if (rightmostTouch) {
@@ -139,7 +177,7 @@ export const Player = () => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
 
       const touch = Array.from(e.touches).find(
-        t => t.identifier === touchRef.current.cameraTouch
+        (t) => t.identifier === touchRef.current.cameraTouch
       );
 
       if (!touch) return;
@@ -147,7 +185,7 @@ export const Player = () => {
       const deltaX = touch.clientX - touchRef.current.previousCameraTouch.x;
       const deltaY = touch.clientY - touchRef.current.previousCameraTouch.y;
 
-      const sensitivity = TOUCH_SENSITIVITY.PORTRAIT ;
+      const sensitivity = TOUCH_SENSITIVITY.PORTRAIT;
 
       camera.rotation.order = "YXZ";
       camera.rotation.y -= deltaX * sensitivity.x;
@@ -164,7 +202,11 @@ export const Player = () => {
 
     const handleTouchEnd = (e) => {
       const remainingTouches = Array.from(e.touches);
-      if (!remainingTouches.some(t => t.identifier === touchRef.current.cameraTouch)) {
+      if (
+        !remainingTouches.some(
+          (t) => t.identifier === touchRef.current.cameraTouch
+        )
+      ) {
         touchRef.current.cameraTouch = null;
         touchRef.current.previousCameraTouch = null;
       }
@@ -181,34 +223,32 @@ export const Player = () => {
     };
   }, [camera, isPortrait]);
 
-
-  
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
   useFrame((state) => {
     if (!playerRef.current) return;
-  
+
     const { y: playerY } = playerRef.current.translation();
     if (playerY < RESPAWN_HEIGHT) {
       respawnPlayer();
     }
-  
+
     const velocity = playerRef.current.linvel();
-  
+
     // Combine joystick and keyboard inputs
     frontVector.set(0, 0, backward - forward);
     sideVector.set(right - left, 0, 0);
-  
+
     // Combine inputs into a single movement direction
     combinedInput.copy(frontVector).add(sideVector).add(direction).normalize();
-  
+
     // Apply camera's rotation to align movement with camera orientation
     movementDirection
-    .copy(combinedInput)
-    .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
-    .normalize()
-    .multiplyScalar(MOVE_SPEED); 
-  
+      .copy(combinedInput)
+      .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
+      .normalize()
+      .multiplyScalar(MOVE_SPEED);
+
     // Set the player's velocity based on movement direction
     playerRef.current.wakeUp();
     playerRef.current.setLinvel({
@@ -216,18 +256,17 @@ export const Player = () => {
       y: velocity.y,
       z: movementDirection.z,
     });
-  
+
     if (jump && canJump) {
       doJump();
       setCanJump(false);
       setTimeout(() => setCanJump(true), 500);
     }
-  
+
     // Sync the camera's position with the player
     const { x, y, z } = playerRef.current.translation();
     state.camera.position.set(x, y, z);
   });
-  
 
   const doJump = () => {
     playerRef.current.setLinvel({ x: 0, y: 5, z: 0 });
@@ -239,7 +278,13 @@ export const Player = () => {
   };
 
   return (
-    <RigidBody colliders={false} mass={1} ref={playerRef} lockRotations canSleep={false}>
+    <RigidBody
+      colliders={false}
+      mass={1}
+      ref={playerRef}
+      lockRotations
+      canSleep={false}
+    >
       <mesh castShadow>
         <CapsuleCollider args={[1.7, 1]} />
       </mesh>
