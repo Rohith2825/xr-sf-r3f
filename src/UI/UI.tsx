@@ -95,7 +95,9 @@ const UI = () => {
               data={selectedProduct}
             />
           )}
-          <Cart isOpen={isCartOpen} onClose={handleCartClose}></Cart>
+          {isCartOpen && (
+            <Cart onClose={handleCartClose}></Cart>
+          )}
         </CartProvider>
       </ShopifyProvider>
 
