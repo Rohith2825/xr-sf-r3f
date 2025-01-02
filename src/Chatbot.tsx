@@ -132,10 +132,10 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             props.onChatbotModalClose();
             showCrosshair();
           }}
-          onTouchStart={() => {
-            props.onChatbotModalClose();
-            showCrosshair();
-          }}
+          // onTouchStart={() => {
+          //   props.onChatbotModalClose();
+          //   showCrosshair();
+          // }}
           sx={{ marginLeft: "auto" }}
         >
           <CloseIcon />
@@ -207,12 +207,12 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           onKeyPress={(e) => {
             if (e.key === "Enter") handleSendMessage();
           }}
-          onTouchStart={(e) => {
-            console.log("Input field touched");
-            focusInput();
-            console.log(inputRef);
-            e.stopPropagation(); // Prevent touch event interference
-          }}
+          // onTouchStart={(e) => {
+          //   console.log("Input field touched");
+          //   focusInput();
+          //   console.log(inputRef);
+          //   e.stopPropagation(); // Prevent touch event interference
+          // }}
           sx={{
             flex: 1,
             border: "2px solid grey",
@@ -231,7 +231,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             fontFamily: "SF Pro Display",
           }}
           onClick={handleSendMessage}
-          onTouchStart={handleSendMessage}
+          // onTouchStart={handleSendMessage}
         >
           Send
         </Button>
