@@ -12,7 +12,8 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { Canvas, useLoader } from "@react-three/fiber";
+// import { Environment, OrbitControls } from "@react-three/drei";
+import { useLoader } from "@react-three/fiber";
 import DOMPurify from "dompurify";
 import { Suspense, useEffect, useState } from "react";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
