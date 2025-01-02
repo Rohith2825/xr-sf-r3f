@@ -5,6 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
+import gsap from "gsap";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -142,16 +143,155 @@ export const Player = () => {
     };
   }, [isMobile]);
 
-  // Ensure the player is respawned when the component is mounted
-  useEffect(() => {
-    if (playerRef.current) {
-      // Delay slightly to ensure physics world is initialized
-      setTimeout(() => {
-        respawnPlayer();
-      }, 100);
-    }
-  }, []);
 
+  const initialTourComplete = useRef(false);
+  const isTransitioning = useRef(false);
+
+  useEffect(() => {
+    if (!playerRef.current || initialTourComplete.current) return;
+
+    // Set initial position off-screen
+    const startPosition = new THREE.Vector3(0, 15, -5);
+    playerRef.current.setTranslation(startPosition);
+    camera.position.copy(startPosition);
+
+    // Define the camera tour path
+    const tourTimeline = gsap.timeline({
+      onComplete: () => {
+        isTransitioning.current = true;
+
+        // Create a smooth transition to spawn point
+        const finalTimeline = gsap.timeline({
+          onComplete: () => {
+            initialTourComplete.current = true;
+            isTransitioning.current = false;
+
+            // Reset physics state after transition
+            playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+            playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
+          },
+        });
+
+        // First, smoothly move to a position above the spawn point
+        finalTimeline
+          .to(camera.position, {
+            duration: 1.5,
+            x: START_POSITION.x,
+            y: START_POSITION.y + 3,
+            z: START_POSITION.z,
+            ease: "power2.inOut",
+          })
+          // Then smoothly descend to the exact spawn point
+          .to(camera.position, {
+            duration: 0.8,
+            y: START_POSITION.y,
+            ease: "power2.out",
+          });
+      },
+    });
+
+    // Create the tour sequence
+    tourTimeline
+      .to(camera.position, {
+        duration: 2,
+        x: -10,
+        y: 12,
+        z: -15,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: Math.PI * 0.25, // Rotate to the left view
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 2,
+        x: 5,
+        y: 10,
+        z: -10,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: 0, // Return to center
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 2,
+        x: 10,
+        y: 12,
+        z: -15,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: -Math.PI * 0.25, // Rotate to the right view
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 2,
+        x: 5,
+        y: 10,
+        z: -10,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: 0, // Return to center
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 1.5,
+        x: START_POSITION.x,
+        y: START_POSITION.y,
+        z: START_POSITION.z,
+        ease: "power2.inOut",
+      });
+
+    // Improved physics body synchronization
+    const updatePhysicsBody = () => {
+      if (!playerRef.current) return;
+
+      if (!initialTourComplete.current || isTransitioning.current) {
+        playerRef.current.wakeUp();
+        playerRef.current.setTranslation(camera.position);
+        playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+      }
+    };
+
+    // Smoother animation frame callback
+    let animationFrameId;
+    const animationFrame = () => {
+      updatePhysicsBody();
+      if (!initialTourComplete.current || isTransitioning.current) {
+        animationFrameId = requestAnimationFrame(animationFrame);
+      }
+    };
+    animationFrame();
+
+    return () => {
+      tourTimeline.kill();
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [camera]);
   useEffect(() => {
     const handleTouchStart = (e) => {
       if (e.target.closest("#joystickZone")) return;
@@ -272,9 +412,17 @@ export const Player = () => {
     playerRef.current.setLinvel({ x: 0, y: 5, z: 0 });
   };
 
+  // const respawnPlayer = () => {
+  //   playerRef.current.setTranslation(START_POSITION);
+  //   playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+  // };
+
   const respawnPlayer = () => {
+    if (!initialTourComplete.current) return; // Don't respawn during initial tour
+
     playerRef.current.setTranslation(START_POSITION);
     playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+    playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
   };
 
   return (
