@@ -69,10 +69,10 @@ const UI = () => {
           src="/icons/Chatbot.svg"
           alt="Chatbot"
           className={styles.chatLogo}
-          onTouchStart={(e) => {
-            openChatbotModal();
-            hideCrosshair();
-          }}
+          // onTouchStart={(e) => {
+          //   openChatbotModal();
+          //   hideCrosshair();
+          // }}
           onClick={(e) => {
             openChatbotModal();
             hideCrosshair();

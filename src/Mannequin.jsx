@@ -50,11 +50,11 @@ const DraggableMannequin = ({
           position={position}
           rotation={computedRotation}
           scale={computedScale}
-          onTouchStart={(e) => {
-            openModal();
-            setSelectedProduct(productId);
-            console.log(selectedProduct);
-          }}
+          // onTouchStart={(e) => {
+          //   openModal();
+          //   setSelectedProduct(productId);
+          //   console.log(selectedProduct);
+          // }}
           onClick={(e) => {
             openModal();
             setSelectedProduct(productId);
