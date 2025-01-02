@@ -216,12 +216,12 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
       <div 
         style={styles.backdrop} 
         onClick={handleClose}
-        onTouchMove={(e) => e.preventDefault()}
+        //onTouchMove={(e) => e.preventDefault()}
       >
         <div
           className="modalContainer"
           style={styles.modalContainer}
-          onClick={(e) => e.stopPropagation()}
+          //onClick={(e) => e.stopPropagation()}
         >
           <button
             onClick={handleClose}
