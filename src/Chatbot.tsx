@@ -26,6 +26,13 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
   const { showCrosshair } = useProductStore();
   // Ref to track the chat container
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!currentMessage.trim()) return;
@@ -73,15 +80,36 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
     setCurrentMessage("");
   };
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (props.isChatbotModalOpen) {
+      const scrollY = window.scrollY;
+      const joystickZone = document.getElementById("joystickZone");
 
-  const focusInput = () => {
-    if (inputRef.current) {
-      inputRef.current.focus(); // Focus the input programmatically
+      if (joystickZone) {
+        joystickZone.style.display = "none";
+      }
+
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+
+      return () => {
+        if (joystickZone) {
+          joystickZone.style.display = "block";
+        }
+
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        document.body.style.touchAction = "";
+        window.scrollTo(0, scrollY);
+      };
     }
-  };
+  }, [props.isChatbotModalOpen]);
 
-  // Scroll to the bottom whenever a new message is added
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -107,7 +135,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         overflow: "hidden",
       }}
     >
-      {/* Header */}
       <CardContent
         sx={{
           display: "flex",
@@ -237,8 +264,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             padding: 1.5,
             fontFamily: "'Poppins', sans-serif",
           }}
-          onClick={handleSendMessage}
-          // onTouchStart={handleSendMessage}
+          onPointerDown={handleSendMessage}
         >
           Send
         </Button>

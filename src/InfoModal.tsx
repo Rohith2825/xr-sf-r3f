@@ -28,6 +28,7 @@ const styles = {
     zIndex: 1050,
     overflowY: "hidden" as "hidden",
     touchAction: "none",
+    pointerEvents: "auto",
   },
   modalContainer: {
     position: "relative" as "relative",

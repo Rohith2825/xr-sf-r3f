@@ -51,6 +51,8 @@ export default function WebPlane({
           position={[0, 0, 0.01]} // Slight offset to avoid z-fighting
           transform
           occlude
+          prepend
+          zIndexRange={[0,0]}
         >
           <div style={styles.wrapper}>
             <iframe
