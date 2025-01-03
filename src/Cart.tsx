@@ -103,9 +103,9 @@ const Cart: FC<CartProps> = ({ onClose }) => {
         sx={{
           position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "80vw", md: "60vw", lg: "60vw", xl: "60vw" }, height: { xs: "90vh", lg: "75vh", xl: "75vh" }, // Size
+          width: { xs: "95vw", md: "70vw"}, height: { xs: "98vh", md: "75vh" }, // Size
           backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
-          borderRadius: "40px", border: "1px solid rgba(255, 255, 255, 0.2)", // Border
+          borderRadius: {xs: "10px", md: "25px"}, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
           overflow: "none"
         }}
         className="Cart"
@@ -126,13 +126,14 @@ const Cart: FC<CartProps> = ({ onClose }) => {
             top: "5%", right: "5%",
             width: "30px", height: "30px",
             borderRadius: "50%",
-            backgroundColor: "rgba(255, 255, 255, 0.25)", color: "rgba(255, 255, 255, .7)",
+            backgroundColor: "rgba(255, 255, 255, 0.05)", color: "rgba(255, 255, 255, .7)",
             alignItems: "center", justifyContent: "center", display: "flex",
-            fontSize: "24px", fontWeight: "bold", fontFamily: "'Poppins', sans-serif",
+            fontSize: "26px", fontWeight: "normal", fontFamily: "'Poppins', sans-serif",
             "&:hover": {
               cursor: "pointer"
             }
           }}
+          className="CartCloseButton"
           onClick={() => onClose()}
         >
           &times;
@@ -194,10 +195,10 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   component="img"
                   src={line?.merchandise?.image?.url}
                   sx={{
-                    height: "100%", aspectRatio: "1 / 1",
+                    height: {xs: "90%", md: "95%"}, aspectRatio: "1 / 1",
                     backgroundColor: "rgb(255, 255, 255)",
-                    marginLeft: {xs: "5%", sm: "5%", md: "0"},
-                    borderRadius: "50%"
+                    marginLeft: {xs: "3%", sm: "2%"},
+                    borderRadius: {xs: "10px", md: "50%"}
                   }}
                   className="CartItemImage"
                 />
@@ -206,7 +207,8 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   sx={{
                     display: "flex", flexDirection: {xs: "column", sm: "column", md: "row"},
                     justifyContent: {xs: "space-evenly", sm: "space-evenly", md: "space-evenly"}, alignItems: {md: "center"},
-                    width: "80%", height: "100%"
+                    width: "80%", height: "100%",
+                    marginLeft: {xs: "0", sm: "5%", md: "0"}
                   }}
                   className="CartItemDetails"
                 >
@@ -218,8 +220,8 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   >
                     <Typography
                       sx={{
-                        width: "100%", maxHeight: {xs: "16px", sm: "24px", md: "60%"},
-                        fontSize: {xs: "12px", sm: "18px"}, 
+                        width: "100%", maxHeight: {xs: "24px", sm: "30px", md: "60%"},
+                        fontSize: {xs: "16px", sm: "20px"}, 
                         fontFamily: "'Poppins', sans-serif", fontWeight: "normal",
                         color: "rgba(255, 255, 255, 0.83)",
                         overflowY: {xs: "hidden", sm: "hidden", md: "scroll"},
@@ -236,12 +238,13 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                     <Typography
                       sx={{
                         width: "100%",
-                        fontSize: {xs: "10px", sm: "14px"},
+                        fontSize: {xs: "12px", sm: "16px"},
                         fontFamily: "'Poppins', sans-serif", fontWeight: "normal",
                         color: "rgba(202, 202, 202, 0.78)",
                         overflow: "hidden",
                         textAlign: "left"
                       }}
+                      className="cartItemPrice"
                     >
                       {line?.merchandise?.price?.currencyCode} {line?.merchandise?.price?.amount}
                     </Typography>
@@ -265,7 +268,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   </Typography>
                   <Box
                     sx={{
-                      minWidth: "70px", width: {xs: "50%", md: "35%", lg: "30%"}, height: "24px",
+                      minWidth: "70px", width: {xs: "90%", sm: "40%", md: "35%", lg: "30%"}, height: "24px",
                       display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"
                     }}
                     className="CartItemQuantityModifier"
@@ -317,13 +320,14 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                       component="img"
                       src="icons/dustbin.svg"
                       sx={{
-                        height: "25px",
+                        height: {xs: "18px", md: "25px"},
                         borderRadius: "3px",
                         "&:hover": {
                           cursor: "pointer",
                           background: "rgba(255, 255, 255, 0.1)"
                         }
                       }}
+                      className="CartItemDustbinIcon"
                       onClick={deleteItem}
                     ></Box>
                   </Box>
@@ -334,9 +338,9 @@ const Cart: FC<CartProps> = ({ onClose }) => {
         </Box>
         <Box
           sx={{
-            width: "90%", height: "20%",
+            width: "90%", height: {xs: "15%", sm: "15%", md: "20%"},
             display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
-            gap: {xs: "5%", sm: "5%"}
+            gap: {xs: "2%", md: "5%"}
           }}
           className="CartButtons"
         >
@@ -347,7 +351,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
               fontSize: {xs:16, sm:20, md: 24, lg: 24, xl: 24}, fontFamily: "'Poppins', sans-serif",
               color: "rgb(255, 255, 255)", backgroundColor: "rgba(255, 255, 255, 0.15)",
               textTransform: "none",
-              borderRadius: "100px",
+              borderRadius: {xs: "10px", md: "100px"},
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.25)",
                 transitionDuration: "0.15s"
@@ -364,7 +368,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
               fontSize: {xs:16, sm:20, md: 24, lg: 24, xl: 24}, fontFamily: "'Poppins', sans-serif",
               color: "rgba(255, 255, 255, 1)", backgroundColor: "rgba(255, 255, 255, 0.15)",
               textTransform: "none",
-              borderRadius: "100px",
+              borderRadius: {xs: "10px", md: "100px"},
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.25)",
                 transitionDuration: "0.15s"
