@@ -258,8 +258,6 @@ const Modal: React.FC<ModalProps> = (props) => {
             xs: "none",
             sm: "none",
             md: "none",
-            lg: "auto",
-            xl: "auto",
           }, // Hide scrollbar on small devices
           maxHeight: { xs: "90vh", md: "none", lg: "80vh", xl: "85vh" },
         }}
@@ -536,9 +534,10 @@ const Modal: React.FC<ModalProps> = (props) => {
                     ] || 1000}
                   </Typography>
                   {/* Strikeout line */}
-                  {props.data["node"]["variants"]["edges"][0]["node"][
+                  {(props.data["node"]["variants"]["edges"][0]["node"][
                     "compareAtPrice"
-                  ] && (
+                  ] ||
+                    1000) && (
                     <Box
                       sx={{
                         position: "absolute",
@@ -658,6 +657,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     },
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: "bold",
+                    fontSize: { sx: "0.5rem" },
                   }}
                   onClick={handleAddToCart}
                 >
@@ -677,6 +677,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     },
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: "bold",
+                    fontSize: { sx: "0.5rem" },
                   }}
                   onClick={handleCheckout}
                 >

@@ -123,7 +123,14 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             alt="Logo"
             style={{ width: "30px", height: "30px" }}
           />
-          <Typography sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+          <Typography
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+              fontFamily: "'Poppins', sans-serif",
+              paddingLeft: "10px",
+            }}
+          >
             CHAT WITH FOX
           </Typography>
         </Box>
@@ -132,13 +139,23 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             props.onChatbotModalClose();
             showCrosshair();
           }}
-          // onTouchStart={() => {
-          //   props.onChatbotModalClose();
-          //   showCrosshair();
-          // }}
-          sx={{ marginLeft: "auto" }}
+          size="small"
+          sx={{
+            marginLeft: "auto",
+            zIndex: 1001,
+            borderRadius: "50%", // Circular button
+            backgroundColor: "#9f9f9f",
+            color: "black",
+            width: "1.5rem",
+            height: "1.5rem",
+            "&:hover": { backgroundColor: "#eeeeee", color: "black" },
+          }}
         >
-          <CloseIcon />
+          <CloseIcon
+            sx={{
+              height: "1rem",
+            }}
+          />
         </IconButton>
       </CardContent>
 
@@ -179,7 +196,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
               <Typography
                 sx={{
                   fontSize: "1rem",
-                  fontFamily: "SF Pro Display",
+                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 <ReactMarkdown>{message.text}</ReactMarkdown>
@@ -207,28 +224,18 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           onKeyPress={(e) => {
             if (e.key === "Enter") handleSendMessage();
           }}
-          // onTouchStart={(e) => {
-          //   console.log("Input field touched");
-          //   focusInput();
-          //   console.log(inputRef);
-          //   e.stopPropagation(); // Prevent touch event interference
-          // }}
           sx={{
             flex: 1,
-            border: "2px solid grey",
             padding: 1.5,
-            "&:focus-within": {
-              border: "3px solid white",
-            },
+            fontFamily: "'Poppins', sans-serif",
           }}
         />
         <Button
           sx={{
             color: "white",
             backgroundColor: "#e2441e",
-            borderRadius: "10px",
             padding: 1.5,
-            fontFamily: "SF Pro Display",
+            fontFamily: "'Poppins', sans-serif",
           }}
           onClick={handleSendMessage}
           // onTouchStart={handleSendMessage}
