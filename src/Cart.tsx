@@ -2,6 +2,8 @@
 import { FC, useRef } from "react";
 import { Box, Button, Card, Typography } from "@mui/material";
 import { useCart } from "@shopify/hydrogen-react";
+import Swal from "sweetalert2";
+import styles from './UI/UI.module.scss';
 
 interface CartProps {
   onClose: () => void
@@ -11,18 +13,71 @@ const Cart: FC<CartProps> = ({ onClose }) => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
 
   const handleCheckout = () => {
-    if (checkoutUrl) {
+    if((lines?.length || 0) <= 0){// Cart empty
+      Swal.fire({
+        title: "Cart is Empty!",
+        text: "Add products to cart before proceeding to the checkout",
+        icon: "warning",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup
+        }
+      });
+    }
+    else if (checkoutUrl) {
       window.open(checkoutUrl, "_blank", "noopener,noreferrer");
     } else {
-      alert("Checkout session not initialized. Please try again.");
+      Swal.fire({
+        title: "Checkout Session Not Initialized",
+        text: "Unforeseen error. Try again later",
+        timer: 3000,
+        timerProgressBar: true,
+        icon: "error",
+        customClass: {
+          popup: styles.swalPopup,
+          title: styles.swalTitle,
+        }
+      })
     }
   };
 
   const emptyCart = () => {
-    if(lines){
-      // Extract all line item IDs from the cart
-      const lineIds = lines.map((item) => item?.id || "");
-      linesRemove(lineIds);
+    if((lines?.length || 0) > 0){ // Cart not empty
+      Swal.fire({
+        title: `Empty the Cart?`,
+        text: "This action is permanent. You cannot recover the cart items once deleted.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Empty Cart",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "rgb(234, 34, 34)",
+        cancelButtonColor: "rgb(57, 177, 57)",
+        customClass: {
+          popup: styles.swalPopup,
+          title: styles.swalTitle,
+          confirmButton: styles.swalButton,
+          cancelButton: styles.swalButton,
+          actions: styles.swalActions
+        }
+      }).then((result) => {
+        if(result.isConfirmed){
+          if(lines){
+            const lineIds = lines.map((item) => item?.id || "");
+            linesRemove(lineIds);
+          }
+        }
+      });
+    }
+    else{ // Cart empty
+      Swal.fire({
+        title: `Cart is Empty`,
+        icon: "info",
+        timer: 3000,
+        customClass: {
+          popup: styles.swalPopup,
+          title: styles.swalTitle
+        }
+      });
     }
   }  
 
