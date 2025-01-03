@@ -127,9 +127,12 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         right: "1.5%",
         width: { xs: "90vw", sm: "40vw", lg: "25vw", md: "30vw" },
         height: "60vh",
+        display: "flex",
+        flexDirection: "column",
         backdropFilter: "blur(10px)",
         borderRadius: "10px",
-        pointerEvents: "auto",
+        boxShadow: 4,
+        overflow: "hidden",
       }}
     >
       <CardContent
@@ -137,9 +140,8 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingBottom: 1,
           borderBottom: "3px solid rgba(0, 0, 0, 0.1)",
-          flexShrink: 0,
+          padding: "16px",
         }}
       >
         <Box display="flex" alignItems="center" gap={1}>
@@ -148,7 +150,14 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             alt="Logo"
             style={{ width: "30px", height: "30px" }}
           />
-          <Typography sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+          <Typography
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+              fontFamily: "'Poppins', sans-serif",
+              paddingLeft: "10px",
+            }}
+          >
             CHAT WITH FOX
           </Typography>
         </Box>
@@ -157,13 +166,23 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             props.onChatbotModalClose();
             showCrosshair();
           }}
-          onTouchStart={() => {
-            props.onChatbotModalClose();
-            showCrosshair();
+          size="small"
+          sx={{
+            marginLeft: "auto",
+            zIndex: 1001,
+            borderRadius: "50%", // Circular button
+            backgroundColor: "#9f9f9f",
+            color: "black",
+            width: "1.5rem",
+            height: "1.5rem",
+            "&:hover": { backgroundColor: "#eeeeee", color: "black" },
           }}
-          sx={{ marginLeft: "auto" }}
         >
-          <CloseIcon />
+          <CloseIcon
+            sx={{
+              height: "1rem",
+            }}
+          />
         </IconButton>
       </CardContent>
 
@@ -176,7 +195,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           padding: 2,
           display: "flex",
           flexDirection: "column",
-          height: "57%",
           "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar for Webkit browsers
           scrollbarWidth: "none", // Hide scrollbar for Firefox
         }}
@@ -205,7 +223,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
               <Typography
                 sx={{
                   fontSize: "1rem",
-                  fontFamily: "SF Pro Display",
+                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 <ReactMarkdown>{message.text}</ReactMarkdown>
@@ -223,7 +241,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           padding: "8px",
           borderTop: "3px solid rgba(0, 0, 0, 0.1)",
           gap: 1,
-          flexShrink: 0,
         }}
       >
         <Input
@@ -234,28 +251,18 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           onKeyPress={(e) => {
             if (e.key === "Enter") handleSendMessage();
           }}
-          onTouchStart={(e) => {
-            console.log("Input field touched");
-            focusInput();
-            console.log(inputRef);
-            e.stopPropagation(); // Prevent touch event interference
-          }}
           sx={{
             flex: 1,
-            border: "2px solid grey",
             padding: 1.5,
-            "&:focus-within": {
-              border: "3px solid white",
-            },
+            fontFamily: "'Poppins', sans-serif",
           }}
         />
         <Button
           sx={{
             color: "white",
             backgroundColor: "#e2441e",
-            borderRadius: "10px",
             padding: 1.5,
-            fontFamily: "SF Pro Display",
+            fontFamily: "'Poppins', sans-serif",
           }}
           onPointerDown={handleSendMessage}
         >

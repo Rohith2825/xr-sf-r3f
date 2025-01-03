@@ -41,7 +41,7 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {!crosshairVisible && !isMobile && <div className={styles.aim} />}
+      {<div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} />
@@ -69,10 +69,10 @@ const UI = () => {
           src="/icons/Chatbot.svg"
           alt="Chatbot"
           className={styles.chatLogo}
-          onTouchStart={(e) => {
-            openChatbotModal();
-            hideCrosshair();
-          }}
+          // onTouchStart={(e) => {
+          //   openChatbotModal();
+          //   hideCrosshair();
+          // }}
           onClick={(e) => {
             openChatbotModal();
             hideCrosshair();
