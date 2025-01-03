@@ -22,9 +22,9 @@ export const usePointerLockControlsStore = create(() => ({
 
 export const App = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const { isModalOpen ,showCrosshair  } = useProductStore();
-  const { isInfoModalOpen } = useInfoModalStore();
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const { isModalOpen , crosshairVisible } = useProductStore();
+  const { isInfoModalOpen} = useInfoModalStore();
+
 
   // Detect mobile devices
   useEffect(() => {
@@ -36,7 +36,7 @@ export const App = () => {
   });
 
   const pointerLockControlsLockHandler = () => {
-    if (!isModalOpen && !showCrosshair && !isInfoModalOpen) {
+    if (!isModalOpen && !crosshairVisible && !isInfoModalOpen) {
       usePointerLockControlsStore.setState({ isLock: true });
     } else {
       document.exitPointerLock?.();
