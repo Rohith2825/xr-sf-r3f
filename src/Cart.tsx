@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { FC, useRef } from "react";
+import { FC, useRef, useEffect } from "react";
 import { Box, Button, Card, Typography } from "@mui/material";
 import { useCart } from "@shopify/hydrogen-react";
 import Swal from "sweetalert2";
@@ -11,6 +11,36 @@ interface CartProps {
 
 const Cart: FC<CartProps> = ({ onClose }) => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
+
+
+
+  useEffect(() => {
+    const scrollY = window.scrollY;
+    const joystickZone = document.getElementById("joystickZone");
+
+    if (joystickZone) {
+      joystickZone.style.display = "none";
+    }
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+
+    return () => {
+      if (joystickZone) {
+        joystickZone.style.display = "block";
+      }
+
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
 
   const handleCheckout = () => {
     if ((lines?.length || 0) <= 0) {// Cart empty
@@ -95,6 +125,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
         position: "fixed", top: 0, left: 0,
         width: "100vw", height: "100vh",
         backgroundColor: "rgba(0, 0, 0, 0)",
+        pointerEvents: "auto",
       }}
       onClick={onClickOutside}
     >

@@ -1,4 +1,4 @@
-import { FC, useRef } from 'react';
+import { FC, useRef, useEffect } from 'react';
 import {
   Card,
   Box,
@@ -17,7 +17,6 @@ interface WishlistProps {
 const Wishlist: FC<WishlistProps> = ({ onClose }) => {
   const { wishlist, productList, removeItemsFromWishlist, clearWishlist } = useWishlist();
 
-  // Handle Click outside the wishlist
   const wishlistRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const wishlistElement = wishlistRef.current;
@@ -26,7 +25,34 @@ const Wishlist: FC<WishlistProps> = ({ onClose }) => {
     }
   };
 
-  // Clear wishlist
+  useEffect(() => {
+    const scrollY = window.scrollY;
+    const joystickZone = document.getElementById("joystickZone");
+
+    if (joystickZone) {
+      joystickZone.style.display = "none";
+    }
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+
+    return () => {
+      if (joystickZone) {
+        joystickZone.style.display = "block";
+      }
+
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
   const deleteWishlist = () => {
     if (wishlist.length > 0) { // Wishlist not empty
       Swal.fire({
@@ -58,6 +84,7 @@ const Wishlist: FC<WishlistProps> = ({ onClose }) => {
         position: "fixed", top: 0, left: 0,
         width: "100vw", height: "100vh",
         backgroundColor: "rgba(0, 0, 0, 0)",
+        pointerEvents: "auto",
       }}
       onClick={onClickOutside}
     >
