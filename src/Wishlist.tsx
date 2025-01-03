@@ -6,7 +6,7 @@ import {
   Button
 } from '@mui/material';
 import useWishlist from './WishlistHook';
-import { Product, ProductService } from './api/shopifyAPIService';
+import { Product } from './api/shopifyAPIService';
 import Swal from 'sweetalert2';
 import styles from '@/UI/UI.module.scss';
 

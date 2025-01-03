@@ -101,7 +101,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
     else { // Cart empty
       Swal.fire({
         title: `Cart is Empty`,
-        icon: "info",
+        icon: "warning",
         timer: 3000,
         customClass: {
           popup: styles.swalPopup,
