@@ -731,7 +731,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 <IconButton
                   sx={{
                     backgroundColor: "rgba(255, 255, 255, 0.2)",
-                    borderRadius: { sx: "25%", lg: "50%" }, // Circular button
+                    borderRadius: { sx: "50%", lg: "50%" }, // Circular button
                   }}
                 >
                   <FavoriteIcon sx={{ color: "white" }} />
