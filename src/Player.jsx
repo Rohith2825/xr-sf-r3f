@@ -146,6 +146,7 @@ export const Player = () => {
 
   const initialTourComplete = useRef(false);
   const isTransitioning = useRef(false);
+  const touchEnabled = useRef(false);
 
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
@@ -165,6 +166,7 @@ export const Player = () => {
           onComplete: () => {
             initialTourComplete.current = true;
             isTransitioning.current = false;
+            touchEnabled.current = true;
 
             // Reset physics state after transition
             playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
@@ -294,6 +296,7 @@ export const Player = () => {
   }, [camera]);
   useEffect(() => {
     const handleTouchStart = (e) => {
+      if (!touchEnabled.current) return;
       if (e.target.closest("#joystickZone")) return;
 
       // Find the rightmost touch for camera control
@@ -315,7 +318,7 @@ export const Player = () => {
 
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
-
+      if (!touchEnabled.current) return;
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
       );
@@ -341,6 +344,7 @@ export const Player = () => {
     };
 
     const handleTouchEnd = (e) => {
+      if (!touchEnabled.current) return;
       const remainingTouches = Array.from(e.touches);
       if (
         !remainingTouches.some(
