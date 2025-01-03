@@ -133,6 +133,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         borderRadius: "10px",
         boxShadow: 4,
         overflow: "hidden",
+        pointerEvents: "auto",
       }}
     >
       <CardContent
@@ -162,7 +163,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           </Typography>
         </Box>
         <IconButton
-          onClick={() => {
+          onPointerDown={() => {
             props.onChatbotModalClose();
             showCrosshair();
           }}
