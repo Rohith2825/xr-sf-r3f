@@ -10,8 +10,8 @@ import InfoModal, { useInfoModalStore } from "../InfoModal";
 
 
 const shopifyConfig = {
-  storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
-  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110",
+  storeDomain: "gsv01y-gx.myshopify.com" || "", // Replace with your Shopify store domain
+  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110" || "",
   storefrontApiVersion: "2024-10",
 };
 
