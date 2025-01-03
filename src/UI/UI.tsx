@@ -71,7 +71,7 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {!crosshairVisible && !isMobile && <div className={styles.aim} />}
+      {!crosshairVisible && !isMobile && !isModalOpen && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
 
