@@ -5,6 +5,7 @@ export const useProductStore = create((set) => ({
   selectedProduct: {},
   isModalOpen: false,
   crosshairVisible: false,
+  touchEnabled: false,
   setProducts: (products: any) => set({ products }),
   setSelectedProduct: (productId: number) =>
     set((state) => {
@@ -17,4 +18,5 @@ export const useProductStore = create((set) => ({
   closeModal: () => set({ isModalOpen: false }),
   showCrosshair: () => set({ crosshairVisible: false }),
   hideCrosshair: () => set({ crosshairVisible: true }),
+  setTouchEnabled: () => set({ touchEnabled: true }),
 }));

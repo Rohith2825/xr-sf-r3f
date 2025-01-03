@@ -6,6 +6,7 @@ import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
 import gsap from "gsap";
+import { useProductStore } from "../store/productStore";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -146,7 +147,8 @@ export const Player = () => {
 
   const initialTourComplete = useRef(false);
   const isTransitioning = useRef(false);
-  const touchEnabled = useRef(false);
+  const touchEnabled = useProductStore((state) => state.touchEnabled);
+  const setTouchEnabled = useProductStore((state) => state.setTouchEnabled);
 
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
@@ -166,7 +168,7 @@ export const Player = () => {
           onComplete: () => {
             initialTourComplete.current = true;
             isTransitioning.current = false;
-            touchEnabled.current = true;
+            setTouchEnabled();
 
             // Reset physics state after transition
             playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
@@ -296,7 +298,7 @@ export const Player = () => {
   }, [camera]);
   useEffect(() => {
     const handleTouchStart = (e) => {
-      if (!touchEnabled.current) return;
+      if (!touchEnabled) return;
       if (e.target.closest("#joystickZone")) return;
 
       // Find the rightmost touch for camera control
@@ -318,7 +320,7 @@ export const Player = () => {
 
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
-      if (!touchEnabled.current) return;
+      if (!touchEnabled) return;
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
       );
@@ -344,7 +346,7 @@ export const Player = () => {
     };
 
     const handleTouchEnd = (e) => {
-      if (!touchEnabled.current) return;
+      if (!touchEnabled) return;
       const remainingTouches = Array.from(e.touches);
       if (
         !remainingTouches.some(
