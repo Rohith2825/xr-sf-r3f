@@ -7,6 +7,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
 import gsap from "gsap";
 import { useProductStore } from "../store/productStore";
+import { useInfoModalStore } from "./InfoModal";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -28,6 +29,38 @@ const RESPAWN_HEIGHT = -5;
 const START_POSITION = new THREE.Vector3(0, 7, -5);
 
 export const Player = () => {
+  // Add this with your other refs at the top of the component
+const modalRef = useRef(false);
+const crosshairRef = useRef(false);
+const InfoModalRef = useRef(false);
+
+
+
+// Add this useEffect to watch modal state changes
+useEffect(() => {
+  const unsubscribe = useProductStore.subscribe(
+    (state) => {
+      modalRef.current = state.isModalOpen;
+      crosshairRef.current = state.crosshairVisible;
+    }
+  );
+
+  return () => unsubscribe();
+}, []);
+
+
+
+// Watch InfoModal state changes
+useEffect(() => {
+  const unsubscribe = useInfoModalStore.subscribe(
+    (state) => {
+      InfoModalRef.current = state.isInfoModalOpen;
+    }
+  );
+
+  return () => unsubscribe();
+}, []);
+
   const playerRef = useRef();
   const touchRef = useRef({
     cameraTouch: null,
@@ -300,7 +333,9 @@ export const Player = () => {
   }, [camera]);
   useEffect(() => {
     const handleTouchStart = (e) => {
-      if (!touchEnabler.current) return;
+      if (!touchEnabler.current || modalRef.current || crosshairRef.current || InfoModalRef.current) return;
+      
+      
       if (e.target.closest("#joystickZone")) return;
 
       // Find the rightmost touch for camera control
@@ -322,7 +357,8 @@ export const Player = () => {
 
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
-      if (!touchEnabler.current) return;
+      if (!touchEnabler.current || modalRef.current || crosshairRef.current || InfoModalRef.current) return;
+      
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
       );
@@ -348,7 +384,8 @@ export const Player = () => {
     };
 
     const handleTouchEnd = (e) => {
-      if (!touchEnabler.current) return;
+      if (!touchEnabler.current || modalRef.current || crosshairRef.current || InfoModalRef.current) return;
+      
       const remainingTouches = Array.from(e.touches);
       if (
         !remainingTouches.some(
