@@ -4,7 +4,10 @@ import { useState } from "react";
 import { useProductStore } from "../../store/productStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
+import Cart from "../Cart";
+import Wishlist from "@/Wishlist";
 import InfoModal, { useInfoModalStore } from "../InfoModal";
+
 
 const shopifyConfig = {
   storeDomain: "gsv01y-gx.myshopify.com" || "", // Replace with your Shopify store domain
@@ -18,6 +21,7 @@ const UI = () => {
     selectedProduct,
     closeModal,
     hideCrosshair,
+    showCrosshair,
     crosshairVisible,
   } = useProductStore();
 
@@ -39,19 +43,42 @@ const UI = () => {
     setChatbotOpen(false);
   };
 
+  // Cart handling
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const handleCartOpen = () => {
+    setIsCartOpen(true);
+    hideCrosshair();
+  };
+
+  const handleCartClose = () => {
+    setIsCartOpen(false);
+    showCrosshair();
+  };
+
+  // Wishlist handling
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+
+  const handleWishlistOpen = () => {
+    setIsWishlistOpen(true);
+    hideCrosshair();
+  };
+
+  const handleWishlistClose = () => {
+    setIsWishlistOpen(false);
+    showCrosshair();
+  };
+
   return (
     <div className="ui-root">
       {!crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
-        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} />
-        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} />
-        <img
-          src="/icons/Info.svg"
-          alt="Info"
-          className={styles.icon}
-          onClick={openInfoModal}
-        />
+
+        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={handleCartOpen} />
+        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={handleWishlistOpen} />
+        <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
+
       </div>
 
       {/* Brand logo on bottom-left */}
@@ -76,23 +103,31 @@ const UI = () => {
         />
       </div>
 
-      {isModalOpen && (
-        <ShopifyProvider
-          countryIsoCode="ID"
-          languageIsoCode="ID"
-          {...shopifyConfig}
-        >
-          <CartProvider>
+      <ShopifyProvider
+        countryIsoCode="ID"
+        languageIsoCode="ID"
+        {...shopifyConfig}
+      >
+        <CartProvider>
+          {isModalOpen && (
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}
               data={selectedProduct}
             />
-          </CartProvider>
-        </ShopifyProvider>
+          )}
+          {isCartOpen && (
+            <Cart onClose={handleCartClose}></Cart>
+          )}
+        </CartProvider>
+      </ShopifyProvider>
+      {isWishlistOpen && (
+        <Wishlist onClose={handleWishlistClose}></Wishlist>
       )}
 
+
       <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
+
 
       <div>
         <ChatbotModal

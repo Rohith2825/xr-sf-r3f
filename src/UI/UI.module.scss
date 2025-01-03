@@ -66,6 +66,25 @@
   }
 }
 
+.swalPopup{
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.swalTitle{
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 32px;
+}
+
+.swalActions{
+  width: 100%;
+}
+
+.swalButton{
+  min-width: 40%;
+  font-size: 24px;
+}
+
+
 /* Mobile responsiveness */
 @media screen and (max-width: 768px) {
   .iconsContainer {
