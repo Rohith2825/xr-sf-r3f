@@ -236,6 +236,7 @@ const Modal: React.FC<ModalProps> = (props) => {
     <div
       style={{
         backgroundColor: "rgba(0, 0, 0, 0.5)",
+        pointerEvents: "auto",
       }}
     >
       <Card

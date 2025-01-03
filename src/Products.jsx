@@ -57,7 +57,7 @@ const mannequinData = [
 
 // The Products component
 
-const Products = ({ onCubeClick = () => {} }) => {
+const Products = () => {
   return (
     <Suspense fallback={<LoadingIndicator />}>
       {mannequinData.map((data, index) => (
@@ -67,7 +67,6 @@ const Products = ({ onCubeClick = () => {} }) => {
           modelPath={data.modelPath}
           position={data.position}
           scale={data.scale}
-          onClick={() => onCubeClick(data.id)}
         />
       ))}
     </Suspense>
@@ -75,7 +74,7 @@ const Products = ({ onCubeClick = () => {} }) => {
 };
 
 // The ModelWrapper component
-const ModelWrapper = ({ productId, modelPath, position, scale, onClick }) => {
+const ModelWrapper = ({ productId, modelPath, position, scale}) => {
   const { scene } = useGLTFWithKTX2(modelPath); // Use the custom hook to load the model
 
   return scene ? ( // Render LazyMannequin only if the model is loaded
@@ -83,7 +82,6 @@ const ModelWrapper = ({ productId, modelPath, position, scale, onClick }) => {
       productId={productId}
       position={position}
       modelPath={modelPath}
-      onClick={onClick}
       scale={scale}
       model={{ scene }}
     />
