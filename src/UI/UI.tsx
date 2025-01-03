@@ -6,6 +6,8 @@ import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
 import Cart from "../Cart";
 import Wishlist from "@/Wishlist";
+import InfoModal, { useInfoModalStore } from "../InfoModal";
+
 
 const shopifyConfig = {
   storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
@@ -23,8 +25,15 @@ const UI = () => {
     crosshairVisible,
   } = useProductStore();
 
-  const isAiming = false;
   const [ChatbotOpen, setChatbotOpen] = useState(false);
+  const { isInfoModalOpen, openInfoModal, closeInfoModal } =
+    useInfoModalStore();
+
+  const [isMobile, setIsMobile] = useState(
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
+      navigator.userAgent
+    )
+  );
 
   const openChatbotModal = () => {
     setChatbotOpen(true);
@@ -62,12 +71,14 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {!crosshairVisible && <div className={styles.aim} />}
+      {!crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
+
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={handleCartOpen} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={handleWishlistOpen} />
-        <img src="/icons/Info.svg" alt="Info" className={styles.icon} />
+        <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
+
       </div>
 
       {/* Brand logo on bottom-left */}
@@ -85,11 +96,7 @@ const UI = () => {
           src="/icons/Chatbot.svg"
           alt="Chatbot"
           className={styles.chatLogo}
-          onTouchStart={(e) => {
-            openChatbotModal();
-            hideCrosshair();
-          }}
-          onClick={(e) => {
+          onPointerDown={(e) => {
             openChatbotModal();
             hideCrosshair();
           }}
@@ -117,6 +124,11 @@ const UI = () => {
       {isWishlistOpen && (
         <Wishlist onClose={handleWishlistClose}></Wishlist>
       )}
+
+
+      <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
+
+
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}

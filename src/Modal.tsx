@@ -1,6 +1,6 @@
 "use client";
-import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import {
   Box,
@@ -8,25 +8,19 @@ import {
   Card,
   CardContent,
   IconButton,
-  MenuItem,
-  Select,
   Typography,
 } from "@mui/material";
-// import { Environment, OrbitControls } from "@react-three/drei";
-import { useLoader } from "@react-three/fiber";
 import DOMPurify from "dompurify";
 import { Suspense, useEffect, useState } from "react";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useCart } from "@shopify/hydrogen-react";
 import { ModelViewer } from "@shopify/hydrogen-react";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
         position: "relative",
-        // width: { xs: "100%", sm: "45%", md: "50%", lg: "50%", xl: "50%" }, // Adjust width for responsiveness manually in your layout
         borderRadius: "10px",
         overflow: "hidden",
         objectFit: "cover",
@@ -36,26 +30,6 @@ const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
     >
       {children}
     </Box>
-  );
-};
-
-interface ModalProps {
-  isOpen: boolean;
-  onClose: any;
-  data: any;
-}
-
-const ModelColumn = ({ modelUrl }: { modelUrl: string }) => {
-  const gltf = useLoader(GLTFLoader, modelUrl, (loader) => {
-    const dracoLoader = new DRACOLoader();
-    dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/"); // Path to Draco decoder
-    loader.setDRACOLoader(dracoLoader);
-  });
-
-  return (
-    <group position={[0, -5, 0]} scale={5}>
-      <primitive object={gltf.scene} />
-    </group>
   );
 };
 
@@ -87,7 +61,7 @@ const QuantityCounter = () => {
         size="small"
         onClick={handleDecrease}
         sx={{
-          backgroundColor: "#ffffff33",
+          backgroundColor: "#424147",
           color: "white",
           width: "1.5rem",
           height: "1.5rem",
@@ -119,7 +93,7 @@ const QuantityCounter = () => {
         size="small"
         onClick={handleIncrease}
         sx={{
-          backgroundColor: "#ffffff33",
+          backgroundColor: "#424147",
           color: "white",
           width: "1.5rem",
           height: "1.5rem",
@@ -135,6 +109,12 @@ const QuantityCounter = () => {
     </Box>
   );
 };
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: VoidFunction;
+  data: any;
+}
 
 const Modal: React.FC<ModalProps> = (props) => {
   const sizes: string[] = [];
@@ -159,6 +139,49 @@ const Modal: React.FC<ModalProps> = (props) => {
   const sanitizedHtml = DOMPurify.sanitize(props.data["node"]["bodyHtml"]);
 
   const { linesAdd, checkoutUrl } = useCart();
+
+  useEffect(() => {
+    if (props.isOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      const joystickZone = document.getElementById("joystickZone");
+
+      // Handle joystick visibility
+      if (joystickZone) {
+        joystickZone.style.display = "none";
+      }
+
+      // Add styles to prevent scrolling
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+
+      return () => {
+        // Show joystick
+        if (joystickZone) {
+          joystickZone.style.display = "block";
+        }
+
+        // Remove styles and restore scroll position
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        document.body.style.touchAction = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [props.isOpen]);
+
+  const handleClose = () => {
+    const joystickZone = document.getElementById("joystickZone");
+    if (joystickZone) {
+      joystickZone.style.display = "block";
+    }
+    props.onClose();
+  };
 
   useEffect(() => {
     console.log("Cart Lines:", linesAdd); // Updated cart lines
@@ -255,16 +278,18 @@ const Modal: React.FC<ModalProps> = (props) => {
   return (
     <div
       style={{
+        display: props.isOpen ? "block" : "none",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
+        pointerEvents: props.isOpen ? "auto" : "none",
       }}
     >
       <Card
         sx={{
           position: "fixed",
-          top: { xs: "5%", sm: "5%", md: "5%" },
-          left: { xs: "10%", sm: "10%", md: "10%", lg: "10%", xl: "10%" },
+          top: { xs: "5%", sm: "5%", md: "5%", lg: "10%", xl: "20%" },
+          left: { xs: "7%", sm: "10%", md: "10%", lg: "13%", xl: "20%" },
           flexDirection: "column",
-          maxWidth: { xs: "80vw", md: "60vw", lg: "80vw", xl: "80vw" },
+          maxWidth: { xs: "80vw", md: "60vw", lg: "70vw", xl: "85vw" },
           gap: "10px",
           backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
           backdropFilter: "blur(5px)", // Blur effect for glass morphism
@@ -273,30 +298,13 @@ const Modal: React.FC<ModalProps> = (props) => {
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Subtle shadow
           border: "1px solid rgba(255, 255, 255, 0.2)", // Optional border
           zIndex: 999,
-          overflowY: {
-            xs: "auto",
-            sm: "auto",
-            md: "auto",
-            lg: "hidden",
-            xl: "hidden",
-          }, // Enable vertical scrolling on small devices
+          overflowY: { xs: "auto" },
           scrollbarWidth: {
             xs: "none",
             sm: "none",
             md: "none",
-            lg: "auto",
-            xl: "auto",
           }, // Hide scrollbar on small devices
-          "&::-webkit-scrollbar": {
-            display: {
-              xs: "none",
-              sm: "none",
-              md: "none",
-              lg: "block",
-              xl: "block",
-            }, // Hide scrollbar on small devices
-          },
-          maxHeight: { xs: "90vh", md: "none" },
+          maxHeight: { xs: "90vh", md: "none", lg: "80vh", xl: "85vh" },
         }}
       >
         {/* Header Buttons */}
@@ -325,7 +333,7 @@ const Modal: React.FC<ModalProps> = (props) => {
               sx={{
                 height: "1rem",
               }}
-              onClick={props.onClose}
+              onClick={handleClose}
             />
           </IconButton>
         </Box>
@@ -345,15 +353,16 @@ const Modal: React.FC<ModalProps> = (props) => {
           }}
         >
           {/* Left Side: Photos or 3D Model */}
-          <div
-            style={{
+          <Box
+            sx={{
+              width: { lg: "50%" },
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               padding: "16px",
             }}
           >
-            <div
+            <Box
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -371,8 +380,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 onClick={() => setView("photos")}
                 sx={{
                   height: "25px",
-                  backgroundColor:
-                    view === "photos" ? "rgba(255, 255, 255, 0.2)" : null,
+                  backgroundColor: view === "photos" ? "#8D8B96" : null,
                   color: "white",
                   padding: "6px 16px",
                   borderRadius: "50px",
@@ -388,8 +396,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 onClick={() => setView("3d")}
                 sx={{
                   height: "25px",
-                  backgroundColor:
-                    view === "3d" ? "rgba(255, 255, 255, 0.2)" : null,
+                  backgroundColor: view === "3d" ? "#8D8B96" : null,
                   color: "white",
                   padding: "6px 16px",
                   borderRadius: "50px",
@@ -399,56 +406,66 @@ const Modal: React.FC<ModalProps> = (props) => {
               >
                 3D Model
               </Button>
-            </div>
-            <CanvasContainer>
-              {view === "photos" ? (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    position: "relative",
+            </Box>
+            {view === "photos" ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "relative",
+                  borderRadius: "10px",
+                  marginTop: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                <img
+                  src={images[currentIndex]}
+                  alt={`Carousel ${currentIndex}`}
+                  style={{
                     borderRadius: "10px",
-                    height: "100%",
+                    height: "350px",
+                  }}
+                />
+                {/* Carousel Navigation */}
+                <IconButton
+                  onClick={prevImage}
+                  sx={{
+                    position: "absolute",
+                    left: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 1002,
                   }}
                 >
-                  <img
-                    src={images[currentIndex]}
-                    alt={`Carousel ${currentIndex}`}
-                    style={{
-                      borderRadius: "10px",
-                      width: "350px",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
-                  {/* Carousel Navigation */}
-                  <IconButton
-                    onClick={prevImage}
-                    sx={{
-                      position: "absolute",
-                      left: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      zIndex: 1002,
-                    }}
-                  >
-                    {"<"}
-                  </IconButton>
-                  <IconButton
-                    onClick={nextImage}
-                    sx={{
-                      position: "absolute",
-                      right: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      zIndex: 1002,
-                    }}
-                  >
-                    {">"}
-                  </IconButton>
-                </Box>
-              ) : (
+                  {"<"}
+                </IconButton>
+                <IconButton
+                  onClick={nextImage}
+                  sx={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    zIndex: 1002,
+                  }}
+                >
+                  {">"}
+                </IconButton>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "relative",
+                  borderRadius: "10px",
+                  height: "100%",
+                  marginBottom: "20px",
+                  marginTop: "20px",
+                }}
+              >
                 <Suspense
                   fallback={
                     <div
@@ -474,11 +491,34 @@ const Modal: React.FC<ModalProps> = (props) => {
                     </div>
                   }
                 >
-                  <ModelViewer data={modelData} />
+                  <ModelViewer
+                    style={{
+                      height: "350px",
+                    }}
+                    data={modelData}
+                  />
                 </Suspense>
-              )}
-            </CanvasContainer>
-          </div>
+              </Box>
+            )}
+            <Button
+              variant="contained"
+              size="small"
+              sx={{
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                color: "white",
+                borderRadius: "50px 50px 50px 50px", // Rounded right side
+                padding: "6px 16px",
+                "&:hover": {
+                  backgroundColor: "rgba(0, 0, 0, 0.45)",
+                  boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+                },
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: "bold",
+              }}
+            >
+              View in AR
+            </Button>
+          </Box>
 
           {/* Right Side: Description */}
           <Box
@@ -486,6 +526,7 @@ const Modal: React.FC<ModalProps> = (props) => {
               display: "flex",
               flexDirection: "column",
               flex: 1,
+              width: { lg: "600px" },
             }}
           >
             <CardContent sx={{ zIndex: 1000 }}>
@@ -500,48 +541,79 @@ const Modal: React.FC<ModalProps> = (props) => {
                 {props.data["node"]["title"]}
               </Typography>
               {/* Quantity Picker */}
-
-              <Typography
+              <Box
                 sx={{
-                  fontSize: "1rem",
-                  color: "white",
-                  fontFamily: "'Poppins',sans-serif",
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: "10px",
+                  paddingBottom: 1,
                 }}
               >
-                Quantity:
-              </Typography>
-
-              <Select
-                value={quantity}
-                sx={{
-                  backgroundColor: "white",
-                  color: "black",
-                  borderRadius: "5px",
-                  padding: { md: "0 4px ", lg: "0 8px" },
-                  width: { xs: "100%", sm: "100%", md: "100%", lg: "100%" },
-                  zIndex: "1000",
-                }}
-              >
-                {[1, 2, 3, 4, 5].map((quantity) => (
-                  <MenuItem key={quantity} value={quantity}>
-                    {quantity}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Typography
-                sx={{
-                  fontSize: { md: "1rem", lg: "1.5rem" },
-                  color: "white",
-                  fontFamily: "'Poppins', sans-serif",
-                  paddingTop: 1,
-                }}
-              >
-                ₹ {props.data["node"]["variants"]["edges"][0]["node"]["price"]}
-              </Typography>
+                <Typography
+                  sx={{
+                    fontSize: { md: "1rem", lg: "1.5rem" },
+                    color: "white",
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
+                >
+                  ₹{" "}
+                  {props.data["node"]["variants"]["edges"][0]["node"]["price"]}
+                </Typography>
+                <Box
+                  sx={{
+                    position: "relative",
+                    display: "inline-block",
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      fontSize: { md: "0.5rem", lg: "0.75rem" },
+                      color: "#00BF63",
+                    }}
+                  >
+                    ₹{" "}
+                    {props.data["node"]["variants"]["edges"][0]["node"][
+                      "compareAtPrice"
+                    ] || 1000}
+                  </Typography>
+                  {/* Strikeout line */}
+                  {(props.data["node"]["variants"]["edges"][0]["node"][
+                    "compareAtPrice"
+                  ] ||
+                    1000) && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: 0,
+                        width: 0, // Start with no width
+                        height: "2px",
+                        backgroundColor: "red",
+                        animation: "strikeout 1s forwards",
+                      }}
+                    ></Box>
+                  )}
+                  {/* Keyframes for the animation */}
+                  <style>
+                    {`
+          @keyframes strikeout {
+            0% {
+              width: 0;
+            }
+            100% {
+              width: 100%;
+            }
+          }
+        `}
+                  </style>
+                </Box>
+              </Box>
 
               {/* Sizes Selector */}
               <Box
-                sx={{ display: "flex", alignItems: "center", paddingTop: 1 }}
+                sx={{ display: "flex", alignItems: "center", paddingBottom: 1 }}
               >
                 <Box sx={{ display: "flex", gap: 1, flexWrap: { xs: "wrap" } }}>
                   {sizes.map((size) => (
@@ -552,11 +624,10 @@ const Modal: React.FC<ModalProps> = (props) => {
                       sx={{
                         fontFamily: "'Poppins', sans-serif",
                         backgroundColor:
-                          selectedSize === size
-                            ? "black"
-                            : "rgba(255, 255, 255, 0.2)",
+                          selectedSize === size ? "black" : "#424147",
                         color: "white",
-                        borderColor: "white",
+                        fontWeight: "bold",
+                        borderColor: "#424147",
                       }}
                       onClick={() => handleSizeClick(size)}
                     >
@@ -565,7 +636,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                   ))}
                 </Box>
               </Box>
-              <br />
+              <QuantityCounter />
               <Typography
                 sx={{
                   fontFamily: "'Poppins', sans-serif",
@@ -583,19 +654,15 @@ const Modal: React.FC<ModalProps> = (props) => {
               </Typography>
               <Box
                 sx={{
-                  backgroundColor: "rgba(0 0 0 / 15%)",
                   borderRadius: 1,
-                  padding: 1,
                   marginTop: 1,
-                  backdropFilter: "blur(10px)",
                   maxHeight: {
                     xs: "225px",
                     sm: "210px",
                     md: "225px",
-                    lg: "250px",
+                    lg: "200px",
                     xl: "225px",
                   },
-                  boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
                   overflowY: "auto", // Enable vertical scrolling
                   scrollbarWidth: "none", // Firefox - hide scrollbar
                   "&::-webkit-scrollbar": {
@@ -612,58 +679,69 @@ const Modal: React.FC<ModalProps> = (props) => {
                   <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
                 </Typography>
               </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "start",
+                  gap: "25px",
+                  paddingTop: 3,
+                  // position: "sticky",
+                }}
+              >
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    color: "white",
+                    borderRadius: "50px 50px 50px 50px", // Rounded right side
+                    padding: "6px 16px",
+                    "&:hover": {
+                      backgroundColor: "#ffffff09",
+                      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+                    },
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "bold",
+                    fontSize: { sx: "0.5rem" },
+                  }}
+                  onClick={handleAddToCart}
+                >
+                  Add to Cart
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  sx={{
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    color: "white",
+                    borderRadius: "50px 50px 50px 50px", // Rounded right side
+                    padding: "6px 16px",
+                    "&:hover": {
+                      backgroundColor: "rgba(0, 0, 0, 0.45)",
+                      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+                    },
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "bold",
+                    fontSize: { sx: "0.5rem" },
+                  }}
+                  onClick={handleCheckout}
+                >
+                  Checkout
+                </Button>
+                <IconButton
+                  sx={{
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    borderRadius: { sx: "50%", lg: "50%" }, // Circular button
+                  }}
+                >
+                  <FavoriteIcon sx={{ color: "white" }} />
+                </IconButton>
+              </Box>
             </CardContent>
           </Box>
         </Box>
 
         {/* Footer Buttons */}
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            position: "sticky",
-          }}
-        >
-          <Button
-            variant="contained"
-            size="small"
-            sx={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              color: "white",
-              borderRadius: "50px 50px 50px 50px", // Rounded right side
-              padding: "6px 16px",
-              "&:hover": {
-                backgroundColor: "#ffffff09",
-                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
-              },
-              fontFamily: "'Poppins', sans-serif",
-              fontWeight: "bold",
-            }}
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </Button>
-          <Button
-            variant="contained"
-            size="small"
-            sx={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-              color: "white",
-              borderRadius: "50px 50px 50px 50px", // Rounded right side
-              padding: "6px 16px",
-              "&:hover": {
-                backgroundColor: "rgba(0, 0, 0, 0.45)",
-                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
-              },
-              fontFamily: "'Poppins', sans-serif",
-              fontWeight: "bold",
-            }}
-            onClick={handleCheckout}
-          >
-            Checkout
-          </Button>
-        </Box>
       </Card>
     </div>
   );

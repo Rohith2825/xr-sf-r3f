@@ -12,10 +12,8 @@ const DraggableMannequin = ({
   onClick,
   model,
 }) => {
-  const { openModal, setSelectedProduct, selectedProduct } =
-    useProductStore();
+  const { openModal, setSelectedProduct, selectedProduct } = useProductStore();
 
-    
   // const findProductById = (id) => {
   //   return products.find(
   //     (product) => product.node.id === `gid://shopify/Product/${id}`
@@ -31,8 +29,6 @@ const DraggableMannequin = ({
   const computedRotation = useMemo(() => {
     return rotation.map((deg) => (deg * Math.PI) / 180);
   }, [rotation]);
-
-
 
   // Memoize the model.scene
   const memoizedModelScene = useMemo(() => model.scene, [model.scene]);

@@ -5,17 +5,18 @@ import { useRef, useState, useEffect } from "react";
 import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
+import gsap from "gsap";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
-    PORTRAIT: {
-      x: 0.004, // Reduced horizontal sensitivity in landscape
-      y: 0.004  // Reduced vertical sensitivity in portrait
-    },
-    LANDSCAPE: {
-        x: 0.004, // Reduced horizontal sensitivity in landscape
-        y: 0.004  // Increased vertical sensitivity in landscape
-    }
+  PORTRAIT: {
+    x: 0.004, // Reduced horizontal sensitivity in landscape
+    y: 0.004, // Reduced vertical sensitivity in portrait
+  },
+  LANDSCAPE: {
+    x: 0.004, // Reduced horizontal sensitivity in landscape
+    y: 0.004, // Increased vertical sensitivity in landscape
+  },
 };
 
 const direction = new THREE.Vector3();
@@ -29,7 +30,7 @@ export const Player = () => {
   const playerRef = useRef();
   const touchRef = useRef({
     cameraTouch: null,
-    previousCameraTouch: null
+    previousCameraTouch: null,
   });
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
@@ -38,7 +39,9 @@ export const Player = () => {
       navigator.userAgent
     )
   );
-  const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
+  const [isPortrait, setIsPortrait] = useState(
+    window.innerHeight > window.innerWidth
+  );
   const { camera } = useThree();
 
   const rapier = useRapier();
@@ -67,15 +70,53 @@ export const Player = () => {
     joystickZone.style.left = "13vw"; // Adjust for visibility
     joystickZone.style.width = "150px";
     joystickZone.style.height = "150px";
-    joystickZone.style.zIndex = "5";
+    joystickZone.style.zIndex = "3"; //Higher than UI wafer z index = 2
     joystickZone.style.pointerEvents = "all"; // Ensure interactions are captured
     document.body.appendChild(joystickZone);
 
+    const JOYSTICK_SIZE = 130; // pixels
+    const PORTRAIT_MARGIN = {
+      bottom: 70,  // pixels from edge
+      left: 80
+    };
+    const LANDSCAPE_MARGIN = {
+      bottom: 80,  // smaller bottom margin for landscape
+      left: 120    // larger left margin for landscape
+    };
+    
+    // Function to calculate position based on screen size and orientation
+    const calculatePosition = () => {
+      // Get current viewport dimensions
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Determine if we're in landscape mode
+      const isLandscape = viewportWidth > viewportHeight;
+      
+      // Use different margins based on orientation
+      const margins = isLandscape ? LANDSCAPE_MARGIN : PORTRAIT_MARGIN;
+      
+      // Calculate position with orientation-specific adjustments
+      const bottom = isLandscape
+        ? Math.min(margins.bottom, viewportHeight * 0.45)  // 15% in landscape
+        : Math.min(margins.bottom, viewportHeight * 0.1);  // 10% in portrait
+        
+      const left = isLandscape
+        ? Math.min(margins.left, viewportWidth * 0.08)    // 8% in landscape
+        : Math.min(margins.left, viewportWidth * 0.12);   // 12% in portrait
+    
+      return { 
+        bottom: `${bottom}px`, 
+        left: `${left}px` 
+      };
+    };
+
     const manager = nipplejs.create({
       zone: joystickZone,
-      size: 130,
-      mode: "semi",
-      multitouch: true,
+      size: JOYSTICK_SIZE,
+      mode: "static",
+      // position: { bottom: "10vh", left: "12vw" },
+      position: calculatePosition(),
       color: "black",
     });
 
@@ -83,14 +124,10 @@ export const Player = () => {
       if (!data) return;
 
       const { angle, distance } = data;
-      const radian = angle.radian ; // Align with THREE.js coordinate system
+      const radian = angle.radian; // Align with THREE.js coordinate system
       const speed = (distance / 100) * MOVE_SPEED;
 
-      direction.set(
-        Math.cos(radian) * speed,
-        0,
-        -Math.sin(radian) * speed * 2
-      );
+      direction.set(Math.cos(radian) * speed, 0, -Math.sin(radian) * speed * 2);
     };
 
     const handleEnd = () => {
@@ -106,24 +143,165 @@ export const Player = () => {
     };
   }, [isMobile]);
 
-    // Ensure the player is respawned when the component is mounted
-    useEffect(() => {
-      if (playerRef.current) {
-        // Delay slightly to ensure physics world is initialized
-        setTimeout(() => {
-          respawnPlayer();
-        }, 100);
-      }
-    }, []);
 
+  const initialTourComplete = useRef(false);
+  const isTransitioning = useRef(false);
+
+  useEffect(() => {
+    if (!playerRef.current || initialTourComplete.current) return;
+
+    // Set initial position off-screen
+    const startPosition = new THREE.Vector3(0, 15, -5);
+    playerRef.current.setTranslation(startPosition);
+    camera.position.copy(startPosition);
+
+    // Define the camera tour path
+    const tourTimeline = gsap.timeline({
+      onComplete: () => {
+        isTransitioning.current = true;
+
+        // Create a smooth transition to spawn point
+        const finalTimeline = gsap.timeline({
+          onComplete: () => {
+            initialTourComplete.current = true;
+            isTransitioning.current = false;
+
+            // Reset physics state after transition
+            playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+            playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
+          },
+        });
+
+        // First, smoothly move to a position above the spawn point
+        finalTimeline
+          .to(camera.position, {
+            duration: 1.5,
+            x: START_POSITION.x,
+            y: START_POSITION.y + 3,
+            z: START_POSITION.z,
+            ease: "power2.inOut",
+          })
+          // Then smoothly descend to the exact spawn point
+          .to(camera.position, {
+            duration: 0.8,
+            y: START_POSITION.y,
+            ease: "power2.out",
+          });
+      },
+    });
+
+    // Create the tour sequence
+    tourTimeline
+      .to(camera.position, {
+        duration: 2,
+        x: -10,
+        y: 12,
+        z: -15,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: Math.PI * 0.25, // Rotate to the left view
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 2,
+        x: 5,
+        y: 10,
+        z: -10,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: 0, // Return to center
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 2,
+        x: 10,
+        y: 12,
+        z: -15,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: -Math.PI * 0.25, // Rotate to the right view
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 2,
+        x: 5,
+        y: 10,
+        z: -10,
+        ease: "power1.inOut",
+      })
+      .to(
+        camera.rotation,
+        {
+          duration: 1.5,
+          y: 0, // Return to center
+          ease: "power1.inOut",
+        },
+        "-=1.5"
+      )
+      .to(camera.position, {
+        duration: 1.5,
+        x: START_POSITION.x,
+        y: START_POSITION.y,
+        z: START_POSITION.z,
+        ease: "power2.inOut",
+      });
+
+    // Improved physics body synchronization
+    const updatePhysicsBody = () => {
+      if (!playerRef.current) return;
+
+      if (!initialTourComplete.current || isTransitioning.current) {
+        playerRef.current.wakeUp();
+        playerRef.current.setTranslation(camera.position);
+        playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+      }
+    };
+
+    // Smoother animation frame callback
+    let animationFrameId;
+    const animationFrame = () => {
+      updatePhysicsBody();
+      if (!initialTourComplete.current || isTransitioning.current) {
+        animationFrameId = requestAnimationFrame(animationFrame);
+      }
+    };
+    animationFrame();
+
+    return () => {
+      tourTimeline.kill();
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [camera]);
   useEffect(() => {
     const handleTouchStart = (e) => {
       if (e.target.closest("#joystickZone")) return;
-      
+
       // Find the rightmost touch for camera control
       const touches = Array.from(e.touches);
       const rightmostTouch = touches.reduce((rightmost, touch) => {
-        return (!rightmost || touch.clientX > rightmost.clientX) ? touch : rightmost;
+        return !rightmost || touch.clientX > rightmost.clientX
+          ? touch
+          : rightmost;
       }, null);
 
       if (rightmostTouch) {
@@ -139,7 +317,7 @@ export const Player = () => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
 
       const touch = Array.from(e.touches).find(
-        t => t.identifier === touchRef.current.cameraTouch
+        (t) => t.identifier === touchRef.current.cameraTouch
       );
 
       if (!touch) return;
@@ -147,7 +325,7 @@ export const Player = () => {
       const deltaX = touch.clientX - touchRef.current.previousCameraTouch.x;
       const deltaY = touch.clientY - touchRef.current.previousCameraTouch.y;
 
-      const sensitivity = TOUCH_SENSITIVITY.PORTRAIT ;
+      const sensitivity = TOUCH_SENSITIVITY.PORTRAIT;
 
       camera.rotation.order = "YXZ";
       camera.rotation.y -= deltaX * sensitivity.x;
@@ -164,7 +342,11 @@ export const Player = () => {
 
     const handleTouchEnd = (e) => {
       const remainingTouches = Array.from(e.touches);
-      if (!remainingTouches.some(t => t.identifier === touchRef.current.cameraTouch)) {
+      if (
+        !remainingTouches.some(
+          (t) => t.identifier === touchRef.current.cameraTouch
+        )
+      ) {
         touchRef.current.cameraTouch = null;
         touchRef.current.previousCameraTouch = null;
       }
@@ -181,34 +363,32 @@ export const Player = () => {
     };
   }, [camera, isPortrait]);
 
-
-  
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
   useFrame((state) => {
     if (!playerRef.current) return;
-  
+
     const { y: playerY } = playerRef.current.translation();
     if (playerY < RESPAWN_HEIGHT) {
       respawnPlayer();
     }
-  
+
     const velocity = playerRef.current.linvel();
-  
+
     // Combine joystick and keyboard inputs
     frontVector.set(0, 0, backward - forward);
     sideVector.set(right - left, 0, 0);
-  
+
     // Combine inputs into a single movement direction
     combinedInput.copy(frontVector).add(sideVector).add(direction).normalize();
-  
+
     // Apply camera's rotation to align movement with camera orientation
     movementDirection
-    .copy(combinedInput)
-    .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
-    .normalize()
-    .multiplyScalar(MOVE_SPEED); 
-  
+      .copy(combinedInput)
+      .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
+      .normalize()
+      .multiplyScalar(MOVE_SPEED);
+
     // Set the player's velocity based on movement direction
     playerRef.current.wakeUp();
     playerRef.current.setLinvel({
@@ -216,30 +396,43 @@ export const Player = () => {
       y: velocity.y,
       z: movementDirection.z,
     });
-  
+
     if (jump && canJump) {
       doJump();
       setCanJump(false);
       setTimeout(() => setCanJump(true), 500);
     }
-  
+
     // Sync the camera's position with the player
     const { x, y, z } = playerRef.current.translation();
     state.camera.position.set(x, y, z);
   });
-  
 
   const doJump = () => {
     playerRef.current.setLinvel({ x: 0, y: 5, z: 0 });
   };
 
+  // const respawnPlayer = () => {
+  //   playerRef.current.setTranslation(START_POSITION);
+  //   playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+  // };
+
   const respawnPlayer = () => {
+    if (!initialTourComplete.current) return; // Don't respawn during initial tour
+
     playerRef.current.setTranslation(START_POSITION);
     playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+    playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
   };
 
   return (
-    <RigidBody colliders={false} mass={1} ref={playerRef} lockRotations canSleep={false}>
+    <RigidBody
+      colliders={false}
+      mass={1}
+      ref={playerRef}
+      lockRotations
+      canSleep={false}
+    >
       <mesh castShadow>
         <CapsuleCollider args={[1.7, 1]} />
       </mesh>

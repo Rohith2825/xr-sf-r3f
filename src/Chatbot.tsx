@@ -26,6 +26,13 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
   const { showCrosshair } = useProductStore();
   // Ref to track the chat container
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const focusInput = () => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!currentMessage.trim()) return;
@@ -73,15 +80,36 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
     setCurrentMessage("");
   };
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (props.isChatbotModalOpen) {
+      const scrollY = window.scrollY;
+      const joystickZone = document.getElementById("joystickZone");
 
-  const focusInput = () => {
-    if (inputRef.current) {
-      inputRef.current.focus(); // Focus the input programmatically
+      if (joystickZone) {
+        joystickZone.style.display = "none";
+      }
+
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+
+      return () => {
+        if (joystickZone) {
+          joystickZone.style.display = "block";
+        }
+
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        document.body.style.touchAction = "";
+        window.scrollTo(0, scrollY);
+      };
     }
-  };
+  }, [props.isChatbotModalOpen]);
 
-  // Scroll to the bottom whenever a new message is added
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
@@ -99,20 +127,22 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         right: "1.5%",
         width: { xs: "90vw", sm: "40vw", lg: "25vw", md: "30vw" },
         height: "60vh",
+        display: "flex",
+        flexDirection: "column",
         backdropFilter: "blur(10px)",
         borderRadius: "10px",
-        // zIndex: { xs: 0 },
+        boxShadow: 4,
+        overflow: "hidden",
+        pointerEvents: "auto",
       }}
     >
-      {/* Header */}
       <CardContent
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingBottom: 1,
           borderBottom: "3px solid rgba(0, 0, 0, 0.1)",
-          flexShrink: 0,
+          padding: "16px",
         }}
       >
         <Box display="flex" alignItems="center" gap={1}>
@@ -121,22 +151,39 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
             alt="Logo"
             style={{ width: "30px", height: "30px" }}
           />
-          <Typography sx={{ fontWeight: "bold", fontSize: "1.5rem" }}>
+          <Typography
+            sx={{
+              fontWeight: "bold",
+              fontSize: "1.2rem",
+              fontFamily: "'Poppins', sans-serif",
+              paddingLeft: "10px",
+            }}
+          >
             CHAT WITH FOX
           </Typography>
         </Box>
         <IconButton
-          onClick={() => {
+          onPointerDown={() => {
             props.onChatbotModalClose();
             showCrosshair();
           }}
-          onTouchStart={() => {
-            props.onChatbotModalClose();
-            showCrosshair();
+          size="small"
+          sx={{
+            marginLeft: "auto",
+            zIndex: 1001,
+            borderRadius: "50%", // Circular button
+            backgroundColor: "#9f9f9f",
+            color: "black",
+            width: "1.5rem",
+            height: "1.5rem",
+            "&:hover": { backgroundColor: "#eeeeee", color: "black" },
           }}
-          sx={{ marginLeft: "auto" }}
         >
-          <CloseIcon />
+          <CloseIcon
+            sx={{
+              height: "1rem",
+            }}
+          />
         </IconButton>
       </CardContent>
 
@@ -149,7 +196,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           padding: 2,
           display: "flex",
           flexDirection: "column",
-          height: "57%",
           "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar for Webkit browsers
           scrollbarWidth: "none", // Hide scrollbar for Firefox
         }}
@@ -178,7 +224,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
               <Typography
                 sx={{
                   fontSize: "1rem",
-                  fontFamily: "SF Pro Display",
+                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 <ReactMarkdown>{message.text}</ReactMarkdown>
@@ -196,7 +242,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           padding: "8px",
           borderTop: "3px solid rgba(0, 0, 0, 0.1)",
           gap: 1,
-          flexShrink: 0,
         }}
       >
         <Input
@@ -207,31 +252,20 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           onKeyPress={(e) => {
             if (e.key === "Enter") handleSendMessage();
           }}
-          onTouchStart={(e) => {
-            console.log("Input field touched");
-            focusInput();
-            console.log(inputRef);
-            e.stopPropagation(); // Prevent touch event interference
-          }}
           sx={{
             flex: 1,
-            border: "2px solid grey",
             padding: 1.5,
-            "&:focus-within": {
-              border: "3px solid white",
-            },
+            fontFamily: "'Poppins', sans-serif",
           }}
         />
         <Button
           sx={{
             color: "white",
             backgroundColor: "#e2441e",
-            borderRadius: "10px",
             padding: 1.5,
-            fontFamily: "SF Pro Display",
+            fontFamily: "'Poppins', sans-serif",
           }}
-          onClick={handleSendMessage}
-          onTouchStart={handleSendMessage}
+          onPointerDown={handleSendMessage}
         >
           Send
         </Button>
