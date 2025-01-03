@@ -52,7 +52,7 @@ export default function WebPlane({
           transform
           occlude
           prepend
-          zIndexRange={[1,1]}
+          zIndexRange={[0,0]}
         >
           <div style={styles.wrapper}>
             <iframe
