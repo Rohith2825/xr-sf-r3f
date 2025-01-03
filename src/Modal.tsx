@@ -141,6 +141,49 @@ const Modal: React.FC<ModalProps> = (props) => {
   const { linesAdd, checkoutUrl } = useCart();
 
   useEffect(() => {
+    if (props.isOpen) {
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      const joystickZone = document.getElementById("joystickZone");
+
+      // Handle joystick visibility
+      if (joystickZone) {
+        joystickZone.style.display = "none";
+      }
+
+      // Add styles to prevent scrolling
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+
+      return () => {
+        // Show joystick
+        if (joystickZone) {
+          joystickZone.style.display = "block";
+        }
+
+        // Remove styles and restore scroll position
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        document.body.style.touchAction = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [props.isOpen]);
+
+  const handleClose = () => {
+    const joystickZone = document.getElementById("joystickZone");
+    if (joystickZone) {
+      joystickZone.style.display = "block";
+    }
+    props.onClose();
+  };
+
+  useEffect(() => {
     console.log("Cart Lines:", linesAdd); // Updated cart lines
     console.log("Checkout URL:", checkoutUrl); // Updated checkout URL
   }, [linesAdd, checkoutUrl]);
@@ -235,8 +278,9 @@ const Modal: React.FC<ModalProps> = (props) => {
   return (
     <div
       style={{
+        display: props.isOpen ? "block" : "none",
         backgroundColor: "rgba(0, 0, 0, 0.5)",
-        pointerEvents: "auto",
+        pointerEvents: props.isOpen ? "auto" : "none",
       }}
     >
       <Card
@@ -291,7 +335,7 @@ const Modal: React.FC<ModalProps> = (props) => {
               sx={{
                 height: "1rem",
               }}
-              onClick={props.onClose}
+              onClick={handleClose}
             />
           </IconButton>
         </Box>
