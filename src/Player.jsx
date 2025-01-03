@@ -147,6 +147,7 @@ export const Player = () => {
 
   const initialTourComplete = useRef(false);
   const isTransitioning = useRef(false);
+  const touchEnabler = useRef(false);
   const touchEnabled = useProductStore((state) => state.touchEnabled);
   const setTouchEnabled = useProductStore((state) => state.setTouchEnabled);
 
@@ -168,6 +169,7 @@ export const Player = () => {
           onComplete: () => {
             initialTourComplete.current = true;
             isTransitioning.current = false;
+            touchEnabler.current = true;
             setTouchEnabled();
 
             // Reset physics state after transition
@@ -298,7 +300,7 @@ export const Player = () => {
   }, [camera]);
   useEffect(() => {
     const handleTouchStart = (e) => {
-      if (!touchEnabled) return;
+      if (!touchEnabler.current) return;
       if (e.target.closest("#joystickZone")) return;
 
       // Find the rightmost touch for camera control
@@ -320,7 +322,7 @@ export const Player = () => {
 
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
-      if (!touchEnabled) return;
+      if (!touchEnabler.current) return;
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
       );
@@ -346,7 +348,7 @@ export const Player = () => {
     };
 
     const handleTouchEnd = (e) => {
-      if (!touchEnabled) return;
+      if (!touchEnabler.current) return;
       const remainingTouches = Array.from(e.touches);
       if (
         !remainingTouches.some(
