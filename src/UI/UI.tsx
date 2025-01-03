@@ -5,6 +5,7 @@ import { useProductStore } from "../../store/productStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
 import Cart from "../Cart";
+import Wishlist from "@/Wishlist";
 
 const shopifyConfig = {
   storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
@@ -39,20 +40,33 @@ const UI = () => {
   const handleCartOpen = () => {
     setIsCartOpen(true);
     hideCrosshair();
-  }
+  };
 
   const handleCartClose = () => {
     setIsCartOpen(false);
-    showCrosshair(false);
-  }
+    showCrosshair();
+  };
+
+  // Wishlist handling
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+
+  const handleWishlistOpen = () => {
+    setIsWishlistOpen(true);
+    hideCrosshair();
+  };
+
+  const handleWishlistClose = () => {
+    setIsWishlistOpen(false);
+    showCrosshair();
+  };
 
   return (
     <div className="ui-root">
       {!crosshairVisible && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
-        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={handleCartOpen}/>
-        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} />
+        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={handleCartOpen} />
+        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={handleWishlistOpen} />
         <img src="/icons/Info.svg" alt="Info" className={styles.icon} />
       </div>
 
@@ -100,7 +114,9 @@ const UI = () => {
           )}
         </CartProvider>
       </ShopifyProvider>
-
+      {isWishlistOpen && (
+        <Wishlist onClose={handleWishlistClose}></Wishlist>
+      )}
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}

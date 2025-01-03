@@ -13,7 +13,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
 
   const handleCheckout = () => {
-    if((lines?.length || 0) <= 0){// Cart empty
+    if ((lines?.length || 0) <= 0) {// Cart empty
       Swal.fire({
         title: "Cart is Empty!",
         text: "Add products to cart before proceeding to the checkout",
@@ -42,7 +42,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
   };
 
   const emptyCart = () => {
-    if((lines?.length || 0) > 0){ // Cart not empty
+    if ((lines?.length || 0) > 0) { // Cart not empty
       Swal.fire({
         title: `Empty the Cart?`,
         text: "This action is permanent. You cannot recover the cart items once deleted.",
@@ -60,15 +60,15 @@ const Cart: FC<CartProps> = ({ onClose }) => {
           actions: styles.swalActions
         }
       }).then((result) => {
-        if(result.isConfirmed){
-          if(lines){
+        if (result.isConfirmed) {
+          if (lines) {
             const lineIds = lines.map((item) => item?.id || "");
             linesRemove(lineIds);
           }
         }
       });
     }
-    else{ // Cart empty
+    else { // Cart empty
       Swal.fire({
         title: `Cart is Empty`,
         icon: "info",
@@ -79,13 +79,13 @@ const Cart: FC<CartProps> = ({ onClose }) => {
         }
       });
     }
-  }  
+  }
 
   // Handle Click outside the cart
   const cartRef = useRef<HTMLDivElement>(null);
-  const onClickOutside = (event:React.MouseEvent<HTMLDivElement>) => {
+  const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const cart = cartRef.current;
-    if(cart && !cart.contains(event.target as Node))
+    if (cart && !cart.contains(event.target as Node))
       onClose();
   };
 
@@ -103,9 +103,9 @@ const Cart: FC<CartProps> = ({ onClose }) => {
         sx={{
           position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "95vw", md: "70vw"}, height: { xs: "98vh", md: "75vh" }, // Size
+          width: { xs: "95vw", md: "70vw" }, height: { xs: "98vh", md: "75vh" }, // Size
           backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
-          borderRadius: {xs: "10px", md: "25px"}, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
+          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
           overflow: "none"
         }}
         className="Cart"
@@ -117,6 +117,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
             color: "rgba(255, 255, 255, 1)",
             display: "flex", alignItems: "center"
           }}
+          className="CartTitle"
         >
           Your Cart
         </Typography>
@@ -144,7 +145,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
             padding: "2.5%", gap: "5%",
             display: "flex", flexDirection: "column", alignItems: "center",
             borderRadius: "10px",
-            backgroundColor: "rgba(255, 255, 255, 0)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.1)",
+            backgroundColor: "rgba(255, 255, 255, 0)",
             overflowY: "scroll", scrollbarWidth: 0, "&::-webkit-scrollbar": { display: "none" }
           }}
           className="CartItems"
@@ -169,21 +170,21 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   }
                 ]);
               }
-            };  
+            };
             const deleteItem = () => {
               linesUpdate([
                 {
-                  id: line?.id || "", 
+                  id: line?.id || "",
                   quantity: 0
                 }
               ]);
-            };    
+            };
 
             return (
               <Box
                 sx={{
-                  width: "95%", height: {xs: "30%", sm: "30%", md: "30%"},
-                  padding: {xs: "2%", sm: "2%", md: "2%"}, gap: {xs: "5%", sm: "2%"},
+                  width: "95%", height: { xs: "30%", sm: "30%", md: "30%" },
+                  padding: { xs: "2%", sm: "2%", md: "2%" }, gap: { xs: "5%", sm: "2%" },
                   display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
                   borderRadius: "20px",
                   backgroundColor: "#424147", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
@@ -195,36 +196,36 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   component="img"
                   src={line?.merchandise?.image?.url}
                   sx={{
-                    height: {xs: "90%", md: "95%"}, aspectRatio: "1 / 1",
+                    height: { xs: "90%", md: "95%" }, aspectRatio: "1 / 1",
                     backgroundColor: "rgb(255, 255, 255)",
-                    marginLeft: {xs: "3%", sm: "2%"},
-                    borderRadius: {xs: "10px", md: "50%"}
+                    marginLeft: { xs: "3%", sm: "2%" },
+                    borderRadius: { xs: "10px", md: "50%" }
                   }}
                   className="CartItemImage"
                 />
 
                 <Box
                   sx={{
-                    display: "flex", flexDirection: {xs: "column", sm: "column", md: "row"},
-                    justifyContent: {xs: "space-evenly", sm: "space-evenly", md: "space-evenly"}, alignItems: {md: "center"},
+                    display: "flex", flexDirection: { xs: "column", sm: "column", md: "row" },
+                    justifyContent: { xs: "space-evenly", sm: "space-evenly", md: "space-evenly" }, alignItems: { md: "center" },
                     width: "80%", height: "100%",
-                    marginLeft: {xs: "0", sm: "5%", md: "0"}
+                    marginLeft: { xs: "0", sm: "5%", md: "0" }
                   }}
                   className="CartItemDetails"
                 >
                   <Box
                     sx={{
-                      maxHeight: {xs: "40%", md: "100%"}, width: {xs: "100%", sm:"100%", md: "30%"}, flexGrow: {xs: 1, sm: 1, md: 0},
-                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: {xs: "space-evenly", md: "center"},
+                      maxHeight: { xs: "40%", md: "100%" }, width: { xs: "100%", sm: "100%", md: "30%" }, flexGrow: { xs: 1, sm: 1, md: 0 },
+                      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: { xs: "space-evenly", md: "center" },
                     }}
                   >
                     <Typography
                       sx={{
-                        width: "100%", maxHeight: {xs: "24px", sm: "30px", md: "60%"},
-                        fontSize: {xs: "16px", sm: "20px"}, 
+                        width: "100%", maxHeight: { xs: "24px", sm: "30px", md: "60%" },
+                        fontSize: { xs: "16px", sm: "20px" },
                         fontFamily: "'Poppins', sans-serif", fontWeight: "normal",
                         color: "rgba(255, 255, 255, 0.83)",
-                        overflowY: {xs: "hidden", sm: "hidden", md: "scroll"},
+                        overflowY: { xs: "hidden", sm: "hidden", md: "scroll" },
                         scrollbarWidth: 0,
                         "&::-webkit-scrollbar": {
                           display: "none"
@@ -238,7 +239,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                     <Typography
                       sx={{
                         width: "100%",
-                        fontSize: {xs: "12px", sm: "16px"},
+                        fontSize: { xs: "12px", sm: "16px" },
                         fontFamily: "'Poppins', sans-serif", fontWeight: "normal",
                         color: "rgba(202, 202, 202, 0.78)",
                         overflow: "hidden",
@@ -251,11 +252,11 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   </Box>
                   <Typography
                     sx={{
-                      width: {xs: "20%", md: "10%"}, height: "30px",
-                      fontSize: {xs: "14px", sm: "14px", md: "16px"}, fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
+                      width: { xs: "20%", md: "10%" }, height: "30px",
+                      fontSize: { xs: "14px", sm: "14px", md: "16px" }, fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
                       color: "rgba(255, 255, 255, 0.83)",
-                      backgroundColor: {xs: "rgba(0, 0, 0, 0)", md: "rgba(0, 0, 0, 0.9)"},
-                      display: "flex", alignItems: "center", justifyContent: {xs: "left", sm: "left", md: "center"},
+                      backgroundColor: { xs: "rgba(0, 0, 0, 0)", md: "rgba(0, 0, 0, 0.9)" },
+                      display: "flex", alignItems: "center", justifyContent: { xs: "left", sm: "left", md: "center" },
                       overflow: "hidden",
                     }}
                     className="CartItemVariant"
@@ -268,16 +269,16 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   </Typography>
                   <Box
                     sx={{
-                      minWidth: "70px", width: {xs: "90%", sm: "40%", md: "35%", lg: "30%"}, height: "24px",
+                      minWidth: "70px", width: { xs: "90%", sm: "40%", md: "35%", lg: "30%" }, height: "24px",
                       display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"
                     }}
                     className="CartItemQuantityModifier"
                   >
                     <Button
                       sx={{
-                        minWidth: {xs: "16px", sm: "20px", md: "20px"}, 
-                        width: {xs: "16px", sm: "20px", md: "20px"}, 
-                        height: {xs: "16px", sm: "20px", md: "20px"},
+                        minWidth: { xs: "16px", sm: "20px", md: "20px" },
+                        width: { xs: "16px", sm: "20px", md: "20px" },
+                        height: { xs: "16px", sm: "20px", md: "20px" },
                         padding: 1,
                         fontSize: "16px", fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
                         color: "rgba(255, 255, 255, 0.74)", backgroundColor: "rgba(149, 149, 149, 0.21)",
@@ -300,11 +301,11 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                     </Typography>
                     <Button
                       sx={{
-                        minWidth: {xs: "16px", sm: "20px"}, 
-                        width: {xs: "16px", sm: "20px"}, 
-                        height: {xs: "16px", sm: "20px"},
+                        minWidth: { xs: "16px", sm: "20px" },
+                        width: { xs: "16px", sm: "20px" },
+                        height: { xs: "16px", sm: "20px" },
                         padding: 1,
-                        fontSize: {xs: "12px", sm: "16px"}, fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
+                        fontSize: { xs: "12px", sm: "16px" }, fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
                         color: "rgba(255, 255, 255, 0.74)", backgroundColor: "rgba(149, 149, 149, 0.21)",
                         borderRadius: "50%",
                         "&:hover": {
@@ -320,7 +321,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                       component="img"
                       src="icons/dustbin.svg"
                       sx={{
-                        height: {xs: "18px", md: "25px"},
+                        height: { xs: "18px", md: "25px" },
                         borderRadius: "3px",
                         "&:hover": {
                           cursor: "pointer",
@@ -338,20 +339,20 @@ const Cart: FC<CartProps> = ({ onClose }) => {
         </Box>
         <Box
           sx={{
-            width: "90%", height: {xs: "15%", sm: "15%", md: "20%"},
+            width: "90%", height: { xs: "15%", sm: "15%", md: "20%" },
             display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
-            gap: {xs: "2%", md: "5%"}
+            gap: { xs: "2%", md: "5%" }
           }}
           className="CartButtons"
         >
           <Button
             sx={{
-              minWidth: {xs: "47.5%", sm: "40%", md: "25%", lg: "25%", xl: "25%"} , height: "50%",
+              minWidth: { xs: "47.5%", sm: "40%", md: "25%", lg: "25%", xl: "25%" }, height: "50%",
               padding: "20px",
-              fontSize: {xs:16, sm:20, md: 24, lg: 24, xl: 24}, fontFamily: "'Poppins', sans-serif",
+              fontSize: { xs: 16, sm: 20, md: 24, lg: 24, xl: 24 }, fontFamily: "'Poppins', sans-serif",
               color: "rgb(255, 255, 255)", backgroundColor: "rgba(255, 255, 255, 0.15)",
               textTransform: "none",
-              borderRadius: {xs: "10px", md: "100px"},
+              borderRadius: { xs: "10px", md: "100px" },
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.25)",
                 transitionDuration: "0.15s"
@@ -363,12 +364,12 @@ const Cart: FC<CartProps> = ({ onClose }) => {
           </Button>
           <Button
             sx={{
-              minWidth: {xs: "47.5%", sm: "40%", md: "25%", lg: "25%", xl: "25%"} , height: "50%",
+              minWidth: { xs: "47.5%", sm: "40%", md: "25%", lg: "25%", xl: "25%" }, height: "50%",
               padding: "20px",
-              fontSize: {xs:16, sm:20, md: 24, lg: 24, xl: 24}, fontFamily: "'Poppins', sans-serif",
+              fontSize: { xs: 16, sm: 20, md: 24, lg: 24, xl: 24 }, fontFamily: "'Poppins', sans-serif",
               color: "rgba(255, 255, 255, 1)", backgroundColor: "rgba(255, 255, 255, 0.15)",
               textTransform: "none",
-              borderRadius: {xs: "10px", md: "100px"},
+              borderRadius: { xs: "10px", md: "100px" },
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.25)",
                 transitionDuration: "0.15s"

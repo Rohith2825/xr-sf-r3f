@@ -1,10 +1,18 @@
 const BASE_URL = "https://strategy-fox-go-bked.com/api/shopify";
 
+export interface Variant {
+  id: string|number;
+  price: number;
+  product_id: string|number;
+}
+
 export interface Product {
-  id: string;
+  id: string|number;
   title: string;
   description?: string;
   price: number;
+  image: {src:string};
+  variants:Variant[];
   [key: string]: any;
 }
 
@@ -24,8 +32,6 @@ async function fetchData<T>(method: "GET", endpoint: string): Promise<T> {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    console.log(response);
-
     return await response.json();
   } catch (error) {
     console.error("API call error:", error);
@@ -39,7 +45,8 @@ export const ProductService = {
   },
 
   async getProductById(id: number | string): Promise<Product> {
-    return fetchData<Product>("GET", `/products/${id}`);
+    const response = await fetchData<{product:Product}>("GET", `/products/${id}`);
+    return response.product;
   },
 
   async getProductModel(id: number | string): Promise<Product> {
