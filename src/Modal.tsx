@@ -144,6 +144,11 @@ const Modal: React.FC<ModalProps> = (props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+  const [isMobile, setIsMobile] = useState(
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
+      navigator.userAgent
+    )
+  );
   const sanitizedHtml = DOMPurify.sanitize(props.data["node"]["bodyHtml"]);
 
   const { linesAdd, checkoutUrl, lines } = useCart();
@@ -388,8 +393,8 @@ const Modal: React.FC<ModalProps> = (props) => {
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100vw",
-          height: "100vh",
+          // width: "100vw",
+          // height: "100vh",
           backgroundColor: "rgba(0, 0, 0, 0)",
           pointerEvents: "auto",
         }}
@@ -399,7 +404,7 @@ const Modal: React.FC<ModalProps> = (props) => {
           ref={modalRef}
           sx={{
             position: "fixed",
-            top: { xs: "5%", sm: "5%", md: "5%", lg: "10%", xl: "20%" },
+            top: { xs: "2.5%", sm: "5%", md: "5%", lg: "10%", xl: "20%" },
             left: { xs: "7%", sm: "10%", md: "10%", lg: "13%", xl: "20%" },
             flexDirection: "column",
             maxWidth: { xs: "80vw", md: "60vw", lg: "70vw", xl: "85vw" },
@@ -429,6 +434,49 @@ const Modal: React.FC<ModalProps> = (props) => {
               alignItems: "center",
             }}
           >
+            {isMobile ? (
+              <Box
+                sx={{
+                  marginLeft: "auto",
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "10px",
+                }}
+              >
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => setView("photos")}
+                  sx={{
+                    height: "25px",
+                    backgroundColor: view === "photos" ? "#8D8B96" : null,
+                    color: "white",
+                    padding: "6px 16px",
+                    borderRadius: "50px",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Photos
+                </Button>
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => setView("3d")}
+                  sx={{
+                    height: "25px",
+                    backgroundColor: view === "3d" ? "#8D8B96" : null,
+                    color: "white",
+                    padding: "6px 16px",
+                    borderRadius: "50px",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontWeight: "bold",
+                  }}
+                >
+                  3D Model
+                </Button>
+              </Box>
+            ) : null}
             <IconButton
               size="small"
               sx={{
@@ -474,51 +522,53 @@ const Modal: React.FC<ModalProps> = (props) => {
                 padding: "16px",
               }}
             >
-              <Box
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "10px",
-                  backgroundColor: "#424242",
-                  borderRadius: "50px",
-                  padding: "5px",
-                  width: "fit-content",
-                }}
-              >
-                <Button
-                  variant="text"
-                  size="small"
-                  onClick={() => setView("photos")}
-                  sx={{
-                    height: "25px",
-                    backgroundColor: view === "photos" ? "#8D8B96" : null,
-                    color: "white",
-                    padding: "6px 16px",
+              {!isMobile ? (
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    backgroundColor: "#424242",
                     borderRadius: "50px",
-                    fontFamily: "'Poppins', sans-serif",
-                    fontWeight: "bold",
+                    padding: "5px",
+                    width: "fit-content",
                   }}
                 >
-                  Photos
-                </Button>
-                <Button
-                  variant="text"
-                  size="small"
-                  onClick={() => setView("3d")}
-                  sx={{
-                    height: "25px",
-                    backgroundColor: view === "3d" ? "#8D8B96" : null,
-                    color: "white",
-                    padding: "6px 16px",
-                    borderRadius: "50px",
-                    fontFamily: "'Poppins', sans-serif",
-                    fontWeight: "bold",
-                  }}
-                >
-                  3D Model
-                </Button>
-              </Box>
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => setView("photos")}
+                    sx={{
+                      height: "25px",
+                      backgroundColor: view === "photos" ? "#8D8B96" : null,
+                      color: "white",
+                      padding: "6px 16px",
+                      borderRadius: "50px",
+                      fontFamily: "'Poppins', sans-serif",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Photos
+                  </Button>
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => setView("3d")}
+                    sx={{
+                      height: "25px",
+                      backgroundColor: view === "3d" ? "#8D8B96" : null,
+                      color: "white",
+                      padding: "6px 16px",
+                      borderRadius: "50px",
+                      fontFamily: "'Poppins', sans-serif",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    3D Model
+                  </Button>
+                </Box>
+              ) : null}
               {view === "photos" ? (
                 <Box
                   sx={{
@@ -814,71 +864,84 @@ const Modal: React.FC<ModalProps> = (props) => {
                     <div dangerouslySetInnerHTML={{ __html: sanitizedHtml }} />
                   </Typography>
                 </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "start",
-                    gap: "25px",
-                    paddingTop: 3,
-                    // position: "sticky",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    size="small"
-                    sx={{
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                      color: "white",
-                      borderRadius: "50px 50px 50px 50px", // Rounded right side
-                      padding: "6px 16px",
-                      "&:hover": {
-                        backgroundColor: "#ffffff09",
-                        boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
-                      },
-                      fontFamily: "'Poppins', sans-serif",
-                      fontWeight: "bold",
-                      fontSize: { sx: "0.5rem" },
-                    }}
-                    onClick={handleAddToCart}
-                  >
-                    Add to Cart
-                  </Button>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    sx={{
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                      color: "white",
-                      borderRadius: "50px 50px 50px 50px", // Rounded right side
-                      padding: "6px 16px",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 0, 0.45)",
-                        boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
-                      },
-                      fontFamily: "'Poppins', sans-serif",
-                      fontWeight: "bold",
-                      fontSize: { sx: "0.5rem" },
-                    }}
-                    onClick={handleCheckout}
-                  >
-                    Checkout
-                  </Button>
-                  <IconButton
-                    onClick={handleAddToWishlist}
-                    sx={{
-                      backgroundColor: "rgba(255, 255, 255, 0.2)",
-                      borderRadius: { sx: "50%", lg: "50%" }, // Circular button
-                    }}
-                  >
-                    <FavoriteIcon sx={{ color: "white" }} />
-                  </IconButton>
-                </Box>
               </CardContent>
             </Box>
           </Box>
-
-          {/* Footer Buttons */}
         </Card>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: "7%",
+            left: "12%",
+            display: "flex",
+            justifyContent: "end",
+            gap: "25px",
+            paddingTop: 2,
+            zIndex: 1050,
+          }}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              color: "white",
+              borderRadius: "50px 50px 50px 50px", // Rounded right side
+              padding: {
+                xs: "3px 8px",
+                sm: "6px 16px",
+                md: "6px 16px",
+                lg: "6px 16px",
+                xl: "6px 16px",
+              },
+              "&:hover": {
+                backgroundColor: "#ffffff09",
+                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+              },
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: "bold",
+              fontSize: { sx: "0.5rem" },
+            }}
+            onClick={handleAddToCart}
+          >
+            Add to Cart
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              color: "white",
+              borderRadius: "50px 50px 50px 50px", // Rounded right side
+              padding: {
+                xs: "3px 8px",
+                sm: "6px 16px",
+                md: "6px 16px",
+                lg: "6px 16px",
+                xl: "6px 16px",
+              },
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.45)",
+                boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
+              },
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: "bold",
+              fontSize: { sx: "0.5rem" },
+            }}
+            onClick={handleCheckout}
+          >
+            Checkout
+          </Button>
+          <IconButton
+            onClick={handleAddToWishlist}
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+              borderRadius: { sx: "50%", lg: "50%" }, // Circular button
+            }}
+          >
+            <FavoriteIcon sx={{ color: "white" }} />
+          </IconButton>
+        </Box>
       </div>
     </div>
   );

@@ -3,11 +3,10 @@ import ChatbotModal from "../Chatbot";
 import { useState } from "react";
 import { useProductStore } from "../../store/productStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
-import Modal from "../Modal";
+import Modal from "../Modal1";
 import Cart from "../Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal, { useInfoModalStore } from "../InfoModal";
-
 
 const shopifyConfig = {
   storeDomain: "gsv01y-gx.myshopify.com" || "", // Replace with your Shopify store domain
@@ -71,14 +70,29 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {!crosshairVisible && !isMobile && !isModalOpen && <div className={styles.aim} />}
+      {!crosshairVisible && !isMobile && !isModalOpen && (
+        <div className={styles.aim} />
+      )}
 
       <div className={styles.iconsContainer}>
-
-        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={handleCartOpen} />
-        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={handleWishlistOpen} />
-        <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
-
+        <img
+          src="/icons/Cart.svg"
+          alt="Cart"
+          className={styles.icon}
+          onClick={handleCartOpen}
+        />
+        <img
+          src="/icons/Wishlist.svg"
+          alt="Wishlist"
+          className={styles.icon}
+          onClick={handleWishlistOpen}
+        />
+        <img
+          src="/icons/Info.svg"
+          alt="Info"
+          className={styles.icon}
+          onClick={openInfoModal}
+        />
       </div>
 
       {/* Brand logo on bottom-left */}
@@ -116,18 +130,12 @@ const UI = () => {
               data={selectedProduct}
             />
           )}
-          {isCartOpen && (
-            <Cart onClose={handleCartClose}></Cart>
-          )}
+          {isCartOpen && <Cart onClose={handleCartClose}></Cart>}
         </CartProvider>
       </ShopifyProvider>
-      {isWishlistOpen && (
-        <Wishlist onClose={handleWishlistClose}></Wishlist>
-      )}
-
+      {isWishlistOpen && <Wishlist onClose={handleWishlistClose}></Wishlist>}
 
       <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
-
 
       <div>
         <ChatbotModal
