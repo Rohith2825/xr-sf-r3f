@@ -13,12 +13,11 @@ import {
 import DOMPurify from "dompurify";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useCart } from "@shopify/hydrogen-react";
-// import { ModelViewer } from "@shopify/hydrogen-react";
+import { ModelViewer } from "@shopify/hydrogen-react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Swal from "sweetalert2";
 import styles from "./UI/UI.module.scss";
 import useWishlist from "./WishlistHook";
-import "@google/model-viewer";
 
 const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -129,7 +128,6 @@ const Modal: React.FC<ModalProps> = (props) => {
   const images: string[] = [];
   let modelData: unknown = {};
   let iosSrc: string = "";
-  let modelUrl: string = "";
 
   modelData = {
     id: "gid://shopify/Model3d/40614140838181",
@@ -212,7 +210,6 @@ const Modal: React.FC<ModalProps> = (props) => {
 
   props.data["node"]["media"]["edges"].forEach((edge: any) => {
     if (edge.node.mediaContentType === "MODEL_3D") {
-      modelUrl = edge.node.sources[0].url;
       modelData = {
         id: edge.node.id,
         sources: [
@@ -606,13 +603,13 @@ const Modal: React.FC<ModalProps> = (props) => {
                       </div>
                     }
                   >
-                    {/* <ModelViewer
+                    <ModelViewer
                       style={{
                         height: "350px",
                       }}
                       data={modelData}
                       ar={true} // Enable AR
-                      arModes="scene-viewer quick-look" // AR modes for Android and iOS
+                      arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
                       arScale="auto" // Automatically scale the model in AR
                       iosSrc={iosSrc} // Link to the .usdz file for iOS
                       cameraControls={true} // Enable camera controls
@@ -621,18 +618,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                       alt="A 3D model of a product" // Accessibility text
                       onArStatus={(event) => console.log("AR Status:", event)} // Optional: Log AR status
                       onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
-                    /> */}
-                    <model-viewer
-                      src={modelUrl} // URL to your 3D model
-                      ios-src={iosSrc} // URL to your .usdz file for iOS
-                      alt="A 3D model of a product" // Accessibility description
-                      ar // Enable AR
-                      ar-modes="scene-viewer webxr quick-look" // AR modes for Android and iOS
-                      camera-controls // Enable camera controls
-                      environment-image="neutral" // Lighting environment
-                      auto-rotate // Automatically rotate the model
-                      shadow-intensity="1" // Add shadows
-                    ></model-viewer>
+                    />
                   </Suspense>
                 </Box>
               )}
@@ -722,7 +708,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     {(props.data["node"]["variants"]["edges"][0]["node"][
                       "compareAtPrice"
                     ] ||
-                      1000) && (
+                      5000) && (
                       <Box
                         sx={{
                           position: "absolute",
