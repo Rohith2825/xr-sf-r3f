@@ -11,7 +11,7 @@ import {
 import Input from "@mui/joy/Input";
 import CloseIcon from "@mui/icons-material/Close";
 import ReactMarkdown from "react-markdown";
-import { useProductStore } from "../store/productStore";
+import { useZustandStore } from "../stores/ZustandStores";
 
 interface ChatbotProps {
   isChatbotModalOpen: boolean;
@@ -23,7 +23,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
     { type: "user" | "bot"; text: string }[]
   >([]);
   const [currentMessage, setCurrentMessage] = useState("");
-  const { showCrosshair } = useProductStore();
+  const { showCrosshair } = useZustandStore();
   // Ref to track the chat container
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);

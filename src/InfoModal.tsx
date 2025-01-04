@@ -1,23 +1,10 @@
-import { create } from "zustand";
 import { X } from "lucide-react";
 import { useEffect } from "react";
-
-type InfoModalStore = {
-  isInfoModalOpen: boolean;
-  openInfoModal: () => void;
-  closeInfoModal: () => void;
-};
 
 type InfoModalProps = {
   isOpen: boolean;
   onClose: () => void;
 };
-
-export const useInfoModalStore = create<InfoModalStore>((set) => ({
-  isInfoModalOpen: false,
-  openInfoModal: () => set({ isInfoModalOpen: true }),
-  closeInfoModal: () => set({ isInfoModalOpen: false }),
-}));
 
 const styles = {
   backdrop: {

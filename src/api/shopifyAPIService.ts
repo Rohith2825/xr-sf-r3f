@@ -23,7 +23,7 @@ async function fetchData<T>(method: "GET", endpoint: string): Promise<T> {
   }
 }
 
-interface ProductResponse{
+interface ProductResponse {
   data: {
     products: {
       edges: {
@@ -76,15 +76,15 @@ interface ProductResponse{
 export const ProductService = {
   async getAllProducts(): Promise<Product[]> {
     const response = await fetchData<ProductResponse>("GET", "/v1/products");
-    
+
     // Parse the response to suit the Product and Variant types
     const products: Product[] = response.data.products.edges.map((product) => {
       // Extract Images
-      const productImages: {src: string}[] = product.node.media.edges.filter((edge) => 
+      const productImages: { src: string }[] = product.node.media.edges.filter((edge) =>
         edge.node.mediaContentType.toLocaleUpperCase() === "IMAGE" // Filter images
         && edge.node.image // Filter images that might not have url
       ).map((edge) => {
-        return {src: edge.node.image?.url || ""};
+        return { src: edge.node.image?.url || "" };
       });
 
       // Variants
@@ -97,9 +97,9 @@ export const ProductService = {
           selectedOptions: variant.node.selectedOptions
         }
       });
-      
+
       const parsedProduct: Product = {
-        id:  Number(product.node.id.split("/").pop()),
+        id: Number(product.node.id.split("/").pop()),
         title: product.node.title,
         description: "",
         images: productImages,
@@ -109,7 +109,6 @@ export const ProductService = {
       return parsedProduct;
     });
 
-    console.log(products);
     return products;
   },
 

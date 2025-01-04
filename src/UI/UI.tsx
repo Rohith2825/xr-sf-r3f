@@ -1,33 +1,32 @@
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
 import { useState } from "react";
-import { useProductStore } from "../../store/productStore";
+import { useZustandStore } from "../../stores/ZustandStores";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
 import Cart from "../Cart";
 import Wishlist from "@/Wishlist";
-import InfoModal, { useInfoModalStore } from "../InfoModal";
+import InfoModal from "@/InfoModal";
 
 
 const shopifyConfig = {
-  storeDomain: "gsv01y-gx.myshopify.com" || "", // Replace with your Shopify store domain
-  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110" || "",
+  storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
+  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110",
   storefrontApiVersion: "2024-10",
 };
 
 const UI = () => {
+  // Zustand store for handling different components
   const {
-    isModalOpen,
+    crosshairVisible, showCrosshair, hideCrosshair,
     selectedProduct,
-    closeModal,
-    hideCrosshair,
-    showCrosshair,
-    crosshairVisible,
-  } = useProductStore();
+    isModalOpen, closeModal,
+    isCartOpen, openCart, closeCart,
+    isWishlistOpen, openWishlist, closeWishlist,
+    isInfoModalOpen, openInfoModal, closeInfoModal
+  } = useZustandStore();
 
   const [ChatbotOpen, setChatbotOpen] = useState(false);
-  const { isInfoModalOpen, openInfoModal, closeInfoModal } =
-    useInfoModalStore();
 
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
@@ -43,40 +42,14 @@ const UI = () => {
     setChatbotOpen(false);
   };
 
-  // Cart handling
-  const [isCartOpen, setIsCartOpen] = useState(false);
-
-  const handleCartOpen = () => {
-    setIsCartOpen(true);
-    hideCrosshair();
-  };
-
-  const handleCartClose = () => {
-    setIsCartOpen(false);
-    showCrosshair();
-  };
-
-  // Wishlist handling
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-
-  const handleWishlistOpen = () => {
-    setIsWishlistOpen(true);
-    hideCrosshair();
-  };
-
-  const handleWishlistClose = () => {
-    setIsWishlistOpen(false);
-    showCrosshair();
-  };
-
   return (
     <div className="ui-root">
-      {!crosshairVisible && !isMobile && !isModalOpen && <div className={styles.aim} />}
+      {crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
 
-        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={handleCartOpen} />
-        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={handleWishlistOpen} />
+        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
+        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
         <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
 
       </div>
@@ -109,25 +82,25 @@ const UI = () => {
         {...shopifyConfig}
       >
         <CartProvider>
-          {isModalOpen && (
+          {/* {isModalOpen && (
             <Modal
               isOpen={isModalOpen}
               onClose={closeModal}
               data={selectedProduct}
             />
-          )}
+          )} */}
           {isCartOpen && (
-            <Cart onClose={handleCartClose}></Cart>
+            <Cart onClose={closeCart}></Cart>
           )}
         </CartProvider>
       </ShopifyProvider>
       {isWishlistOpen && (
-        <Wishlist onClose={handleWishlistClose}></Wishlist>
+        <Wishlist onClose={closeWishlist}></Wishlist>
       )}
 
-
-      <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
-
+      { isInfoModalOpen && (
+        <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
+      )}
 
       <div>
         <ChatbotModal

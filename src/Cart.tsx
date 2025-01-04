@@ -12,8 +12,6 @@ interface CartProps {
 const Cart: FC<CartProps> = ({ onClose }) => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
 
-
-
   useEffect(() => {
     const scrollY = window.scrollY;
     const joystickZone = document.getElementById("joystickZone");

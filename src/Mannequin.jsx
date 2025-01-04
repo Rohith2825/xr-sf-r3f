@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { PivotControls } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
-import { useProductStore } from "../store/productStore";
+import { useZustandStore } from "../stores/ZustandStores";
 
 const DraggableMannequin = ({
   position = [0, 0, 0],
@@ -12,7 +12,7 @@ const DraggableMannequin = ({
   onClick,
   model,
 }) => {
-  const { openModal, setSelectedProduct, selectedProduct } = useProductStore();
+  const { openModal, setSelectedProduct, selectedProduct } = useZustandStore();
 
   // const findProductById = (id) => {
   //   return products.find(

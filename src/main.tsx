@@ -7,10 +7,10 @@ import "@/index.scss";
 import UI from "@/UI/UI.tsx";
 import Load from "@/Loader.tsx";
 import { ProductService } from "./api/shopifyAPIService";
-import { useProductStore } from "../store/productStore";
+import { useZustandStore } from "../stores/ZustandStores";
 
 function CanvasWrapper() {
-  const { products, setProducts } = useProductStore();
+  const { setProducts } = useZustandStore();
   const { progress } = useProgress();
 
   useEffect(() => {
