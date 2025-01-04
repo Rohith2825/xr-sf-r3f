@@ -1,7 +1,40 @@
 import Product from "@/Types/Product";
 import { create } from "zustand";
 
-export const useZustandStore = create((set) => ({
+interface ZustandStore {
+  // Crosshair handling
+  crosshairVisible: boolean,
+  showCrosshair: () => void,
+  hideCrosshair: () => void,
+
+  // Product handling
+  products: Product[],
+  selectedProduct: unknown,
+  setProducts: (products: Product[]) => void,
+  setSelectedProduct: (productId: number) => void
+
+  // Modal Handling
+  isModalOpen: boolean,
+  openModal: () => void,
+  closeModal: () => void,
+
+  // Cart Handling
+  isCartOpen: boolean,
+  openCart: () => void,
+  closeCart: () => void,
+    
+  // Wishlist Handling
+  isWishlistOpen: boolean,
+  openWishlist: () => void,
+  closeWishlist: () => void,
+
+  // Info Handling
+  isInfoModalOpen: boolean,
+  openInfoModal: () => void,
+  closeInfoModal: () => void,
+}
+
+export const useZustandStore = create<ZustandStore>((set) => ({
   // Crosshair
   crosshairVisible: true,
   showCrosshair: () => set({ crosshairVisible: true }),

@@ -1,16 +1,13 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { FC, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Box, Button, Card, Typography } from "@mui/material";
 import { useCart } from "@shopify/hydrogen-react";
 import Swal from "sweetalert2";
 import styles from './UI/UI.module.scss';
+import { useZustandStore } from "./stores/ZustandStores"
 
-interface CartProps {
-  onClose: () => void
-}
-
-const Cart: FC<CartProps> = ({ onClose }) => {
+const Cart = () => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
+  const { closeCart } = useZustandStore();
 
   useEffect(() => {
     const scrollY = window.scrollY;
@@ -114,7 +111,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const cart = cartRef.current;
     if (cart && !cart.contains(event.target as Node))
-      onClose();
+      closeCart();
   };
 
   return (
@@ -164,7 +161,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
             }
           }}
           className="CartCloseButton"
-          onClick={() => onClose()}
+          onClick={closeCart}
         >
           &times;
         </Typography>

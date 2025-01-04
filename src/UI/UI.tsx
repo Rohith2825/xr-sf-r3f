@@ -1,7 +1,7 @@
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
 import { useState } from "react";
-import { useZustandStore } from "../../stores/ZustandStores";
+import { useZustandStore } from "../stores/ZustandStores";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
 import Cart from "../Cart";
@@ -90,16 +90,16 @@ const UI = () => {
             />
           )} */}
           {isCartOpen && (
-            <Cart onClose={closeCart}></Cart>
+            <Cart></Cart>
           )}
         </CartProvider>
       </ShopifyProvider>
       {isWishlistOpen && (
-        <Wishlist onClose={closeWishlist}></Wishlist>
+        <Wishlist></Wishlist>
       )}
 
       { isInfoModalOpen && (
-        <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
+        <InfoModal></InfoModal>
       )}
 
       <div>

@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import {
   Card,
   Box,
@@ -6,22 +6,20 @@ import {
   Button
 } from '@mui/material';
 import useWishlist from './WishlistHook';
-import { Product } from './api/shopifyAPIService';
+import Product from './Types/Product';
 import Swal from 'sweetalert2';
 import styles from '@/UI/UI.module.scss';
+import { useZustandStore } from '@/stores/ZustandStores';
 
-interface WishlistProps {
-  onClose: () => void
-}
-
-const Wishlist: FC<WishlistProps> = ({ onClose }) => {
+const Wishlist = () => {
   const { wishlist, productList, removeItemsFromWishlist, clearWishlist } = useWishlist();
+  const { closeWishlist } = useZustandStore();
 
   const wishlistRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const wishlistElement = wishlistRef.current;
     if (wishlistElement && !wishlistElement.contains(event.target as Node)) {
-      onClose();
+      closeWishlist();
     }
   };
 
@@ -125,7 +123,7 @@ const Wishlist: FC<WishlistProps> = ({ onClose }) => {
             }
           }}
           className="WishlistCloseButton"
-          onClick={() => onClose()}
+          onClick={closeWishlist}
         >
           &times;
         </Typography>

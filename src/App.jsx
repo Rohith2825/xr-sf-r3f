@@ -11,7 +11,7 @@ import BrandPoster from "./BrandPoster";
 import Products from "./Products";
 import { Suspense, useState, useEffect } from "react";
 import Skybox from "./Skybox";
-import { useZustandStore } from "../stores/ZustandStores";
+import { useZustandStore } from "./stores/ZustandStores";
 
 const shadowOffset = 50;
 
@@ -21,7 +21,7 @@ export const usePointerLockControlsStore = create(() => ({
 
 export const App = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const { crosshairVisible, isModalOpen, isInfoModalOpen } = useZustandStore();
+  const { crosshairVisible, isModalOpen, isWishlistOpen, isCartOpen, isInfoModalOpen } = useZustandStore();
 
 
   // Detect mobile devices
@@ -34,7 +34,7 @@ export const App = () => {
   });
 
   const pointerLockControlsLockHandler = () => {
-    if ( crosshairVisible ) {
+    if ( (crosshairVisible || isMobile) && !isModalOpen && !isCartOpen && !isWishlistOpen && !isInfoModalOpen) {
       usePointerLockControlsStore.setState({ isLock: true });
     } else {
       document.exitPointerLock?.();

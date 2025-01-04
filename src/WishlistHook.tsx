@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Product, ProductService } from './api/shopifyAPIService';
+import Product from './Types/Product';
+import { ProductService } from './api/shopifyAPIService';
 
 function useWishlist() {
   const [wishlist, setWishlist] = useState(() => {
