@@ -479,7 +479,7 @@ useEffect(() => {
       canSleep={false}
     >
       <mesh castShadow>
-        <CapsuleCollider args={[1.7, 1]} />
+        <CapsuleCollider args={[1.2, 1]} />
       </mesh>
     </RigidBody>
   );
