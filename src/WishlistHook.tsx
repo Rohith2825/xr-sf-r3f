@@ -4,8 +4,14 @@ import { Product, ProductService } from './api/shopifyAPIService';
 function useWishlist() {
   const [wishlist, setWishlist] = useState(() => {
     const itemString = localStorage.getItem("wishlist");
-    return [...(itemString? JSON.parse(itemString) : []), 9689001328933, 9658662584613];
+    try {
+      return itemString ? JSON.parse(itemString) : []; // Use localStorage or an empty array
+    } catch (error) {
+      console.error("Error parsing wishlist from localStorage:", error);
+      return []; // Fallback to an empty array if parsing fails
+    }
   });
+  
   const [productList, setProductList] = useState<Product[]>([]);
 
   useEffect(() => {

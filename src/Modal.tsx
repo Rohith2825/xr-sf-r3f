@@ -17,6 +17,7 @@ import { ModelViewer } from "@shopify/hydrogen-react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Swal from "sweetalert2";
 import styles from "./UI/UI.module.scss";
+import useWishlist from "./WishlistHook";
 
 const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -340,6 +341,33 @@ const Modal: React.FC<ModalProps> = (props) => {
       });
     }
   };
+  const { addItemsToWishlist } = useWishlist();
+  const handleAddToWishlist = () => {
+    const productIdString = props.data.node.id.split('/').pop(); // Extract the numeric ID as a string
+    const productId = Number(productIdString); // Convert the string to a number
+  
+    if (isNaN(productId)) {
+      console.error("Invalid product ID:", props.data.node.id);
+      return;
+    }
+  
+    console.log(productId); // Debug
+  
+    addItemsToWishlist([productId]); // Pass the numeric ID as an array
+  
+    Swal.fire({
+      title: "Added to Wishlist!",
+      text: `${props.data.node.title} has been added to your wishlist.`,
+      icon: "success",
+      confirmButtonText: "Okay",
+      customClass: {
+        title: styles.swalTitle,
+        popup: styles.swalPopup,
+      },
+    });
+  };
+  
+  
 
   // Handle Click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -828,6 +856,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     Checkout
                   </Button>
                   <IconButton
+                    onClick={handleAddToWishlist}
                     sx={{
                       backgroundColor: "rgba(255, 255, 255, 0.2)",
                       borderRadius: { sx: "50%", lg: "50%" }, // Circular button
