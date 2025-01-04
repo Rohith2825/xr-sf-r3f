@@ -15,6 +15,8 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useCart } from "@shopify/hydrogen-react";
 import { ModelViewer } from "@shopify/hydrogen-react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import Swal from "sweetalert2";
+import styles from "./UI/UI.module.scss";
 
 const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -142,7 +144,7 @@ const Modal: React.FC<ModalProps> = (props) => {
   const [quantity, setQuantity] = useState<number>(1);
   const sanitizedHtml = DOMPurify.sanitize(props.data["node"]["bodyHtml"]);
 
-  const { linesAdd, checkoutUrl } = useCart();
+  const { linesAdd, checkoutUrl, lines } = useCart();
 
   useEffect(() => {
     if (props.isOpen) {
@@ -272,10 +274,33 @@ const Modal: React.FC<ModalProps> = (props) => {
   };
 
   const handleCheckout = () => {
+    if (!lines || lines.length === 0) {
+      Swal.fire({
+        title: "Cart is Empty!",
+        text: "Please add some products to your cart before proceeding to checkout.",
+        icon: "warning",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+      return;
+    }
+
     if (checkoutUrl) {
       window.open(checkoutUrl, "_blank", "noopener,noreferrer");
     } else {
-      alert("Checkout session not initialized. Please try again.");
+      Swal.fire({
+        title: "Error",
+        text: "Checkout session not initialized. Please try again.",
+        icon: "error",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
     }
   };
 
@@ -283,10 +308,8 @@ const Modal: React.FC<ModalProps> = (props) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const modal = modalRef.current;
-    if (modal && !modal.contains(event.target as Node))
-      handleClose();
+    if (modal && !modal.contains(event.target as Node)) handleClose();
   };
-  
 
   return (
     <div
@@ -298,14 +321,16 @@ const Modal: React.FC<ModalProps> = (props) => {
     >
       <div
         style={{
-          position: "fixed", top: 0, left: 0,
-          width: "100vw", height: "100vh",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
           backgroundColor: "rgba(0, 0, 0, 0)",
           pointerEvents: "auto",
         }}
         onClick={onClickOutside}
       >
-
         <Card
           ref={modalRef}
           sx={{
@@ -582,7 +607,11 @@ const Modal: React.FC<ModalProps> = (props) => {
                     }}
                   >
                     ₹{" "}
-                    {props.data["node"]["variants"]["edges"][0]["node"]["price"]}
+                    {
+                      props.data["node"]["variants"]["edges"][0]["node"][
+                        "price"
+                      ]
+                    }
                   </Typography>
                   <Box
                     sx={{
@@ -637,9 +666,15 @@ const Modal: React.FC<ModalProps> = (props) => {
 
                 {/* Sizes Selector */}
                 <Box
-                  sx={{ display: "flex", alignItems: "center", paddingBottom: 1 }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    paddingBottom: 1,
+                  }}
                 >
-                  <Box sx={{ display: "flex", gap: 1, flexWrap: { xs: "wrap" } }}>
+                  <Box
+                    sx={{ display: "flex", gap: 1, flexWrap: { xs: "wrap" } }}
+                  >
                     {sizes.map((size) => (
                       <Button
                         key={size}
@@ -660,7 +695,10 @@ const Modal: React.FC<ModalProps> = (props) => {
                     ))}
                   </Box>
                 </Box>
-                <QuantityCounter quantity={quantity} setQuantity={setQuantity} />
+                <QuantityCounter
+                  quantity={quantity}
+                  setQuantity={setQuantity}
+                />
                 <Typography
                   sx={{
                     fontFamily: "'Poppins', sans-serif",
