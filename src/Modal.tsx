@@ -238,7 +238,16 @@ const Modal: React.FC<ModalProps> = (props) => {
 
   const handleAddToCart = async () => {
     if (!selectedSize) {
-      alert("Please select a size before adding to cart!");
+      Swal.fire({
+        title: "Size Not Selected",
+        text: "Please select a size before adding to the cart.",
+        icon: "warning",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
       return;
     }
 
@@ -254,7 +263,16 @@ const Modal: React.FC<ModalProps> = (props) => {
     );
 
     if (!selectedVariant) {
-      alert("The selected variant does not exist!");
+      Swal.fire({
+        title: "Variant Not Found",
+        text: "The selected variant does not exist!",
+        icon: "error",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
       return;
     }
 
@@ -265,9 +283,28 @@ const Modal: React.FC<ModalProps> = (props) => {
           quantity: quantity,
         },
       ]);
-      alert("Product added to cart!");
+  
+      Swal.fire({
+        title: "Success",
+        text: "Product added to cart!",
+        icon: "success",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
     } catch (error) {
-      alert("Cannot add product to cart!");
+      Swal.fire({
+        title: "Error",
+        text: "Cannot add product to cart!",
+        icon: "error",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
       console.error(error);
       return;
     }
