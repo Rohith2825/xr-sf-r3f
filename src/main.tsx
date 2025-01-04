@@ -17,7 +17,7 @@ function CanvasWrapper() {
     async function fetchProducts() {
       try {
         const response = await ProductService.getAllProducts();
-        setProducts(response.data.products.edges);
+        setProducts(response);
         
       } catch (err) {
         console.error(err);

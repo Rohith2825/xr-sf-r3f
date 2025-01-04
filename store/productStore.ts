@@ -1,3 +1,4 @@
+import Product from "@/Types/Product";
 import { create } from "zustand";
 
 export const useProductStore = create((set) => ({
@@ -5,11 +6,11 @@ export const useProductStore = create((set) => ({
   selectedProduct: {},
   isModalOpen: false,
   crosshairVisible: false,
-  setProducts: (products: any) => set({ products }),
+  setProducts: (products: Product[]) => set({ products }),
   setSelectedProduct: (productId: number) =>
-    set((state) => {
+    set((state: {products: Product[]}) => {
       const finalProduct = state.products.find(
-        (product) => product.node.id === `gid://shopify/Product/${productId}`
+        (product: Product) => product.id === productId
       );
       return { ...state, selectedProduct: finalProduct };
     }),
