@@ -378,14 +378,21 @@ const Modal: React.FC<ModalProps> = (props) => {
           height: "100vh",
           backgroundColor: "rgba(0, 0, 0, 0)",
           pointerEvents: "auto",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
         onClick={onClickOutside}
       >
         <Card
           sx={{
-            position: "fixed",
-            top: { xs: "2.5%", sm: "5%", md: "5%", lg: "10%", xl: "20%" },
-            left: { xs: "7%", sm: "10%", md: "10%", lg: "13%", xl: "20%" },
+            // position: "fixed",
+            // top: { xs: "2.5%", sm: "5%", md: "5%", lg: "10%", xl: "20%" },
+            // left: { xs: "7%", sm: "10%", md: "10%", lg: "13%", xl: "20%" },
+            // top: "auto",
+            // right: "auto",
+            // bottom: "auto",
+            // left: "auto",
             flexDirection: "column",
             maxWidth: { xs: "80vw", md: "60vw", lg: "70vw", xl: "85vw" },
             gap: "10px",
@@ -707,7 +714,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                   display: "flex",
                   flexDirection: "column",
                   flex: 1,
-                  width: { lg: "600px" },
+                  width: { sm: "600px", md: "600px", lg: "600px" },
                 }}
               >
                 <CardContent sx={{ zIndex: 1000 }}>
@@ -893,7 +900,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                           borderRadius: "50px 50px 50px 50px", // Rounded right side
                           padding: {
                             xs: "3px 8px",
-                            sm: "6px 16px",
+                            sm: "3px 8px",
                             md: "6px 16px",
                             lg: "6px 16px",
                             xl: "6px 16px",
@@ -981,7 +988,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     },
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: "bold",
-                    fontSize: { sx: "0.5rem" },
+                    textTransform: "none",
                   }}
                   onClick={handleAddToCart}
                 >
@@ -1007,7 +1014,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     },
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: "bold",
-                    fontSize: { sx: "0.5rem" },
+                    textTransform: "none",
                   }}
                   onClick={handleCheckout}
                 >
