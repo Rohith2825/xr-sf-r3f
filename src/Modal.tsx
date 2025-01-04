@@ -610,7 +610,12 @@ const Modal: React.FC<ModalProps> = (props) => {
                         height: "350px",
                       }}
                       data={modelData}
-                      ar = {true}
+                      ar={true}
+                      arModes="webxr scene-viewer quick-look"
+                      arScale="auto"
+                      arPlacement="floor"
+                      cameraControls={true}
+                      environmentImage="neutral"                    
                     />
                   </Suspense>
                 </Box>
