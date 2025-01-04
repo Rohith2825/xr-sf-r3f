@@ -13,11 +13,12 @@ import {
 import DOMPurify from "dompurify";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useCart } from "@shopify/hydrogen-react";
-import { ModelViewer } from "@shopify/hydrogen-react";
+// import { ModelViewer } from "@shopify/hydrogen-react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Swal from "sweetalert2";
 import styles from "./UI/UI.module.scss";
 import useWishlist from "./WishlistHook";
+import "@google/model-viewer";
 
 const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -127,6 +128,8 @@ const Modal: React.FC<ModalProps> = (props) => {
   const sizes: string[] = [];
   const images: string[] = [];
   let modelData: unknown = {};
+  let iosSrc: string = "";
+  let modelUrl: string = "";
 
   modelData = {
     id: "gid://shopify/Model3d/40614140838181",
@@ -209,7 +212,7 @@ const Modal: React.FC<ModalProps> = (props) => {
 
   props.data["node"]["media"]["edges"].forEach((edge: any) => {
     if (edge.node.mediaContentType === "MODEL_3D") {
-      // modelUrl = edge.node.sources[0].url;
+      modelUrl = edge.node.sources[0].url;
       modelData = {
         id: edge.node.id,
         sources: [
@@ -220,6 +223,7 @@ const Modal: React.FC<ModalProps> = (props) => {
         ],
         alt: edge.node.alt,
       };
+      iosSrc = edge.node.sources[1].url;
     }
   });
 
@@ -284,7 +288,7 @@ const Modal: React.FC<ModalProps> = (props) => {
           quantity: quantity,
         },
       ]);
-  
+
       Swal.fire({
         title: "Success",
         text: "Product added to cart!",
@@ -343,18 +347,18 @@ const Modal: React.FC<ModalProps> = (props) => {
   };
   const { addItemsToWishlist } = useWishlist();
   const handleAddToWishlist = () => {
-    const productIdString = props.data.node.id.split('/').pop(); // Extract the numeric ID as a string
+    const productIdString = props.data.node.id.split("/").pop(); // Extract the numeric ID as a string
     const productId = Number(productIdString); // Convert the string to a number
-  
+
     if (isNaN(productId)) {
       console.error("Invalid product ID:", props.data.node.id);
       return;
     }
-  
+
     console.log(productId); // Debug
-  
+
     addItemsToWishlist([productId]); // Pass the numeric ID as an array
-  
+
     Swal.fire({
       title: "Added to Wishlist!",
       text: `${props.data.node.title} has been added to your wishlist.`,
@@ -366,8 +370,6 @@ const Modal: React.FC<ModalProps> = (props) => {
       },
     });
   };
-  
-  
 
   // Handle Click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -451,7 +453,6 @@ const Modal: React.FC<ModalProps> = (props) => {
               />
             </IconButton>
           </Box>
-
           {/* Main Content */}
           <Box
             sx={{
@@ -605,12 +606,33 @@ const Modal: React.FC<ModalProps> = (props) => {
                       </div>
                     }
                   >
-                    <ModelViewer
+                    {/* <ModelViewer
                       style={{
                         height: "350px",
                       }}
                       data={modelData}
-                    />
+                      ar={true} // Enable AR
+                      arModes="scene-viewer quick-look" // AR modes for Android and iOS
+                      arScale="auto" // Automatically scale the model in AR
+                      iosSrc={iosSrc} // Link to the .usdz file for iOS
+                      cameraControls={true} // Enable camera controls
+                      environmentImage="neutral" // Optional: Environment image for lighting
+                      poster="https://example.com/poster.png" // Optional: Poster image for loading
+                      alt="A 3D model of a product" // Accessibility text
+                      onArStatus={(event) => console.log("AR Status:", event)} // Optional: Log AR status
+                      onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
+                    /> */}
+                    <model-viewer
+                      src={modelUrl} // URL to your 3D model
+                      ios-src={iosSrc} // URL to your .usdz file for iOS
+                      alt="A 3D model of a product" // Accessibility description
+                      ar // Enable AR
+                      ar-modes="scene-viewer webxr quick-look" // AR modes for Android and iOS
+                      camera-controls // Enable camera controls
+                      environment-image="neutral" // Lighting environment
+                      auto-rotate // Automatically rotate the model
+                      shadow-intensity="1" // Add shadows
+                    ></model-viewer>
                   </Suspense>
                 </Box>
               )}
