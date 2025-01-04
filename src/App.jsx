@@ -34,7 +34,7 @@ export const App = () => {
   });
 
   const pointerLockControlsLockHandler = () => {
-    if ( (crosshairVisible || isMobile) && !isModalOpen && !isCartOpen && !isWishlistOpen && !isInfoModalOpen) {
+    if (crosshairVisible && !isModalOpen && !isCartOpen && !isWishlistOpen && !isInfoModalOpen) {
       usePointerLockControlsStore.setState({ isLock: true });
     } else {
       document.exitPointerLock?.();

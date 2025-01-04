@@ -7,6 +7,11 @@ interface ZustandStore {
   showCrosshair: () => void,
   hideCrosshair: () => void,
 
+  // Touch handling
+  isTouchEnabled: boolean,
+  enableTouch: () => void,
+  disableTouch: () => void,
+
   // Product handling
   products: Product[],
   selectedProduct: unknown,
@@ -22,7 +27,7 @@ interface ZustandStore {
   isCartOpen: boolean,
   openCart: () => void,
   closeCart: () => void,
-    
+
   // Wishlist Handling
   isWishlistOpen: boolean,
   openWishlist: () => void,
@@ -40,59 +45,64 @@ export const useZustandStore = create<ZustandStore>((set) => ({
   showCrosshair: () => set({ crosshairVisible: true }),
   hideCrosshair: () => set({ crosshairVisible: false }),
 
+  // Touch handling
+  isTouchEnabled: false,
+  enableTouch: () => set({ isTouchEnabled: true }),
+  disableTouch: () => set({ isTouchEnabled: false }),
+
   // Product Handling
   products: [],
   selectedProduct: {},
   setProducts: (products: Product[]) => set({ products }),
   setSelectedProduct: (productId: number) =>
-    set((state: {products: Product[]}) => {
+    set((state: { products: Product[] }) => {
       const finalProduct = state.products.find(
         (product: Product) => product.id === productId
       );
       return { ...state, selectedProduct: finalProduct };
     }),
 
-    // Modal Handling
-    isModalOpen: false,
-    openModal: () => {
-      set({ crosshairVisible: false });
-      set({ isModalOpen: true });
-    },
-    closeModal: () =>{
-      set({ crosshairVisible: true });
-      set({ isModalOpen: false });
-    },
+  // Modal Handling
+  isModalOpen: false,
+  openModal: () => {
+    set({ crosshairVisible: false });
+    set({ isModalOpen: true });
+  },
+  closeModal: () => {
+    set({ crosshairVisible: true });
+    set({ isModalOpen: false });
+  },
 
-    // Cart Handling
-    isCartOpen: false,
-    openCart: () => {
-      set({ crosshairVisible: false });
-      set({ isCartOpen: true });
-    },
-    closeCart: () => {
-      set({ crosshairVisible: true });
-      set({ isCartOpen: false });
-    },
-    
-    // Wishlist Handling
-    isWishlistOpen: false,
-    openWishlist: () => {
-      set({ crosshairVisible: false });
-      set({ isWishlistOpen: true });
-    },
-    closeWishlist: () => {
-      set({ crosshairVisible: true });
-      set({ isWishlistOpen: false });
-    },
+  // Cart Handling
+  isCartOpen: false,
+  openCart: () => {
+    set({ crosshairVisible: false });
+    set({ isCartOpen: true });
+  },
+  closeCart: () => {
+    set({ crosshairVisible: true });
+    set({ isCartOpen: false });
+  },
 
-    // Info Handling
-    isInfoModalOpen: false,
-    openInfoModal: () => {
-      set({ crosshairVisible: false });
-      set({ isInfoModalOpen: true });
-    },
-    closeInfoModal: () => {
-      set({ crosshairVisible: true });
-      set({ isInfoModalOpen: false });
-    }
+  // Wishlist Handling
+  isWishlistOpen: false,
+  openWishlist: () => {
+    set({ crosshairVisible: false });
+    set({ isWishlistOpen: true });
+  },
+  closeWishlist: () => {
+    set({ crosshairVisible: true });
+    set({ isWishlistOpen: false });
+  },
+
+  // Info Handling
+  isInfoModalOpen: false,
+  openInfoModal: () => {
+    set({ crosshairVisible: false });
+    set({ isInfoModalOpen: true });
+  },
+  closeInfoModal: () => {
+    set({ crosshairVisible: true });
+    set({ isInfoModalOpen: false });
+  }
 }));

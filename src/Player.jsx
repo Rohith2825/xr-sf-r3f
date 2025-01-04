@@ -6,6 +6,7 @@ import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
 import gsap from "gsap";
+import { useZustandStore } from "./stores/ZustandStores";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -146,6 +147,11 @@ export const Player = () => {
 
   const initialTourComplete = useRef(false);
   const isTransitioning = useRef(false);
+  const { 
+    isTouchEnabled, enableTouch,
+    isModalOpen, isCartOpen, isWishlistOpen,
+    isInfoModalOpen 
+  } = useZustandStore();
 
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
@@ -165,6 +171,7 @@ export const Player = () => {
           onComplete: () => {
             initialTourComplete.current = true;
             isTransitioning.current = false;
+            enableTouch();
 
             // Reset physics state after transition
             playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
@@ -294,6 +301,9 @@ export const Player = () => {
   }, [camera]);
   useEffect(() => {
     const handleTouchStart = (e) => {
+      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen) return; // Return if any one of the components is open
+
       if (e.target.closest("#joystickZone")) return;
 
       // Find the rightmost touch for camera control
@@ -315,6 +325,8 @@ export const Player = () => {
 
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
+      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen) return; // Return if any one of the components is open
 
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
@@ -361,7 +373,7 @@ export const Player = () => {
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [camera, isPortrait]);
+  }, [camera, isPortrait, isTouchEnabled, isModalOpen, isCartOpen, isWishlistOpen, isInfoModalOpen]);
 
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
