@@ -81,11 +81,13 @@ export const App = () => {
           position={[-4.5, 11, -91]}
           rotation={[0, -82.79, 0]}
         />
-        <WebPlane
+
+        {/*May crash if external website*/}
+        {/* <WebPlane
           scale={[0.2, 0.2, 0.1]}
           position={[-5, 0, 5.1]}
           rotation={[0, 162.5, 0]}
-        />
+        /> */}
         <BrandPoster
           imageUrl="https://th.bing.com/th/id/OIP.SNik-SOwvsExn4HNF47l2gHaEK?rs=1&pid=ImgDetMain"
           width={192 * 4} // Width in pixels
