@@ -33,9 +33,13 @@ const CanvasContainer = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const QuantityCounter = () => {
-  const [quantity, setQuantity] = useState(1);
-
+const QuantityCounter = ({
+  quantity,
+  setQuantity,
+}: {
+  quantity: number;
+  setQuantity: React.Dispatch<React.SetStateAction<number>>;
+}) => {
   const handleIncrease = () => {
     setQuantity((prev) => prev + 1);
   };
@@ -184,8 +188,8 @@ const Modal: React.FC<ModalProps> = (props) => {
   };
 
   useEffect(() => {
-    console.log("Cart Lines:", linesAdd); // Updated cart lines
-    console.log("Checkout URL:", checkoutUrl); // Updated checkout URL
+    //console.log("Cart Lines:", linesAdd); // Updated cart lines
+    //console.log("Checkout URL:", checkoutUrl); // Updated checkout URL
   }, [linesAdd, checkoutUrl]);
 
   props.data["node"]["options"].forEach((option: any) => {
@@ -656,7 +660,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     ))}
                   </Box>
                 </Box>
-                <QuantityCounter />
+                <QuantityCounter quantity={quantity} setQuantity={setQuantity} />
                 <Typography
                   sx={{
                     fontFamily: "'Poppins', sans-serif",
