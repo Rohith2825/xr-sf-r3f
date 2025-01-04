@@ -615,7 +615,9 @@ const Modal: React.FC<ModalProps> = (props) => {
                       arScale="auto"
                       arPlacement="floor"
                       cameraControls={true}
-                      environmentImage="neutral"                    
+                      environmentImage="neutral" 
+                      iosSrc="https://cdn.shopify.com/3d/models/o/0a2cb2386cbdb2d9/selveless_tshirt.usdz"        
+                      poster="https://th.bing.com/th/id/OIP.SNik-SOwvsExn4HNF47l2gHaEK?rs=1&pid=ImgDetMain"           
                     />
                   </Suspense>
                 </Box>
