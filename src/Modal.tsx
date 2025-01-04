@@ -610,6 +610,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                         height: "350px",
                       }}
                       data={modelData}
+                      ar = {true}
                     />
                   </Suspense>
                 </Box>
