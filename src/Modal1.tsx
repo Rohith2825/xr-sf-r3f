@@ -408,8 +408,7 @@ const Modal: React.FC<ModalProps> = (props) => {
             flexDirection: "column",
             maxWidth: { xs: "80vw", md: "70vw", lg: "70vw", xl: "85vw" },
             gap: "10px",
-            // marginTop: { xs: "50px" },
-            // marginLeft: { xs: "20px" },
+            marginTop: { xs: "10px" },
             backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
             backdropFilter: "blur(5px)", // Blur effect for glass morphism
             borderRadius: "10px",
