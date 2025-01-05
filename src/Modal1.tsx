@@ -369,8 +369,8 @@ const Modal: React.FC<ModalProps> = (props) => {
         pointerEvents: props.isOpen ? "auto" : "none",
       }}
     >
-      <div
-        style={{
+      <Box
+        sx={{
           position: "fixed",
           top: 0,
           left: 0,
@@ -378,9 +378,19 @@ const Modal: React.FC<ModalProps> = (props) => {
           height: "100vh",
           backgroundColor: "rgba(0, 0, 0, 0)",
           pointerEvents: "auto",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: { sm: "flex", md: "flex", lg: "flex", xl: "flex" },
+          justifyContent: {
+            sm: "center",
+            md: "center",
+            lg: "center",
+            xl: "center",
+          },
+          alignItems: {
+            sm: "center",
+            md: "center",
+            lg: "center",
+            xl: "center",
+          },
         }}
         onClick={onClickOutside}
       >
@@ -388,6 +398,8 @@ const Modal: React.FC<ModalProps> = (props) => {
           sx={{
             flexDirection: "column",
             maxWidth: { xs: "80vw", md: "70vw", lg: "70vw", xl: "85vw" },
+            top: { sx: "2.5%" },
+            left: { sx: "7%" },
             gap: "10px",
             backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
             backdropFilter: "blur(5px)", // Blur effect for glass morphism
@@ -1013,7 +1025,7 @@ const Modal: React.FC<ModalProps> = (props) => {
             </CardContent>
           )}
         </Card>
-      </div>
+      </Box>
     </div>
   );
 };
