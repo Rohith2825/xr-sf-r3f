@@ -129,7 +129,7 @@ const Cart = () => {
         sx={{
           position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "95vw", md: "70vw" }, height: { xs: "98vh", md: "75vh" }, // Size
+          width: { xs: "95vw", md: "70vw" }, height: { xs: "85vh", md: "75vh" }, // Size
           backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
           borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
           overflow: "none"
