@@ -379,18 +379,21 @@ const Modal: React.FC<ModalProps> = (props) => {
           backgroundColor: "rgba(0, 0, 0, 0)",
           pointerEvents: "auto",
           display: {
+            xs: "flex",
             sm: "flex",
             md: "flex",
             lg: "flex",
             xl: "flex",
           },
           justifyContent: {
+            xs: "center",
             sm: "center",
             md: "center",
             lg: "center",
             xl: "center",
           },
           alignItems: {
+            xs: "start",
             sm: "center",
             md: "center",
             lg: "center",
@@ -405,8 +408,8 @@ const Modal: React.FC<ModalProps> = (props) => {
             flexDirection: "column",
             maxWidth: { xs: "80vw", md: "70vw", lg: "70vw", xl: "85vw" },
             gap: "10px",
-            marginTop: { xs: "50px" },
-            marginLeft: { xs: "20px" },
+            // marginTop: { xs: "50px" },
+            // marginLeft: { xs: "20px" },
             backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
             backdropFilter: "blur(5px)", // Blur effect for glass morphism
             borderRadius: "10px",
