@@ -386,15 +386,8 @@ const Modal: React.FC<ModalProps> = (props) => {
       >
         <Card
           sx={{
-            // position: "fixed",
-            // top: { xs: "2.5%", sm: "5%", md: "5%", lg: "10%", xl: "20%" },
-            // left: { xs: "7%", sm: "10%", md: "10%", lg: "13%", xl: "20%" },
-            // top: "auto",
-            // right: "auto",
-            // bottom: "auto",
-            // left: "auto",
             flexDirection: "column",
-            maxWidth: { xs: "80vw", md: "60vw", lg: "70vw", xl: "85vw" },
+            maxWidth: { xs: "80vw", md: "70vw", lg: "70vw", xl: "85vw" },
             gap: "10px",
             backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
             backdropFilter: "blur(5px)", // Blur effect for glass morphism
@@ -402,7 +395,7 @@ const Modal: React.FC<ModalProps> = (props) => {
             padding: 2,
             boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Subtle shadow
             border: "1px solid rgba(255, 255, 255, 0.2)", // Optional border
-            maxHeight: { xs: "90vh", md: "none", lg: "80vh", xl: "85vh" },
+            maxHeight: { xs: "90vh", md: "none", lg: "85vh", xl: "85vh" },
             zIndex: 999,
           }}
         >
@@ -415,7 +408,16 @@ const Modal: React.FC<ModalProps> = (props) => {
                   alignItems: "center",
                 }}
               >
-                <Box sx={{ display: "flex", gap: "20px", marginLeft: "auto" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "20px",
+                    marginLeft: "auto",
+                    backgroundColor: "#424242",
+                    borderRadius: "50px",
+                    padding: "5px",
+                  }}
+                >
                   <Button
                     variant="text"
                     size="small"
@@ -508,7 +510,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 lg: "none",
                 xl: "none",
               },
-              maxHeight: { xs: "65vh", md: "none", lg: "80vh", xl: "85vh" },
+              maxHeight: { xs: "65vh", md: "none", lg: "85vh", xl: "85vh" },
             }}
           >
             <Box
@@ -602,7 +604,8 @@ const Modal: React.FC<ModalProps> = (props) => {
                       alt={`Carousel ${currentIndex}`}
                       style={{
                         borderRadius: "10px",
-                        height: "350px",
+                        height: "300px",
+                        width: "300px",
                       }}
                     />
                     {/* Carousel Navigation */}
@@ -639,59 +642,35 @@ const Modal: React.FC<ModalProps> = (props) => {
                       alignItems: "center",
                       position: "relative",
                       borderRadius: "10px",
-                      height: "100%",
                       marginBottom: "20px",
                       marginTop: "20px",
                     }}
                   >
-                    <Suspense
-                      fallback={
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            color: "white",
-                          }}
-                        >
-                          <div className="lds-ring">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                          </div>
-                          <p style={{ marginTop: "1rem" }}>Loading...</p>
-                        </div>
-                      }
-                    >
-                      <ModelViewer
-                        style={{
-                          height: "300px",
-                        }}
-                        data={modelData}
-                        ar={true} // Enable AR
-                        arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
-                        arScale="auto" // Automatically scale the model in AR
-                        iosSrc={iosSrc} // Link to the .usdz file for iOS
-                        cameraControls={true} // Enable camera controls
-                        environmentImage="neutral" // Optional: Environment image for lighting
-                        poster="https://example.com/poster.png" // Optional: Poster image for loading
-                        alt="A 3D model of a product" // Accessibility text
-                        onArStatus={(event) => console.log("AR Status:", event)} // Optional: Log AR status
-                        onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
-                      />
-                    </Suspense>
+                    <ModelViewer
+                      style={{
+                        height: "300px",
+                        width: "300px",
+                      }}
+                      data={modelData}
+                      ar={true} // Enable AR
+                      arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
+                      arScale="auto" // Automatically scale the model in AR
+                      iosSrc={iosSrc} // Link to the .usdz file for iOS
+                      cameraControls={true} // Enable camera controls
+                      environmentImage="neutral" // Optional: Environment image for lighting
+                      poster="https://example.com/poster.png" // Optional: Poster image for loading
+                      alt="A 3D model of a product" // Accessibility text
+                      onArStatus={(event) => console.log("AR Status:", event)} // Optional: Log AR status
+                      onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
+                    />
                   </Box>
                 )}
                 <Button
                   variant="contained"
                   size="small"
                   sx={{
+                    marginTop: "auto",
+                    marginBottom: "10px",
                     backgroundColor: "rgba(255, 255, 255, 0.2)",
                     color: "white",
                     borderRadius: "50px 50px 50px 50px", // Rounded right side
@@ -702,6 +681,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                     },
                     fontFamily: "'Poppins', sans-serif",
                     fontWeight: "bold",
+                    textTransform: "none",
                   }}
                 >
                   View in AR
@@ -963,7 +943,7 @@ const Modal: React.FC<ModalProps> = (props) => {
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "end",
+                  justifyContent: "center",
                   gap: "25px",
                   paddingTop: 2,
                 }}
