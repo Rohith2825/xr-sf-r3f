@@ -378,7 +378,12 @@ const Modal: React.FC<ModalProps> = (props) => {
           height: "100vh",
           backgroundColor: "rgba(0, 0, 0, 0)",
           pointerEvents: "auto",
-          display: { sm: "flex", md: "flex", lg: "flex", xl: "flex" },
+          display: {
+            sm: "flex",
+            md: "flex",
+            lg: "flex",
+            xl: "flex",
+          },
           justifyContent: {
             sm: "center",
             md: "center",
@@ -395,12 +400,13 @@ const Modal: React.FC<ModalProps> = (props) => {
         onClick={onClickOutside}
       >
         <Card
+          ref={modalRef}
           sx={{
             flexDirection: "column",
             maxWidth: { xs: "80vw", md: "70vw", lg: "70vw", xl: "85vw" },
-            top: { sx: "2.5%" },
-            left: { sx: "7%" },
             gap: "10px",
+            marginTop: { xs: "50px" },
+            marginLeft: { xs: "20px" },
             backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
             backdropFilter: "blur(5px)", // Blur effect for glass morphism
             borderRadius: "10px",
