@@ -81,10 +81,28 @@ export const ProductService = {
     const products: Product[] = response.data.products.edges.map((product) => {
       // Extract Images
       const productImages: { src: string }[] = product.node.media.edges.filter((edge) =>
-        edge.node.mediaContentType.toLocaleUpperCase() === "IMAGE" // Filter images
+        edge.node.mediaContentType.toUpperCase() === "IMAGE" // Filter images
         && edge.node.image // Filter images that might not have url
       ).map((edge) => {
         return { src: edge.node.image?.url || "" };
+      });
+
+      // Extract 3d Models
+      const models: {
+        id: string|undefined,
+        sources: {
+          url: string,
+          format: string,
+          mimeType: string
+        }[] | undefined
+      }[] = product.node.media.edges.filter((edge) => 
+        edge.node.mediaContentType.toUpperCase() === "MODEL_3D"
+        && edge.node.sources
+      ).map((edge) => {
+        return { 
+          id: edge.node.id,
+          sources: edge.node.sources
+        }
       });
 
       // Variants
@@ -103,7 +121,8 @@ export const ProductService = {
         title: product.node.title,
         description: "",
         images: productImages,
-        variants: productVariants
+        variants: productVariants,
+        models: models
       };
 
       return parsedProduct;

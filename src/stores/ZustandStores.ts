@@ -14,7 +14,7 @@ interface ZustandStore {
 
   // Product handling
   products: Product[],
-  selectedProduct: unknown,
+  selectedProduct: Product | undefined,
   setProducts: (products: Product[]) => void,
   setSelectedProduct: (productId: number) => void
 
@@ -52,7 +52,7 @@ export const useZustandStore = create<ZustandStore>((set) => ({
 
   // Product Handling
   products: [],
-  selectedProduct: {},
+  selectedProduct: undefined,
   setProducts: (products: Product[]) => set({ products }),
   setSelectedProduct: (productId: number) =>
     set((state: { products: Product[] }) => {

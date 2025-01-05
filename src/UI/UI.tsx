@@ -3,7 +3,7 @@ import ChatbotModal from "../Chatbot";
 import { useState } from "react";
 import { useZustandStore } from "../stores/ZustandStores";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
-import Modal from "../Modal";
+import Modal from "../NewModal";
 import Cart from "../Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal from "@/InfoModal";
@@ -18,12 +18,11 @@ const shopifyConfig = {
 const UI = () => {
   // Zustand store for handling different components
   const {
-    crosshairVisible, showCrosshair, hideCrosshair,
-    selectedProduct,
-    isModalOpen, closeModal,
-    isCartOpen, openCart, closeCart,
-    isWishlistOpen, openWishlist, closeWishlist,
-    isInfoModalOpen, openInfoModal, closeInfoModal
+    crosshairVisible, hideCrosshair,
+    isModalOpen,
+    isCartOpen, openCart,
+    isWishlistOpen, openWishlist,
+    isInfoModalOpen, openInfoModal,
   } = useZustandStore();
 
   const [ChatbotOpen, setChatbotOpen] = useState(false);
@@ -82,13 +81,14 @@ const UI = () => {
         {...shopifyConfig}
       >
         <CartProvider>
-          {/* {isModalOpen && (
-            <Modal
-              isOpen={isModalOpen}
-              onClose={closeModal}
-              data={selectedProduct}
-            />
-          )} */}
+          {isModalOpen && (
+            // <Modal
+            //   isOpen={isModalOpen}
+            //   onClose={closeModal}
+            //   data={selectedProduct}
+            // />
+            <Modal/>
+          )}
           {isCartOpen && (
             <Cart></Cart>
           )}

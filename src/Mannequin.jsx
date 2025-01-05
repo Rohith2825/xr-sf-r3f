@@ -12,7 +12,7 @@ const DraggableMannequin = ({
   onClick,
   model,
 }) => {
-  const { openModal, setSelectedProduct, selectedProduct } = useZustandStore();
+  const { openModal, setSelectedProduct } = useZustandStore();
 
   // const findProductById = (id) => {
   //   return products.find(
@@ -46,14 +46,12 @@ const DraggableMannequin = ({
           rotation={computedRotation}
           scale={computedScale}
           onTouchStart={(e) => {
-            openModal();
             setSelectedProduct(productId);
-            console.log(selectedProduct);
+            openModal();
           }}
           onClick={(e) => {
-            openModal();
             setSelectedProduct(productId);
-            console.log(selectedProduct);
+            openModal();
           }}
           castShadow
           receiveShadow
