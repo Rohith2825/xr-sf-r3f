@@ -714,7 +714,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                   display: "flex",
                   flexDirection: "column",
                   flex: 1,
-                  width: { sm: "600px", md: "600px", lg: "600px" },
+                  width: { sm: "600px", md: "600px", lg: "600px", xl: "600px" },
                 }}
               >
                 <CardContent sx={{ zIndex: 1000 }}>
