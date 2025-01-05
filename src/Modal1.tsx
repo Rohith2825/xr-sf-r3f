@@ -395,7 +395,7 @@ const Modal: React.FC<ModalProps> = (props) => {
             padding: 2,
             boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Subtle shadow
             border: "1px solid rgba(255, 255, 255, 0.2)", // Optional border
-            maxHeight: { xs: "90vh", md: "none", lg: "85vh", xl: "85vh" },
+            maxHeight: { xs: "85vh", md: "none", lg: "85vh", xl: "85vh" },
             zIndex: 999,
           }}
         >
@@ -510,7 +510,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 lg: "none",
                 xl: "none",
               },
-              maxHeight: { xs: "65vh", md: "none", lg: "85vh", xl: "85vh" },
+              maxHeight: { xs: "60vh", md: "none", lg: "85vh", xl: "85vh" },
             }}
           >
             <Box
