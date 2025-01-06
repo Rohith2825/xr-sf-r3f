@@ -433,7 +433,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 <Box
                   sx={{
                     display: "flex",
-                    gap: "20px",
+                    gap: "5px",
                     marginLeft: "auto",
                     backgroundColor: "#424242",
                     borderRadius: "50px",
