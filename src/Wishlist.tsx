@@ -6,14 +6,13 @@ import {
   Button
 } from '@mui/material';
 import useWishlist from './WishlistHook';
-import Product from './Types/Product';
 import Swal from 'sweetalert2';
 import styles from '@/UI/UI.module.scss';
 import { useZustandStore } from '@/stores/ZustandStore';
 
 const Wishlist = () => {
-  const { wishlist, productList, removeItemsFromWishlist, clearWishlist } = useWishlist();
-  const { closeWishlist } = useZustandStore();
+  const { wishlist, removeItemsFromWishlist, clearWishlist } = useWishlist();
+  const { closeWishlist, products } = useZustandStore();
 
   const wishlistRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -22,7 +21,7 @@ const Wishlist = () => {
       closeWishlist();
     }
   };
-
+  
   useEffect(() => {
     const scrollY = window.scrollY;
     const joystickZone = document.getElementById("joystickZone");
@@ -139,10 +138,14 @@ const Wishlist = () => {
           className="WishlistItems"
         >
           {
-            productList && productList.map((product: Product) => {
+            wishlist && wishlist.map((productId:number) => {
+              const product = products.find((product) => product.id === productId);
+              if (!product) return null;
+
               const deleteItem = () => {
                 removeItemsFromWishlist([product.id]);
-              }
+              };
+
               return (
                 <Box
                   sx={{
@@ -158,7 +161,7 @@ const Wishlist = () => {
                 >
                   <Box
                     component="img"
-                    src={product.image.src}
+                    src={product.images[0].src}
                     sx={{
                       height: { xs: "90%", md: "75%" }, aspectRatio: "1 / 1",
                       backgroundColor: "rgb(255, 255, 255)",

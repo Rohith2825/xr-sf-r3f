@@ -3,17 +3,25 @@ import { useCart, ModelViewer } from "@shopify/hydrogen-react";
 import { useEffect, useRef, useState } from "react";
 import { useZustandStore } from "./stores/ZustandStore";
 import Variant from "./Types/Variant";
+import DOMPurify from 'dompurify';
+import useWishlist from "./WishlistHook";
 
 const Modal = () => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
   const { closeModal, selectedProduct } = useZustandStore();
 
+  // Wishlist Hooks
+  const { wishlist, addItemsToWishlist, removeItemsFromWishlist } = useWishlist();
+  
   // Set the initial variant
   const [selectedVariant, setSelectedVariant] = useState<Variant>();
   useEffect(() => {
     selectedProduct && setSelectedVariant(selectedProduct.variants[0]);
   }, [selectedProduct]);
-  
+
+  // Quantity
+  const [quantity, setQuantity] = useState(1);
+
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -170,7 +178,6 @@ const Modal = () => {
 
     const ModelViewerComponent = () => {
       const model = selectedProduct?.models[0];
-      console.log(selectedProduct);
       if (!model) return (
         <Typography
           sx={{
@@ -269,9 +276,9 @@ const Modal = () => {
           <Typography
             sx={{
               fontSize: "20px", fontFamily: "'Poppins', sans-serif",
-              color: "rgb(255, 255, 255)"
+              color: "rgb(194, 194, 194)"
             }}
-            className="Price"
+            className="ProductPrice"
           >
             &#8377; {selectedVariant && selectedVariant.price}
           </Typography>
@@ -289,18 +296,17 @@ const Modal = () => {
           }
         </Box>
       );
-    }
+    };
 
     const VariantSelector = () => {
-      const handleVariantSelection = (optionName:string, optionValue:string) => {
+      const handleVariantSelection = (optionName: string, optionValue: string) => {
         // Find the position of selected option in options
         const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
-        console.log(selectedProduct?.variants);
-        if(selectedVariant && selectedProduct){
+        if (selectedVariant && selectedProduct) {
           setSelectedVariant(
             selectedProduct.variants.find((variant) => {
-              for(let i = 0; i < num; i++){
-                if(variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
+              for (let i = 0; i < num; i++) {
+                if (variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
               }
               return variant.selectedOptions[num].value === optionValue;
             })
@@ -308,20 +314,20 @@ const Modal = () => {
         }
       }
 
-      const findIfVariantExists = (optionName:string, optionValue:string) => {
+      const findIfVariantExists = (optionName: string, optionValue: string) => {
         // Find the position of option in options
         const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
 
         // Check if all the previous option combination exists with the current option
-        if(selectedVariant && selectedProduct){
+        if (selectedVariant && selectedProduct) {
           return selectedProduct.variants.find((variant) => {
-            for(let i = 0; i < num; i++){
-              if(variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
+            for (let i = 0; i < num; i++) {
+              if (variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
             }
             return variant.selectedOptions[num].value === optionValue;
           });
         }
-        else{
+        else {
           return false;
         }
       }
@@ -331,7 +337,7 @@ const Modal = () => {
           sx={{
             width: "100%",
             display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center",
-            gap: "25px"
+            gap: "25px", marginTop: "20px",
           }}
           className="VariantSelector"
         >
@@ -342,7 +348,7 @@ const Modal = () => {
                   sx={{
                     width: "100%",
                     display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "flex-start",
-                    gap: "10px"
+                    gap: "10px",
                   }}
                   className="VariantOption"
                   key={option.name}
@@ -373,11 +379,11 @@ const Modal = () => {
                             fontSize: "16px", fontFamily: "'Poppins', sans-serif",
                             backgroundColor: selectedVariant?.selectedOptions.find((op) => op.name === option.name)?.value === value ? "rgb(20, 20, 20)" : "#424147",
                             border: selectedVariant?.selectedOptions.find((op) => op.name === option.name)?.value === value ? "1px solid white" : "none",
-                            color: "rgb(255, 255, 255)",
+                            color: "rgb(215, 215, 215)",
                             textTransform: "none"
                           }}
-                          disabled={findIfVariantExists(option.name, value) ? false: true}
-                          onClick={() => {handleVariantSelection(option.name, value)}}
+                          disabled={findIfVariantExists(option.name, value) ? false : true}
+                          onClick={() => { handleVariantSelection(option.name, value) }}
                           key={option.name + value}
                         >
                           {value}
@@ -391,21 +397,101 @@ const Modal = () => {
           }
         </Box>
       );
-    }
+    };
+
+    const QuantitySelector = () => {
+      const decrement = () => {
+        if (quantity > 1) {
+          setQuantity(quantity - 1);
+        }
+      };
+      const increment = () => {
+        if (quantity < 5) {
+          setQuantity(quantity + 1);
+        }
+      };
+
+      return (
+        <Box
+          sx={{
+            width: "40%", height: "30px",
+            display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between",
+            marginTop: "25px"
+          }}
+          className="QuantitySelector"
+        >
+          <Typography
+            sx={{
+              color: "rgba(255, 255, 255)",
+              fontFamily: "'Poppins', sans-seriff", fontSize: "20px", fontWeight: 500,
+            }}
+          >
+            Quantity: 
+          </Typography>
+          <Button
+            sx={{
+              minWidth: "24px",
+              width: "24px",
+              height: "24px",
+              padding: 1,
+              fontSize: "20px", fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
+              color: "rgba(255, 255, 255, 0.74)", backgroundColor: "rgba(149, 149, 149, 0.21)",
+              borderRadius: "50%",
+              "&:hover": {
+                backgroundColor: "rgba(149, 149, 149, 0.53)",
+                transitionDuration: "0s"
+              }
+            }}
+            onClick={decrement}
+          >
+            -
+          </Button>
+          <Typography
+            sx={{
+              color: "rgb(194, 194, 194)",
+              fontFamily: "'Poppins', sans-seriff", fontSize: "20px"
+            }}
+          >
+            {quantity}
+          </Typography>
+          <Button
+            sx={{
+              minWidth: "24px",
+              width: "24px",
+              height: "24px",
+              padding: 1,
+              fontSize: { xs: "20px", sm: "16px" }, fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
+              color: "rgba(255, 255, 255, 0.74)", backgroundColor: "rgba(149, 149, 149, 0.21)",
+              borderRadius: "50%",
+              "&:hover": {
+                backgroundColor: "rgba(149, 149, 149, 0.53)",
+                transitionDuration: "0s"
+              }
+            }}
+            onClick={increment}
+          >
+            +
+          </Button>
+        </Box>
+      );
+    };
+
+    // Description
+    const sanitizedHtml = DOMPurify.sanitize(selectedProduct?.description || "")
 
     return (
       <Box
         sx={{
-          width: { xs: "100%", md: "50%" }, height: { md: "100%" },
-          display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "left",
-          gap: "5%",
+          width: { xs: "100%", md: "50%" }, height: { md: "70%" },
+          display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "left",
+          gap: "2%", marginTop: "5%",
           overflowY: "scroll", scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" }
         }}
         className="Contentviewer"
       >
         <Typography
           sx={{
-            fontSize: "24px", fontFamily: "'Poppins', sans-serif",
+            fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
             color: "rgb(255, 255, 255)"
           }}
           className="ProductTitle"
@@ -414,6 +500,22 @@ const Modal = () => {
         </Typography>
         <PriceContainer />
         <VariantSelector />
+        <QuantitySelector />
+        <Typography
+          sx={{
+            fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+            color: "rgb(255, 255, 255)",
+            marginTop: "20px"
+          }}
+          className="DescriptionTitle"
+        >
+          Description
+        </Typography>
+        <div
+          dangerouslySetInnerHTML={{__html: sanitizedHtml}}
+          style={{ width: "80%", fontSize: "18px", fontFamily: "'Poppins', sans-serif", fontWeight: 400, color: "rgb(255, 255, 255)", marginBottom: "50px"}}
+        >
+        </div>
       </Box>
     );
   }
@@ -461,7 +563,7 @@ const Modal = () => {
         <Box
           sx={{
             width: "100%", height: "95%",
-            display: "flex", flexDirection: { xs: "column-reverse", md: "row" }, justifyContent: "space-evenly", alignItems: "center",
+            display: "flex", flexDirection: { xs: "column-reverse", md: "row" }, justifyContent: "space-evenly", alignItems: "start",
             marginTop: "2%", gap: "2%",
             backgroundColor: "rgba(0, 0, 0, 0)",
           }}
@@ -469,6 +571,74 @@ const Modal = () => {
         >
           <MediaViewer />
           <ContentViewer />
+        </Box>
+        <Box
+          sx={{
+            width: "50%", right: "0%", top: "84%", position: "fixed",
+            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
+            gap: "20px"
+          }}
+          className="ShopifyButtonsContainer"
+        >
+          <Button
+            sx={{
+              width: "30%",
+              backgroundColor: "#424147",
+              borderRadius: "100px",
+              color: "white", fontWeight: "bold",
+              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)"
+              }
+            }}
+            className="AddToCartButton"
+          >
+            Add to Cart
+          </Button>
+          <Button
+            sx={{
+              width: "30%",
+              backgroundColor: "#424147",
+              borderRadius: "100px",
+              color: "white", fontWeight: "bold",
+              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)"
+              }
+            }}
+            className="CheckoutButton"
+          >
+            Checkout
+          </Button>
+          <Button
+            sx={{
+              minWidth: "35px", width: "35px", height: "35px",
+              padding: "5px",
+              backgroundColor: "#424147",
+              borderRadius: "50%",
+              color: "white", fontWeight: "bold",
+              fontSize: 18, fontFamily: "'Poppins', sans-serif",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)"
+              }
+            }}
+            className="WishlistButton"
+            onClick={() => {
+              if(selectedProduct && wishlist.find((productId) => productId === selectedProduct.id)){
+                removeItemsFromWishlist([selectedProduct.id]);
+              }
+              else if(selectedProduct){
+                addItemsToWishlist([selectedProduct.id]);
+              }
+              console.log(wishlist);
+            }}
+          >
+            {!wishlist.find((productId) => productId === selectedProduct?.id) && <i className="far fa-heart"></i>}
+            {wishlist.find((productId) => productId === selectedProduct?.id) && <i className="fas fa-heart"></i>}
+          </Button>
         </Box>
       </Card>
     </div>

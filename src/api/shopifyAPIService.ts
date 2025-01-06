@@ -67,7 +67,8 @@ interface ProductResponse {
                 }[],
               }
             }[]
-          }
+          },
+          bodyHtml: string
         }
       }[]
     }
@@ -120,7 +121,7 @@ export const ProductService = {
       const parsedProduct: Product = {
         id: Number(product.node.id.split("/").pop()),
         title: product.node.title,
-        description: "",
+        description: product.node.bodyHtml,
         images: productImages,
         options: product.node.options,
         variants: productVariants,
