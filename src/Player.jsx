@@ -125,7 +125,7 @@ export const Player = () => {
       // Calculate position with orientation-specific adjustments
       const bottom = isLandscape
         ? Math.min(margins.bottom, viewportHeight * 0.45) // 15% in landscape
-        : Math.min(margins.bottom, viewportHeight * 0.1); // 10% in portrait
+        : Math.min(margins.bottom, viewportHeight * 0.01); // 10% in portrait
 
       const left = isLandscape
         ? Math.min(margins.left, viewportWidth * 0.08) // 8% in landscape
