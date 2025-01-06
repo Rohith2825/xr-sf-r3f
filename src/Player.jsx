@@ -419,7 +419,7 @@ useEffect(() => {
     }
   
     // Only allow movement when the crosshair is not visible
-    if (crosshairRef.current === false) {
+    if (!crosshairRef.current && !modalRef.current && !InfoModalRef.current) {
       const velocity = playerRef.current.linvel();
   
       // Combine joystick and keyboard inputs
