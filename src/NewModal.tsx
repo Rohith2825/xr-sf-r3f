@@ -1,12 +1,19 @@
 import { Box, Button, Card, Typography, ButtonBase } from "@mui/material";
 import { useCart, ModelViewer } from "@shopify/hydrogen-react";
 import { useEffect, useRef, useState } from "react";
-import { useZustandStore } from "./stores/ZustandStores";
+import { useZustandStore } from "./stores/ZustandStore";
+import Variant from "./Types/Variant";
 
 const Modal = () => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
   const { closeModal, selectedProduct } = useZustandStore();
 
+  // Set the initial variant
+  const [selectedVariant, setSelectedVariant] = useState<Variant>();
+  useEffect(() => {
+    selectedProduct && setSelectedVariant(selectedProduct.variants[0]);
+  }, [selectedProduct]);
+  
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -15,209 +22,225 @@ const Modal = () => {
       closeModal();
   };
 
-  // Media Viewer
-  const PHOTOS = "Photos";
-  const MODEL = "3D Model";
-  const [ mediaType, setMediaType ] = useState(PHOTOS);
-  
-  const MediaButtons = () => {
-    return (
-      <Box
-        sx={{
-          width: "50%",
-          display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
-          backgroundColor: "#424147",
-          borderRadius: "100px",
-          padding: "5px", gap: "2%",
-        }}
-        className="MediaButtons"
-        id="MediaButtons"
-      >
-        <Button
-          sx={{
-            width: "50%",
-            backgroundColor: (mediaType === PHOTOS && "#8D8B96") || "rgba(0, 0, 0, 0)",
-            borderRadius: "100px",
-            color: "white", fontWeight: "bold",
-            fontSize: 16,
-            textTransform: "none",
-            "&:hover": (mediaType !== PHOTOS && {
-              backgroundColor: "rgba(255, 255, 255, 0.1)"
-            }) || {}
-          }}
-          onClick={() => setMediaType(PHOTOS)}
-          className="MediaViewerPhotosButton"
-        >
-          Photos
-        </Button>
-        <Button
-          sx={{
-            width: "50%",
-            backgroundColor: (mediaType === MODEL && "#8D8B96") || "rgba(0, 0, 0, 0)",
-            borderRadius: "100px",
-            color: "white", fontWeight: "bold",
-            fontSize: 16,
-            textTransform: "none",
-            "&:hover": (mediaType !== MODEL && {
-              backgroundColor: "rgba(255, 255, 255, 0.1)"
-            }) || {}
-          }}
-          onClick={() => setMediaType(MODEL)}
-          className="MediaViewerModelButton"
-        >
-          3D Model
-        </Button>
-      </Box>
-    )
-  };
+  const MediaViewer = () => {
+    const PHOTOS = "Photos";
+    const MODEL = "3D Model";
+    const [mediaType, setMediaType] = useState(PHOTOS);
 
-  const PhotosCarousel = () => {
-    const photosCount: number = selectedProduct?.images.length || 0;
-    const [ currentPhoto, setCurrentPhoto ] = useState(0);
-    
-    const nextPhoto = () => {
-      if(currentPhoto < photosCount - 1){
-        setCurrentPhoto(currentPhoto + 1);
-      }
-    };
-    
-    const prevPhoto = () => {
-      if(currentPhoto > 0){
-        setCurrentPhoto(currentPhoto - 1);
-      }
-    };
-
-    return (
-      <Box
-        sx={{
-          width: "100%", height: "60%",
-          display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
-          gap: "3%"
-        }}
-        className = "PhotosCarousel"
-      >
-        <ButtonBase
-          sx={{
-            width: "32px",
-            borderRadius: "50%",
-            transform: "rotate(180deg)",
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.05)"
-            }
-          }}
-          onClick={prevPhoto}
-          className="PrevPhotoButton"
-        >
-          <img src="icons/Arrow.svg" style={{width: "100%", height: "auto"}}></img>
-        </ButtonBase>
+    const MediaButtons = () => {
+      return (
         <Box
           sx={{
-            width: "60%", height: "100%",
-            display: "block",
-            overflow: "hidden"
+            width: "50%",
+            display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
+            backgroundColor: "#424147",
+            borderRadius: "100px",
+            padding: "5px", gap: "2%",
           }}
-          className="PhotosContainer"
+          className="MediaButtons"
+          id="MediaButtons"
         >
+          <Button
+            sx={{
+              width: "50%",
+              backgroundColor: (mediaType === PHOTOS && "#8D8B96") || "rgba(0, 0, 0, 0)",
+              borderRadius: "100px",
+              color: "white",
+              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              textTransform: "none",
+              "&:hover": (mediaType !== PHOTOS && {
+                backgroundColor: "rgba(255, 255, 255, 0.1)"
+              }) || {}
+            }}
+            onClick={() => setMediaType(PHOTOS)}
+            className="MediaViewerPhotosButton"
+          >
+            Pictures
+          </Button>
+          <Button
+            sx={{
+              width: "50%",
+              backgroundColor: (mediaType === MODEL && "#8D8B96") || "rgba(0, 0, 0, 0)",
+              borderRadius: "100px",
+              color: "white",
+              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              textTransform: "none",
+              "&:hover": (mediaType !== MODEL && {
+                backgroundColor: "rgba(255, 255, 255, 0.1)"
+              }) || {}
+            }}
+            onClick={() => setMediaType(MODEL)}
+            className="MediaViewerModelButton"
+          >
+            3D View
+          </Button>
+        </Box>
+      )
+    };
+
+    const PhotosCarousel = () => {
+      const photosCount: number = selectedProduct?.images.length || 0;
+      const [currentPhoto, setCurrentPhoto] = useState(0);
+
+      const nextPhoto = () => {
+        if (currentPhoto < photosCount - 1) {
+          setCurrentPhoto(currentPhoto + 1);
+        }
+      };
+
+      const prevPhoto = () => {
+        if (currentPhoto > 0) {
+          setCurrentPhoto(currentPhoto - 1);
+        }
+      };
+
+      return (
+        <Box
+          sx={{
+            width: "100%", height: "100%",
+            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
+            gap: "3%"
+          }}
+          className="PhotosCarousel"
+        >
+          <ButtonBase
+            sx={{
+              width: "32px",
+              borderRadius: "50%",
+              transform: "rotate(180deg)",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.05)"
+              }
+            }}
+            onClick={prevPhoto}
+            className="PrevPhotoButton"
+          >
+            <img src="icons/Arrow.svg" style={{ width: "100%", height: "auto" }}></img>
+          </ButtonBase>
           <Box
             sx={{
-              left: 0,
-              width: String(photosCount * 100) + "%", height: "100%",
-              display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center",
-              transition: "transform 0.5s ease-in-out",
-              transform: `translateX(-${(currentPhoto / photosCount) * 100}%)`,
+              width: "60%", height: "100%",
+              display: "block",
+              overflow: "hidden"
             }}
-            className="PhotoScroller"
+            className="PhotosContainer"
           >
-            {selectedProduct && (
-              selectedProduct.images.map((image) => {
-                return (
-                  <Box
-                    sx={{
-                      width: String(1 / photosCount * 100) + "%",
-                    }}
-                    component="img"
-                    src={image.src}
-                    key={image.src}
-                  />
-                );
-              })
-            )}
+            <Box
+              sx={{
+                left: 0,
+                width: String(photosCount * 100) + "%", height: "100%",
+                display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center",
+                transition: "transform 0.5s ease-in-out",
+                transform: `translateX(-${(currentPhoto / photosCount) * 100}%)`,
+              }}
+              className="PhotoScroller"
+            >
+              {selectedProduct && (
+                selectedProduct.images.map((image) => {
+                  return (
+                    <Box
+                      sx={{
+                        width: String(1 / photosCount * 100) + "%",
+                      }}
+                      component="img"
+                      src={image.src}
+                      key={image.src}
+                    />
+                  );
+                })
+              )}
+            </Box>
           </Box>
+          <ButtonBase
+            sx={{
+              width: "32px",
+              borderRadius: "50%",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.05)"
+              }
+            }}
+            onClick={nextPhoto}
+            className="NextPhotoButton"
+          >
+            <img src="icons/Arrow.svg" style={{ width: "100%", height: "auto" }}></img>
+          </ButtonBase>
         </Box>
-        <ButtonBase
-          sx={{
-            width: "32px",
-            borderRadius: "50%",
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.05)"
-            }
-          }}
-          onClick={nextPhoto}
-          className="NextPhotoButton"
-        >
-          <img src="icons/Arrow.svg" style={{width: "100%", height: "auto"}}></img>
-        </ButtonBase>
-      </Box>
-    );
-  };
-
-  const ModelViewerComponent = () => {
-    const model = selectedProduct?.models[0];
-    console.log(selectedProduct);
-    if(!model) return null;
-
-    const modelData = {
-      id: model.id,
-      sources: [model.sources && model.sources[0]],
-      alt: "3D Model"
+      );
     };
-    const iosSrc = model.sources && model.sources[1].url;
 
-    return (
-      <ModelViewer
-        style={{
-          height: "100%",
-          width: "60%",
-        }}
-        data={modelData}
-        ar={true} // Enable AR
-        arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
-        arScale="auto" // Automatically scale the model in AR
-        iosSrc={iosSrc} // Link to the .usdz file for iOS
-        cameraControls={true} // Enable camera controls
-        environmentImage="neutral" // Optional: Environment image for lighting
-        poster="https://example.com/poster.png" // Optional: Poster image for loading
-        alt="A 3D model of a product" // Accessibility text
-        onArStatus={(event:unknown) => console.log("AR Status:", event)} // Optional: Log AR status
-        onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
-      />
-    );
-  };
+    const ModelViewerComponent = () => {
+      const model = selectedProduct?.models[0];
+      console.log(selectedProduct);
+      if (!model) return (
+        <Typography
+          sx={{
+            fontSize: "24px", fontFamily: "'Poppins', sans-serif",
+            color: "rgba(114, 114, 114, 0.75)"
+          }}
+        >
+          3D Model not available
+        </Typography>
+      );
 
-  const MediaViewer = () => {
+      const modelData = {
+        id: model.id,
+        sources: [model.sources && model.sources[0]],
+        alt: "3D Model"
+      };
+      const iosSrc = model.sources && model.sources[1].url;
+
+      return (
+        <ModelViewer
+          style={{
+            height: "100%",
+            width: "100%",
+          }}
+          data={modelData}
+          ar={true} // Enable AR
+          arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
+          arScale="auto" // Automatically scale the model in AR
+          iosSrc={iosSrc} // Link to the .usdz file for iOS
+          cameraControls={true} // Enable camera controls
+          environmentImage="neutral" // Optional: Environment image for lighting
+          poster="https://example.com/poster.png" // Optional: Poster image for loading
+          alt="A 3D model of a product" // Accessibility text
+          onArStatus={(event: unknown) => console.log("AR Status:", event)} // Optional: Log AR status
+          onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
+        />
+      );
+    };
+
     return (
       <Box
         sx={{
-          width: {xs: "100%", md: "50%"}, height: {md: "100%"},
+          width: { xs: "100%", md: "50%" }, height: { md: "100%" },
           display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
           gap: "5%",
         }}
         className="MediaViewer"
       >
-        <MediaButtons/>
-        {mediaType === PHOTOS &&
-          <PhotosCarousel/>
-        }
-        {mediaType === MODEL &&
-          <ModelViewerComponent/>
-        }
+        <MediaButtons />
+        <Box
+          sx={{
+            width: "100%", height: "60%",
+            display: "flex", justifyContent: "center", alignItems: "center"
+          }}
+          className="MediaContainer"
+        >
+          {mediaType === PHOTOS &&
+            <PhotosCarousel />
+          }
+          {mediaType === MODEL &&
+            <ModelViewerComponent />
+          }
+        </Box>
         <Button
           sx={{
             width: "30%",
-            backgroundColor:  "#424147",
+            backgroundColor: "#424147",
             borderRadius: "100px",
             color: "white", fontWeight: "bold",
-            fontSize: 16,
+            fontSize: 16, fontFamily: "'Poppins', sans-serif",
             textTransform: "none",
             "&:hover": {
               backgroundColor: "rgba(255, 255, 255, 0.3)"
@@ -228,6 +251,169 @@ const Modal = () => {
           View in AR
         </Button>
 
+      </Box>
+    );
+  }
+
+  const ContentViewer = () => {
+    const PriceContainer = () => {
+      return (
+        <Box
+          sx={{
+            width: "100%", height: "auto",
+            display: "flex", flexDirection: "row", justifyContent: "start", alignItems: "center",
+            gap: "10px"
+          }}
+          className="PriceContainer"
+        >
+          <Typography
+            sx={{
+              fontSize: "20px", fontFamily: "'Poppins', sans-serif",
+              color: "rgb(255, 255, 255)"
+            }}
+            className="Price"
+          >
+            &#8377; {selectedVariant && selectedVariant.price}
+          </Typography>
+          {selectedVariant && selectedVariant.compareAtPrice &&
+            <Typography
+              sx={{
+                fontSize: "14px", fontFamily: "'Poppins', sans-serif",
+                color: "rgb(255, 0, 0)",
+                textDecoration: "line-through"
+              }}
+              className="Price"
+            >
+              {selectedVariant.compareAtPrice}
+            </Typography>
+          }
+        </Box>
+      );
+    }
+
+    const VariantSelector = () => {
+      const handleVariantSelection = (optionName:string, optionValue:string) => {
+        // Find the position of selected option in options
+        const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
+        console.log(selectedProduct?.variants);
+        if(selectedVariant && selectedProduct){
+          setSelectedVariant(
+            selectedProduct.variants.find((variant) => {
+              for(let i = 0; i < num; i++){
+                if(variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
+              }
+              return variant.selectedOptions[num].value === optionValue;
+            })
+          );
+        }
+      }
+
+      const findIfVariantExists = (optionName:string, optionValue:string) => {
+        // Find the position of option in options
+        const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
+
+        // Check if all the previous option combination exists with the current option
+        if(selectedVariant && selectedProduct){
+          return selectedProduct.variants.find((variant) => {
+            for(let i = 0; i < num; i++){
+              if(variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
+            }
+            return variant.selectedOptions[num].value === optionValue;
+          });
+        }
+        else{
+          return false;
+        }
+      }
+
+      return (
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center",
+            gap: "25px"
+          }}
+          className="VariantSelector"
+        >
+          {selectedProduct &&
+            selectedProduct.options.map((option) => {
+              return (
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "flex-start",
+                    gap: "10px"
+                  }}
+                  className="VariantOption"
+                  key={option.name}
+                >
+                  <Typography
+                    sx={{
+                      maxWidth: "30%", width: "30%",
+                      overflowWrap: "break-word",
+                      fontSize: "20px", fontFamily: "'Poppins', sans-serif",
+                      color: "rgb(255, 255, 255)",
+                    }}
+                  >
+                    {option.name}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex", flexDirection: "row", justifyContent: "start", alignItems: 'center',
+                      flexWrap: "wrap", gap: "10px"
+                    }}
+                    className="ListofValues"
+                  >
+                    {option.values.map((value) => {
+                      return (
+                        <Button
+                          id={option.id + value}
+                          sx={{
+                            padding: "5px",
+                            fontSize: "16px", fontFamily: "'Poppins', sans-serif",
+                            backgroundColor: selectedVariant?.selectedOptions.find((op) => op.name === option.name)?.value === value ? "rgb(20, 20, 20)" : "#424147",
+                            border: selectedVariant?.selectedOptions.find((op) => op.name === option.name)?.value === value ? "1px solid white" : "none",
+                            color: "rgb(255, 255, 255)",
+                            textTransform: "none"
+                          }}
+                          disabled={findIfVariantExists(option.name, value) ? false: true}
+                          onClick={() => {handleVariantSelection(option.name, value)}}
+                          key={option.name + value}
+                        >
+                          {value}
+                        </Button>
+                      );
+                    })}
+                  </Box>
+                </Box>
+              );
+            })
+          }
+        </Box>
+      );
+    }
+
+    return (
+      <Box
+        sx={{
+          width: { xs: "100%", md: "50%" }, height: { md: "100%" },
+          display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "left",
+          gap: "5%",
+          overflowY: "scroll", scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" }
+        }}
+        className="Contentviewer"
+      >
+        <Typography
+          sx={{
+            fontSize: "24px", fontFamily: "'Poppins', sans-serif",
+            color: "rgb(255, 255, 255)"
+          }}
+          className="ProductTitle"
+        >
+          {selectedProduct && selectedProduct.title}
+        </Typography>
+        <PriceContainer />
+        <VariantSelector />
       </Box>
     );
   }
@@ -275,22 +461,14 @@ const Modal = () => {
         <Box
           sx={{
             width: "100%", height: "95%",
-            display: "flex", flexDirection: {xs: "column-reverse", md: "row"}, justifyContent: "space-evenly", alignItems: "center",
-            marginTop: "5%",
+            display: "flex", flexDirection: { xs: "column-reverse", md: "row" }, justifyContent: "space-evenly", alignItems: "center",
+            marginTop: "2%", gap: "2%",
             backgroundColor: "rgba(0, 0, 0, 0)",
           }}
           className="MediaAndDetails"
         >
-          <MediaViewer/>
-          <Box
-            sx={{
-              width: {xs: "100%", md: "50%"},
-              display: "flex", flexDirection: "column", alignItems: "left",
-            }}
-            className="ContentViewer"
-          >
-
-          </Box>
+          <MediaViewer />
+          <ContentViewer />
         </Box>
       </Card>
     </div>

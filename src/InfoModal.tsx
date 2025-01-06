@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { useEffect } from "react";
-import { useZustandStore } from "./stores/ZustandStores";
+import { useZustandStore } from "./stores/ZustandStore";
 
 const styles = {
   backdrop: {

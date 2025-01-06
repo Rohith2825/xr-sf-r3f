@@ -9,7 +9,7 @@ import useWishlist from './WishlistHook';
 import Product from './Types/Product';
 import Swal from 'sweetalert2';
 import styles from '@/UI/UI.module.scss';
-import { useZustandStore } from '@/stores/ZustandStores';
+import { useZustandStore } from '@/stores/ZustandStore';
 
 const Wishlist = () => {
   const { wishlist, productList, removeItemsFromWishlist, clearWishlist } = useWishlist();

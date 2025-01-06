@@ -11,7 +11,7 @@ import BrandPoster from "./BrandPoster";
 import Products from "./Products";
 import { Suspense, useState, useEffect } from "react";
 import Skybox from "./Skybox";
-import { useZustandStore } from "./stores/ZustandStores";
+import { useZustandStore } from "./stores/ZustandStore";
 
 const shadowOffset = 50;
 

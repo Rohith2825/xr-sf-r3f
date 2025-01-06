@@ -50,6 +50,7 @@ interface ProductResponse {
           options: {
             id: string,
             name: string,
+            position: number,
             values: string[]
           }[],
           variants: {
@@ -102,7 +103,7 @@ export const ProductService = {
         return { 
           id: edge.node.id,
           sources: edge.node.sources
-        }
+        };
       });
 
       // Variants
@@ -113,7 +114,7 @@ export const ProductService = {
           compareAtPrice: variant.node.compareAtPrice,
           productId: Number(product.node.id.split("/").pop()),
           selectedOptions: variant.node.selectedOptions
-        }
+        };
       });
 
       const parsedProduct: Product = {
@@ -121,6 +122,7 @@ export const ProductService = {
         title: product.node.title,
         description: "",
         images: productImages,
+        options: product.node.options,
         variants: productVariants,
         models: models
       };

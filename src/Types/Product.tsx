@@ -6,12 +6,18 @@ export default interface Product {
   description?: string;
   images: { src: string }[];
   models: {
-    id: string|undefined;
+    id: string | undefined;
     sources: {
       url: string,
       format: string,
       mimeType: string
     }[] | undefined;
+  }[];
+  options: {
+    id: string;
+    name: string;
+    position: number;
+    values: string[];
   }[];
   variants: Variant[];
 }

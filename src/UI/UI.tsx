@@ -1,7 +1,7 @@
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
 import { useState } from "react";
-import { useZustandStore } from "../stores/ZustandStores";
+import { useZustandStore } from "../stores/ZustandStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../NewModal";
 import Cart from "../Cart";

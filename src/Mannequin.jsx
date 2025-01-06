@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { PivotControls } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
-import { useZustandStore } from "./stores/ZustandStores";
+import { useZustandStore } from "./stores/ZustandStore";
 
 const DraggableMannequin = ({
   position = [0, 0, 0],

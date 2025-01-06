@@ -3,7 +3,7 @@ import { Box, Button, Card, Typography } from "@mui/material";
 import { useCart } from "@shopify/hydrogen-react";
 import Swal from "sweetalert2";
 import styles from './UI/UI.module.scss';
-import { useZustandStore } from "./stores/ZustandStores"
+import { useZustandStore } from "./stores/ZustandStore"
 
 const Cart = () => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
