@@ -107,6 +107,44 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = (props) => {
+  const containerRef = useRef(null); // Reference to the wrapper
+  const modelViewerElement = useRef(null); // Reference to the <model-viewer> element
+  const [arSupported, setArSupported] = useState(false); // Ref for the native <model-viewer> element
+
+  useEffect(() => {
+    const observeModelViewer = () => {
+      const observer = new MutationObserver(() => {
+        const element = containerRef.current?.querySelector("model-viewer");
+        if (element) {
+          modelViewerElement.current = element; // Store reference
+          console.log("Found <model-viewer> element:", element);
+
+          if (element.activateAR) {
+            setArSupported(true); // AR is supported
+          }
+          observer.disconnect(); // Stop observing once found
+        }
+      });
+
+      if (containerRef.current) {
+        observer.observe(containerRef.current, { childList: true, subtree: true });
+      }
+
+      return () => observer.disconnect();
+    };
+
+    observeModelViewer();
+  }, []);
+
+  const handleViewInAR = () => {
+    if (modelViewerElement.current?.activateAR) {
+      modelViewerElement.current.activateAR(); // Trigger AR viewer
+      console.log("AR support exsit");
+    } else {
+      console.error("AR is not supported or activateAR is undefined");
+    }
+  };
+
   const sizes: string[] = [];
   const images: string[] = [];
   let modelData: unknown = {};
@@ -372,6 +410,7 @@ const Modal: React.FC<ModalProps> = (props) => {
       }}
     >
       <Box
+        ref={containerRef} // Attach ref to the container
         sx={{
           position: "fixed",
           top: 0,
@@ -690,6 +729,8 @@ const Modal: React.FC<ModalProps> = (props) => {
                 <Button
                   variant="contained"
                   size="small"
+                  disabled={!isMobile}
+                  onClick={handleViewInAR} // View in AR button
                   sx={{
                     marginTop: "auto",
                     marginBottom: "10px",
