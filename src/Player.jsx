@@ -30,36 +30,28 @@ const START_POSITION = new THREE.Vector3(0, 7, -5);
 
 export const Player = () => {
   // Add this with your other refs at the top of the component
-const modalRef = useRef(false);
-const crosshairRef = useRef(false);
-const InfoModalRef = useRef(false);
+  const modalRef = useRef(false);
+  const crosshairRef = useRef(false);
+  const InfoModalRef = useRef(false);
 
-
-
-// Add this useEffect to watch modal state changes
-useEffect(() => {
-  const unsubscribe = useProductStore.subscribe(
-    (state) => {
+  // Add this useEffect to watch modal state changes
+  useEffect(() => {
+    const unsubscribe = useProductStore.subscribe((state) => {
       modalRef.current = state.isModalOpen;
       crosshairRef.current = state.crosshairVisible;
-    }
-  );
+    });
 
-  return () => unsubscribe();
-}, []);
+    return () => unsubscribe();
+  }, []);
 
-
-
-// Watch InfoModal state changes
-useEffect(() => {
-  const unsubscribe = useInfoModalStore.subscribe(
-    (state) => {
+  // Watch InfoModal state changes
+  useEffect(() => {
+    const unsubscribe = useInfoModalStore.subscribe((state) => {
       InfoModalRef.current = state.isInfoModalOpen;
-    }
-  );
+    });
 
-  return () => unsubscribe();
-}, []);
+    return () => unsubscribe();
+  }, []);
 
   const playerRef = useRef();
   const touchRef = useRef({
@@ -110,38 +102,38 @@ useEffect(() => {
 
     const JOYSTICK_SIZE = 130; // pixels
     const PORTRAIT_MARGIN = {
-      bottom: 70,  // pixels from edge
-      left: 80
+      bottom: 70, // pixels from edge
+      left: 80,
     };
     const LANDSCAPE_MARGIN = {
-      bottom: 80,  // smaller bottom margin for landscape
-      left: 120    // larger left margin for landscape
+      bottom: 80, // smaller bottom margin for landscape
+      left: 120, // larger left margin for landscape
     };
-    
+
     // Function to calculate position based on screen size and orientation
     const calculatePosition = () => {
       // Get current viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      
+
       // Determine if we're in landscape mode
       const isLandscape = viewportWidth > viewportHeight;
-      
+
       // Use different margins based on orientation
       const margins = isLandscape ? LANDSCAPE_MARGIN : PORTRAIT_MARGIN;
-      
+
       // Calculate position with orientation-specific adjustments
       const bottom = isLandscape
-        ? Math.min(margins.bottom, viewportHeight * 0.45)  // 15% in landscape
-        : Math.min(margins.bottom, viewportHeight * 0.1);  // 10% in portrait
-        
+        ? Math.min(margins.bottom, viewportHeight * 0.45) // 15% in landscape
+        : Math.min(margins.bottom, viewportHeight * 0.1); // 10% in portrait
+
       const left = isLandscape
-        ? Math.min(margins.left, viewportWidth * 0.08)    // 8% in landscape
-        : Math.min(margins.left, viewportWidth * 0.12);   // 12% in portrait
-    
-      return { 
-        bottom: `${bottom}px`, 
-        left: `${left}px` 
+        ? Math.min(margins.left, viewportWidth * 0.08) // 8% in landscape
+        : Math.min(margins.left, viewportWidth * 0.12); // 12% in portrait
+
+      return {
+        bottom: `${bottom}px`,
+        left: `${left}px`,
       };
     };
 
@@ -177,27 +169,174 @@ useEffect(() => {
     };
   }, [isMobile]);
 
-
   const initialTourComplete = useRef(false);
   const isTransitioning = useRef(false);
   const touchEnabler = useRef(false);
   const touchEnabled = useProductStore((state) => state.touchEnabled);
   const setTouchEnabled = useProductStore((state) => state.setTouchEnabled);
 
+  //More pans
+  // useEffect(() => {
+  //   if (!playerRef.current || initialTourComplete.current) return;
+
+  //   // Set initial position off-screen
+  //   const startPosition = new THREE.Vector3(0, 15, -5);
+  //   playerRef.current.setTranslation(startPosition);
+  //   camera.position.copy(startPosition);
+
+  //   // Define the camera tour path
+  //   const tourTimeline = gsap.timeline({
+  //     onComplete: () => {
+  //       isTransitioning.current = true;
+
+  //       // Create a smooth transition to spawn point
+  //       const finalTimeline = gsap.timeline({
+  //         onComplete: () => {
+  //           initialTourComplete.current = true;
+  //           isTransitioning.current = false;
+  //           touchEnabler.current = true;
+  //           setTouchEnabled();
+
+  //           // Reset physics state after transition
+  //           playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+  //           playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
+  //         },
+  //       });
+
+  //       // First, smoothly move to a position above the spawn point
+  //       finalTimeline
+  //         .to(camera.position, {
+  //           duration: 1.5,
+  //           x: START_POSITION.x,
+  //           y: START_POSITION.y + 3,
+  //           z: START_POSITION.z,
+  //           ease: "power2.inOut",
+  //         })
+  //         // Then smoothly descend to the exact spawn point
+  //         .to(camera.position, {
+  //           duration: 0.8,
+  //           y: START_POSITION.y,
+  //           ease: "power2.out",
+  //         });
+  //     },
+  //   });
+
+  //   // Create the tour sequence
+  //   tourTimeline
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: -10,
+  //       y: 12,
+  //       z: -15,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: Math.PI * 0.25, // Rotate to the left view
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: 5,
+  //       y: 10,
+  //       z: -10,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: 0, // Return to center
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: 10,
+  //       y: 12,
+  //       z: -15,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: -Math.PI * 0.25, // Rotate to the right view
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: 5,
+  //       y: 10,
+  //       z: -10,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: 0, // Return to center
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 1.5,
+  //       x: START_POSITION.x,
+  //       y: START_POSITION.y,
+  //       z: START_POSITION.z,
+  //       ease: "power2.inOut",
+  //     });
+
+  //   // Improved physics body synchronization
+  //   const updatePhysicsBody = () => {
+  //     if (!playerRef.current) return;
+
+  //     if (!initialTourComplete.current || isTransitioning.current) {
+  //       playerRef.current.wakeUp();
+  //       playerRef.current.setTranslation(camera.position);
+  //       playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+  //     }
+  //   };
+
+  //   // Smoother animation frame callback
+  //   let animationFrameId;
+  //   const animationFrame = () => {
+  //     updatePhysicsBody();
+  //     if (!initialTourComplete.current || isTransitioning.current) {
+  //       animationFrameId = requestAnimationFrame(animationFrame);
+  //     }
+  //   };
+  //   animationFrame();
+
+  //   return () => {
+  //     tourTimeline.kill();
+  //     if (animationFrameId) {
+  //       cancelAnimationFrame(animationFrameId);
+  //     }
+  //   };
+  // }, [camera]);
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
 
-    // Set initial position off-screen
-    const startPosition = new THREE.Vector3(0, 15, -5);
+    // Set initial position off-screen (outside the castle)
+    const startPosition = new THREE.Vector3(0, 15, -20); // Adjust as needed for the castle's exterior
     playerRef.current.setTranslation(startPosition);
     camera.position.copy(startPosition);
 
-    // Define the camera tour path
+    // Create a smooth transition to the spawn point
     const tourTimeline = gsap.timeline({
       onComplete: () => {
         isTransitioning.current = true;
 
-        // Create a smooth transition to spawn point
+        // Create a smooth final descent to the exact spawn point
         const finalTimeline = gsap.timeline({
           onComplete: () => {
             initialTourComplete.current = true;
@@ -211,97 +350,23 @@ useEffect(() => {
           },
         });
 
-        // First, smoothly move to a position above the spawn point
-        finalTimeline
-          .to(camera.position, {
-            duration: 1.5,
-            x: START_POSITION.x,
-            y: START_POSITION.y + 3,
-            z: START_POSITION.z,
-            ease: "power2.inOut",
-          })
-          // Then smoothly descend to the exact spawn point
-          .to(camera.position, {
-            duration: 0.8,
-            y: START_POSITION.y,
-            ease: "power2.out",
-          });
+        // Smoothly descend to the spawn point
+        finalTimeline.to(camera.position, {
+          duration: 1.5,
+          y: START_POSITION.y,
+          ease: "power2.out",
+        });
       },
     });
 
-    // Create the tour sequence
-    tourTimeline
-      .to(camera.position, {
-        duration: 2,
-        x: -10,
-        y: 12,
-        z: -15,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: Math.PI * 0.25, // Rotate to the left view
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 2,
-        x: 5,
-        y: 10,
-        z: -10,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: 0, // Return to center
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 2,
-        x: 10,
-        y: 12,
-        z: -15,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: -Math.PI * 0.25, // Rotate to the right view
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 2,
-        x: 5,
-        y: 10,
-        z: -10,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: 0, // Return to center
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 1.5,
-        x: START_POSITION.x,
-        y: START_POSITION.y,
-        z: START_POSITION.z,
-        ease: "power2.inOut",
-      });
+    // Smooth pan from the castle's exterior to the spawn point
+    tourTimeline.to(camera.position, {
+      duration: 3, // Adjust duration for the desired smoothness
+      x: START_POSITION.x,
+      y: START_POSITION.y + 3, // Slightly above the spawn point
+      z: START_POSITION.z,
+      ease: "power2.inOut",
+    });
 
     // Improved physics body synchronization
     const updatePhysicsBody = () => {
@@ -331,11 +396,17 @@ useEffect(() => {
       }
     };
   }, [camera]);
+
   useEffect(() => {
     const handleTouchStart = (e) => {
-      if (!touchEnabler.current || modalRef.current || crosshairRef.current || InfoModalRef.current) return;
-      
-      
+      if (
+        !touchEnabler.current ||
+        modalRef.current ||
+        crosshairRef.current ||
+        InfoModalRef.current
+      )
+        return;
+
       if (e.target.closest("#joystickZone")) return;
 
       // Find the rightmost touch for camera control
@@ -357,8 +428,14 @@ useEffect(() => {
 
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
-      if (!touchEnabler.current || modalRef.current || crosshairRef.current || InfoModalRef.current) return;
-      
+      if (
+        !touchEnabler.current ||
+        modalRef.current ||
+        crosshairRef.current ||
+        InfoModalRef.current
+      )
+        return;
+
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
       );
@@ -384,8 +461,14 @@ useEffect(() => {
     };
 
     const handleTouchEnd = (e) => {
-      if (!touchEnabler.current || modalRef.current || crosshairRef.current || InfoModalRef.current) return;
-      
+      if (
+        !touchEnabler.current ||
+        modalRef.current ||
+        crosshairRef.current ||
+        InfoModalRef.current
+      )
+        return;
+
       const remainingTouches = Array.from(e.touches);
       if (
         !remainingTouches.some(
@@ -417,25 +500,29 @@ useEffect(() => {
     if (playerY < RESPAWN_HEIGHT) {
       respawnPlayer();
     }
-  
+
     // Only allow movement when the crosshair is not visible
     if (!crosshairRef.current && !modalRef.current && !InfoModalRef.current) {
       const velocity = playerRef.current.linvel();
-  
+
       // Combine joystick and keyboard inputs
       frontVector.set(0, 0, backward - forward);
       sideVector.set(right - left, 0, 0);
-  
+
       // Combine inputs into a single movement direction
-      combinedInput.copy(frontVector).add(sideVector).add(direction).normalize();
-  
+      combinedInput
+        .copy(frontVector)
+        .add(sideVector)
+        .add(direction)
+        .normalize();
+
       // Apply camera's rotation to align movement with camera orientation
       movementDirection
         .copy(combinedInput)
         .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
         .normalize()
         .multiplyScalar(MOVE_SPEED);
-  
+
       // Set the player's velocity based on movement direction
       playerRef.current.wakeUp();
       playerRef.current.setLinvel({
@@ -443,7 +530,7 @@ useEffect(() => {
         y: velocity.y,
         z: movementDirection.z,
       });
-  
+
       if (jump && canJump) {
         doJump();
         setCanJump(false);
@@ -456,7 +543,6 @@ useEffect(() => {
     const lerpFactor = 0.05; // Adjust this value to control the smoothness (smaller is smoother)
     state.camera.position.lerp({ x, y, z }, lerpFactor);
   });
-  
 
   const doJump = () => {
     playerRef.current.setLinvel({ x: 0, y: 5, z: 0 });
