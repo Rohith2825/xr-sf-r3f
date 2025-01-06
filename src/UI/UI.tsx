@@ -98,7 +98,7 @@ const UI = () => {
       {/* Brand logo on bottom-left */}
       <div className={styles.brandLogoContainer}>
         <img
-          src="/icons/Brand Logo.svg"
+          src="/logo.avif"
           alt="Brand Logo"
           className={styles.brandLogo}
         />
