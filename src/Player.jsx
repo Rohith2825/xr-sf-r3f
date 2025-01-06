@@ -453,7 +453,8 @@ useEffect(() => {
 
     // Sync the camera's position with the player
     const { x, y, z } = playerRef.current.translation();
-    state.camera.position.set(x, y, z);
+    const lerpFactor = 0.05; // Adjust this value to control the smoothness (smaller is smoother)
+    state.camera.position.lerp({ x, y, z }, lerpFactor);
   });
   
 
