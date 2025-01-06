@@ -494,7 +494,7 @@ const Modal = () => {
       return (
         <Box
           sx={{
-            width: "40%", height: "30px",
+            width: {xs: "80%", md: "40%"}, height: "30px",
             display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between",
             marginTop: "25px"
           }}
@@ -562,10 +562,11 @@ const Modal = () => {
     return (
       <Box
         sx={{
-          width: { xs: "100%", md: "50%" }, height: { md: "70%" },
+          width: { xs: "100%", md: "50%" }, height: {xs: "auto", md: "70%" },
           display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "left",
           gap: "2%", marginTop: "5%",
-          overflowY: "scroll", scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" }
+          overflowY: {md: "scroll"}, scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" },
+          padding: {xs: "7%", md: "0"}, boxSizing: "border-box"
         }}
         className="Contentviewer"
       >
@@ -591,11 +592,17 @@ const Modal = () => {
         >
           Description
         </Typography>
-        <div
+        <Box
           dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
-          style={{ width: "80%", fontSize: "18px", fontFamily: "'Poppins', sans-serif", fontWeight: 400, color: "rgb(255, 255, 255)", marginBottom: "50px" }}
+          sx={{ 
+            width: {xs: "100%", md: "80%"}, 
+            fontSize: {xs: "16px", md: "18px"}, fontFamily: "'Poppins', sans-serif", fontWeight: {xs: "300", md: "400"}, 
+            color: "rgb(255, 255, 255)", 
+            marginBottom: "50px",
+            textAlign: "justify"
+          }}
         >
-        </div>
+        </Box>
       </Box>
     );
   }
@@ -643,9 +650,10 @@ const Modal = () => {
         <Box
           sx={{
             width: "100%", height: "95%",
-            display: "flex", flexDirection: { xs: "column-reverse", md: "row" }, justifyContent: "space-evenly", alignItems: "start",
+            display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-evenly", alignItems: {xs: "center", md: "start"},
             marginTop: "2%", gap: "2%",
             backgroundColor: "rgba(0, 0, 0, 0)",
+            overflowY: {xs: "scroll", md: "hidden"}, scrollbarWidth: 0, "&::-webkit-scrollbar": { display: "none" }
           }}
           className="MediaAndDetails"
         >
@@ -654,7 +662,7 @@ const Modal = () => {
         </Box>
         <Box
           sx={{
-            width: "50%", right: "0%", top: "84%", position: "fixed",
+            width: {xs: "100%", md: "50%"}, right: "0%", top: "84%", position: "fixed",
             display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
             gap: "20px"
           }}
@@ -666,7 +674,7 @@ const Modal = () => {
               backgroundColor: "#424147",
               borderRadius: "100px",
               color: "white", fontWeight: "bold",
-              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              fontSize: {xs: "14px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
               textTransform: "none",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.3)"
@@ -683,7 +691,7 @@ const Modal = () => {
               backgroundColor: "#424147",
               borderRadius: "100px",
               color: "white", fontWeight: "bold",
-              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              fontSize: {xs: "14px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
               textTransform: "none",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.3)"
@@ -701,7 +709,7 @@ const Modal = () => {
               backgroundColor: "#424147",
               borderRadius: "50%",
               color: "white", fontWeight: "bold",
-              fontSize: 18, fontFamily: "'Poppins', sans-serif",
+              fontSize: {xs: "16px", md: "18px"}, fontFamily: "'Poppins', sans-serif",
               textTransform: "none",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.3)"
