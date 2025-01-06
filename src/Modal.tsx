@@ -690,6 +690,7 @@ useEffect(() => {
                         top: "50%",
                         transform: "translateY(-50%)",
                         zIndex: 1002,
+                        color: "white",
                       }}
                     >
                       {"<"}
@@ -702,6 +703,7 @@ useEffect(() => {
                         top: "50%",
                         transform: "translateY(-50%)",
                         zIndex: 1002,
+                        color: "white",
                       }}
                     >
                       {">"}
