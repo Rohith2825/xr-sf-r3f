@@ -5,7 +5,7 @@ const LazyMannequin = React.lazy(() => import("./Mannequin"));
 // Your mannequin data
 const mannequinData = [
   {
-    id: 9658662584613,
+    id: 9688999952677,
     position: [2, -4, -77],
     modelPath: "/models/inter_elem1.glb",
     scale: 1.2,
@@ -31,19 +31,19 @@ const mannequinData = [
     scale: 0.35,
   },
   {
-    id: 9658662813989,
+    id: 9729009615141,
     position: [-2, -4, -77],
     modelPath: "/models/final_women_gym.glb",
     scale: 0.22,
   },
   {
-    id: 9689001328933,
+    id: 9729030488357,
     position: [-4, -4, -77],
     modelPath: "/models/final_sports.glb",
     scale: 0.35,
   },
   {
-    id: 9658661732645,
+    id: 9729035632933,
     position: [-6, -4, -77],
     modelPath: "/models/finalblack_suit.glb",
     scale: 0.3,
@@ -91,6 +91,5 @@ const ModelWrapper = ({ productId, modelPath, position, scale ,sale}) => {
     />
   ) : null; // Don't render anything if the model isn't loaded yet
 };
-
 
 export default Products;
