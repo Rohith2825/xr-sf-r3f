@@ -59,7 +59,7 @@ const mannequinData = [
 
 const Products = () => {
   return (
-    <Suspense fallback={<LoadingIndicator />}>
+    <Suspense fallback={null}>
       {mannequinData.map((data, index) => (
         <ModelWrapper
           key={index}
@@ -88,16 +88,5 @@ const ModelWrapper = ({ productId, modelPath, position, scale}) => {
   ) : null; // Don't render anything if the model isn't loaded yet
 };
 
-// A simple loading indicator
-const LoadingIndicator = () => {
-  return (
-    <group>
-      <mesh>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color="lightblue" />
-      </mesh>
-    </group>
-  );
-};
 
 export default Products;
