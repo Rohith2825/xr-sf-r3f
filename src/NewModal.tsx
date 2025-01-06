@@ -5,14 +5,16 @@ import { useZustandStore } from "./stores/ZustandStore";
 import Variant from "./Types/Variant";
 import DOMPurify from 'dompurify';
 import useWishlist from "./WishlistHook";
+import Swal from "sweetalert2";
+import styles from "@/UI/UI.module.scss";
 
 const Modal = () => {
-  const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
+  const { lines, checkoutUrl, linesAdd } = useCart();
   const { closeModal, selectedProduct } = useZustandStore();
 
   // Wishlist Hooks
   const { wishlist, addItemsToWishlist, removeItemsFromWishlist } = useWishlist();
-  
+
   // Set the initial variant
   const [selectedVariant, setSelectedVariant] = useState<Variant>();
   useEffect(() => {
@@ -28,6 +30,84 @@ const Modal = () => {
     const modal = modalRef.current;
     if (modal && !modal.contains(event.target as Node))
       closeModal();
+  };
+
+  const handleAddToCart = async () => {
+    if (!selectedVariant) {
+      Swal.fire({
+        title: "Variant Not Found",
+        text: "The selected variant does not exist!",
+        icon: "error",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+      return;
+    }
+
+    try {
+      await linesAdd([
+        {
+          merchandiseId: `gid://shopify/ProductVariant/${selectedVariant.id}`,
+          quantity: quantity,
+        },
+      ]);
+
+      Swal.fire({
+        title: "Success",
+        text: "Product added to cart!",
+        icon: "success",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+    } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "Cannot add product to cart!",
+        icon: "error",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+      console.error(error);
+      return;
+    }
+  };
+
+  const handleCheckout = () => {
+    if ((lines?.length || 0) <= 0) {// Cart empty
+      Swal.fire({
+        title: "Cart is Empty!",
+        text: "Add products to cart before proceeding to the checkout",
+        icon: "warning",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup
+        }
+      });
+    }
+    else if (checkoutUrl) {
+      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+    } else {
+      Swal.fire({
+        title: "Checkout Session Not Initialized",
+        text: "Unforeseen error. Try again later",
+        timer: 3000,
+        timerProgressBar: true,
+        icon: "error",
+        customClass: {
+          popup: styles.swalPopup,
+          title: styles.swalTitle,
+        }
+      })
+    }
   };
 
   const MediaViewer = () => {
@@ -426,7 +506,7 @@ const Modal = () => {
               fontFamily: "'Poppins', sans-seriff", fontSize: "20px", fontWeight: 500,
             }}
           >
-            Quantity: 
+            Quantity:
           </Typography>
           <Button
             sx={{
@@ -512,8 +592,8 @@ const Modal = () => {
           Description
         </Typography>
         <div
-          dangerouslySetInnerHTML={{__html: sanitizedHtml}}
-          style={{ width: "80%", fontSize: "18px", fontFamily: "'Poppins', sans-serif", fontWeight: 400, color: "rgb(255, 255, 255)", marginBottom: "50px"}}
+          dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+          style={{ width: "80%", fontSize: "18px", fontFamily: "'Poppins', sans-serif", fontWeight: 400, color: "rgb(255, 255, 255)", marginBottom: "50px" }}
         >
         </div>
       </Box>
@@ -593,6 +673,7 @@ const Modal = () => {
               }
             }}
             className="AddToCartButton"
+            onClick={handleAddToCart}
           >
             Add to Cart
           </Button>
@@ -609,6 +690,7 @@ const Modal = () => {
               }
             }}
             className="CheckoutButton"
+            onClick={handleCheckout}
           >
             Checkout
           </Button>
@@ -627,17 +709,16 @@ const Modal = () => {
             }}
             className="WishlistButton"
             onClick={() => {
-              if(selectedProduct && wishlist.find((productId) => productId === selectedProduct.id)){
+              if (selectedProduct && wishlist.find((productId: number) => productId === selectedProduct.id)) {
                 removeItemsFromWishlist([selectedProduct.id]);
               }
-              else if(selectedProduct){
+              else if (selectedProduct) {
                 addItemsToWishlist([selectedProduct.id]);
               }
-              console.log(wishlist);
             }}
           >
-            {!wishlist.find((productId) => productId === selectedProduct?.id) && <i className="far fa-heart"></i>}
-            {wishlist.find((productId) => productId === selectedProduct?.id) && <i className="fas fa-heart"></i>}
+            {!wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="far fa-heart"></i>}
+            {wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="fas fa-heart"></i>}
           </Button>
         </Box>
       </Card>
