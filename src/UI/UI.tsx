@@ -3,7 +3,7 @@ import ChatbotModal from "../Chatbot";
 import { useState } from "react";
 import { useProductStore } from "../../store/productStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
-import Modal from "../Modal1";
+import Modal from "../Modal";
 import Cart from "../Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal, { useInfoModalStore } from "../InfoModal";
