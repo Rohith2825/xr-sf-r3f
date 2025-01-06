@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { PivotControls } from "@react-three/drei";
+import { PivotControls, Text3D, Center } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useProductStore } from "../store/productStore";
 
@@ -11,6 +11,7 @@ const DraggableMannequin = ({
   modelPath,
   onClick,
   model,
+  sale = false, // New sale prop
 }) => {
   const { openModal, setSelectedProduct, selectedProduct } = useProductStore();
 
@@ -32,6 +33,9 @@ const DraggableMannequin = ({
 
   // Memoize the model.scene
   const memoizedModelScene = useMemo(() => model.scene, [model.scene]);
+
+  // Font URL for the "SALE" text
+  const fontUrl = "/fonts/Poppins_Regular.json"; // Replace with the correct path to your font JSON
 
   return (
     <RigidBody type="fixed">
@@ -58,6 +62,25 @@ const DraggableMannequin = ({
           castShadow
           receiveShadow
         />
+        {/* Conditionally render the SALE text */}
+        {sale && (
+          <Center position={[0.35, 2.5, 0]}>
+            <Text3D
+              font={fontUrl}
+              size={0.25}
+              height={0.2}
+              curveSegments={32}
+              bevelEnabled
+              bevelThickness={0.02}
+              bevelSize={0.02}
+              bevelSegments={4}
+              position={position}
+            >
+              SALE
+              <meshStandardMaterial color="red" />
+            </Text3D>
+          </Center>
+        )}
       </PivotControls>
     </RigidBody>
   );

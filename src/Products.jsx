@@ -9,12 +9,14 @@ const mannequinData = [
     position: [2, -4, -77],
     modelPath: "/models/inter_elem1.glb",
     scale: 1.2,
+    sale: true,
   },
   {
     id: 9689001328933,
     position: [4, -4, -77],
     modelPath: "/models/inter_elem2.glb",
     scale: 1.2,
+    sale: true,
   },
   {
     id: 9658662519077,
@@ -67,6 +69,7 @@ const Products = () => {
           modelPath={data.modelPath}
           position={data.position}
           scale={data.scale}
+          sale={data.sale || false }
         />
       ))}
     </Suspense>
@@ -74,7 +77,7 @@ const Products = () => {
 };
 
 // The ModelWrapper component
-const ModelWrapper = ({ productId, modelPath, position, scale}) => {
+const ModelWrapper = ({ productId, modelPath, position, scale ,sale}) => {
   const { scene } = useGLTFWithKTX2(modelPath); // Use the custom hook to load the model
 
   return scene ? ( // Render LazyMannequin only if the model is loaded
@@ -82,6 +85,7 @@ const ModelWrapper = ({ productId, modelPath, position, scale}) => {
       productId={productId}
       position={position}
       modelPath={modelPath}
+      sale = {sale}
       scale={scale}
       model={{ scene }}
     />
