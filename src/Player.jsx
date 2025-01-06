@@ -144,6 +144,7 @@ export const Player = () => {
       // position: { bottom: "10vh", left: "12vw" },
       position: calculatePosition(),
       color: "black",
+      dynamicPage: true,
     });
 
     const handleMove = (evt, data) => {
