@@ -327,7 +327,7 @@ export const Player = () => {
     if (!playerRef.current || initialTourComplete.current) return;
 
     // Set initial position off-screen (outside the castle)
-    const startPosition = new THREE.Vector3(0, 15, -20); // Adjust as needed for the castle's exterior
+    const startPosition = new THREE.Vector3(-3, 50, 80); // Adjust as needed for the castle's exterior
     playerRef.current.setTranslation(startPosition);
     camera.position.copy(startPosition);
 
