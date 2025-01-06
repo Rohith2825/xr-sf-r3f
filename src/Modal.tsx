@@ -136,6 +136,18 @@ const Modal: React.FC<ModalProps> = (props) => {
     observeModelViewer();
   }, []);
 
+  const [isIosChrome, setIsIosChrome] = useState(false);
+
+useEffect(() => {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+  const isChrome = /CriOS/.test(userAgent); // Chrome on iOS
+
+  if (isIOS && isChrome) {
+    setIsIosChrome(true);
+  }
+}, []);
+
   const handleViewInAR = () => {
     if (modelViewerElement.current?.activateAR) {
       modelViewerElement.current.activateAR(); // Trigger AR viewer
@@ -729,7 +741,7 @@ const Modal: React.FC<ModalProps> = (props) => {
                 <Button
                   variant="contained"
                   size="small"
-                  disabled={!isMobile}
+                  disabled={!isMobile || isIosChrome}
                   onClick={handleViewInAR} // View in AR button
                   sx={{
                     marginTop: "auto",
