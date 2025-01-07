@@ -10,6 +10,7 @@ import Modal from "../Modal";
 import Cart from "../Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal, { useInfoModalStore } from "../InfoModal";
+import DiscountModal from "../DiscountModal";
 
 const customDriverStyles = `
   .driver-popover {
@@ -60,6 +61,8 @@ const UI = () => {
     driverActive,
     activateDriver,
     deactivateDriver,
+    isDiscountModalOpen,
+    closeDiscountModal,
   } = useProductStore();
 
   useEffect(() => {
@@ -179,7 +182,10 @@ const UI = () => {
       // Check if the driver is active
       if (driverObj.isActive() && !useProductStore.getState().driverActive) {
         activateDriver();
-      } else if (!driverObj.isActive() && useProductStore.getState().driverActive) {
+      } else if (
+        !driverObj.isActive() &&
+        useProductStore.getState().driverActive
+      ) {
         deactivateDriver();
       }
     }, 100); // Check every 100ms
@@ -226,11 +232,7 @@ const UI = () => {
 
       {/* Brand logo on bottom-left */}
       <div className={styles.brandLogoContainer}>
-        <img
-          src="/logo.avif"
-          alt="Brand Logo"
-          className={styles.brandLogo}
-        />
+        <img src="/logo.avif" alt="Brand Logo" className={styles.brandLogo} />
       </div>
 
       {/* Chat logo on bottom-right */}
@@ -265,7 +267,7 @@ const UI = () => {
       {isWishlistOpen && <Wishlist onClose={handleWishlistClose}></Wishlist>}
 
       <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
-
+      <DiscountModal isOpen={isDiscountModalOpen} onClose={closeDiscountModal}  />
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}
