@@ -326,75 +326,48 @@ export const Player = () => {
   // }, [camera]);
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
-
-    // Set initial position off-screen (outside the castle)
-    const startPosition = new THREE.Vector3(-3, 50, 80); // Adjust as needed for the castle's exterior
+  
+    // Set initial position off-screen
+    const startPosition = new THREE.Vector3(-3, 55, 80);
     playerRef.current.setTranslation(startPosition);
     camera.position.copy(startPosition);
-
-    // Create a smooth transition to the spawn point
-    const tourTimeline = gsap.timeline({
+  
+    // Single smooth transition to spawn point
+    const timeline = gsap.timeline({
       onComplete: () => {
-        isTransitioning.current = true;
-
-        // Create a smooth final descent to the exact spawn point
-        const finalTimeline = gsap.timeline({
-          onComplete: () => {
-            initialTourComplete.current = true;
-            isTransitioning.current = false;
-            touchEnabler.current = true;
-            setTouchEnabled();
-
-            // Reset physics state after transition
-            playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
-            playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
-          },
-        });
-
-        // Smoothly descend to the spawn point
-        finalTimeline.to(camera.position, {
-          duration: 1.5,
-          y: START_POSITION.y,
-          ease: "power2.out",
-        });
+        initialTourComplete.current = true;
+        touchEnabler.current = true;
+        setTouchEnabled();
+  
+        // Reset physics state
+        playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+        playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
       },
     });
-
-    // Smooth pan from the castle's exterior to the spawn point
-    tourTimeline.to(camera.position, {
-      duration: 3, // Adjust duration for the desired smoothness
+  
+    // Direct transition to spawn point
+    timeline.to(camera.position, {
+      duration: 3,
       x: START_POSITION.x,
-      y: START_POSITION.y + 3, // Slightly above the spawn point
+      y: START_POSITION.y,
       z: START_POSITION.z,
       ease: "power2.inOut",
     });
-
-    // Improved physics body synchronization
+  
+    // Sync physics body during transition
     const updatePhysicsBody = () => {
-      if (!playerRef.current) return;
-
-      if (!initialTourComplete.current || isTransitioning.current) {
-        playerRef.current.wakeUp();
-        playerRef.current.setTranslation(camera.position);
-        playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
-      }
+      if (!playerRef.current || initialTourComplete.current) return;
+      
+      playerRef.current.wakeUp();
+      playerRef.current.setTranslation(camera.position);
+      playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
     };
-
-    // Smoother animation frame callback
-    let animationFrameId;
-    const animationFrame = () => {
-      updatePhysicsBody();
-      if (!initialTourComplete.current || isTransitioning.current) {
-        animationFrameId = requestAnimationFrame(animationFrame);
-      }
-    };
-    animationFrame();
-
+  
+    const animationFrameId = setInterval(updatePhysicsBody, 1000 / 60);
+  
     return () => {
-      tourTimeline.kill();
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
+      timeline.kill();
+      clearInterval(animationFrameId);
     };
   }, [camera]);
 
