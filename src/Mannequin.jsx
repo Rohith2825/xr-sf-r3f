@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { PivotControls , Billboard , Text} from "@react-three/drei";
+import { PivotControls, Billboard, Image } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useProductStore } from "../store/productStore";
 
@@ -35,12 +35,11 @@ const DraggableMannequin = ({
   // Memoize the model.scene
   const memoizedModelScene = useMemo(() => model.scene, [model.scene]);
 
-    // Adjusted position for the SALE text (increase y by 2)
-    const saleTextPosition = useMemo(() => {
-      const [x, y, z] = position;
-      return [x, y + 2.5, z];
-    }, [position]);
-
+  // Adjusted position for the SALE text (increase y by 2)
+  const saleTextPosition = useMemo(() => {
+    const [x, y, z] = position;
+    return [x, y + 2.5, z];
+  }, [position]);
 
   return (
     <RigidBody type="fixed">
@@ -68,24 +67,20 @@ const DraggableMannequin = ({
           receiveShadow
         />
 
-
         {/* Conditionally render the SALE text */}
         {sale && (
-   
           <Billboard
-          follow={true}
-          position={saleTextPosition}
-          lockX={false}
-          lockY={false}
-          lockZ={false} // Lock the rotation on the z axis (default=false)
-        >
-          <Text fontSize={0.15} color={"#DC143C"} font="/fonts/SF-Pro-Display-Regular.woff" >SALE !</Text>
-        </Billboard>
-     
+            follow={true}
+            position={saleTextPosition}
+            lockX={false}
+            lockY={false}
+            lockZ={false} // Lock the rotation on the z axis (default=false)
+          >
+            <Image url="/icons/Sale.png" transparent scale={[0.75, 0.25]} />
+          </Billboard>
         )}
       </PivotControls>
     </RigidBody>
-    
   );
 };
 
