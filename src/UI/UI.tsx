@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
-import { useState } from "react";
 import { useProductStore } from "../../store/productStore";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "../Modal";
@@ -61,20 +60,14 @@ const UI = () => {
     driverActive,
     activateDriver,
     deactivateDriver,
+    setTourComplete,
     isDiscountModalOpen,
     closeDiscountModal,
   } = useProductStore();
 
-  useEffect(() => {
-    const styleSheet = document.createElement("style");
-    styleSheet.type = "text/css";
-    styleSheet.innerText = customDriverStyles;
-    document.head.appendChild(styleSheet);
+  const driverRef = useRef(null);
+  const shouldMoveCamera = useRef(false);
 
-    return () => {
-      document.head.removeChild(styleSheet);
-    };
-  }, []);
 
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const { isInfoModalOpen, openInfoModal, closeInfoModal } =
@@ -116,54 +109,79 @@ const UI = () => {
     showCrosshair();
   };
 
-  const driverObj = driver({
-    showProgress: true,
-    steps: [
-      {
-        element: ".iconsContainer",
-        popover: {
-          title: "Navigation & Controls",
-          description: isMobile
-            ? "Use the virtual joystick to move around and interact with products"
-            : "Use WASD keys to navigate: W (up), A (left), S (down), D (right)",
-          side: "left",
-          align: "start",
+  useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = customDriverStyles;
+    document.head.appendChild(styleSheet);
+
+    // Initialize the driver instance and assign to ref
+    driverRef.current = driver({
+      showProgress: true,
+      steps: [
+        {
+          element: ".iconsContainer",
+          popover: {
+            title: "Navigation & Controls",
+            description: isMobile
+              ? "Use the virtual joystick to move around and interact with products"
+              : "Use WASD keys to navigate: W (up), A (left), S (down), D (right)",
+            side: "left",
+            align: "start",
+          },
         },
-      },
-      {
-        element: '[alt="Cart"]',
-        popover: {
-          title: "Shopping Cart",
-          description: "View and manage items in your shopping cart",
-          side: "bottom",
+        {
+          element: '[alt="Cart"]',
+          popover: {
+            title: "Shopping Cart",
+            description: "View and manage items in your shopping cart",
+            side: "bottom",
+          },
         },
-      },
-      {
-        element: '[alt="Wishlist"]',
-        popover: {
-          title: "Wishlist",
-          description: "Save items for later in your wishlist",
-          side: "bottom",
+        {
+          element: '[alt="Wishlist"]',
+          popover: {
+            title: "Wishlist",
+            description: "Save items for later in your wishlist",
+            side: "bottom",
+          },
         },
-      },
-      {
-        element: '[alt="Info"]',
-        popover: {
-          title: "Information",
-          description: "Get more details about our products and services",
-          side: "bottom",
+        {
+          popover: {
+            title: "Showcasing the Product",
+            description: "Walk to these products to essentially buy or add them to  cart",
+          },
+          onHighlightStarted: () => {
+            // Custom logic to handle the camera movement
+            shouldMoveCamera.current = true; // Trigger camera movement
+            setTourComplete(true);
+          },
         },
-      },
-      {
-        element: '[alt="Chatbot"]',
-        popover: {
-          title: "Chat Assistant",
-          description: "Need help? Chat with our virtual assistant",
-          side: "left",
+        {
+          element: '[alt="Info"]',
+          popover: {
+            title: "Information",
+            description: "Get more details about our products and services",
+            side: "bottom",
+          },
         },
-      },
-    ],
-  });
+        {
+          element: '[alt="Chatbot"]',
+          popover: {
+            title: "Chat Assistant",
+            description: "Need help? Chat with our virtual assistant",
+            side: "left",
+          },
+        },
+      ],
+    });
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, []);
+
+
 
   const startTour = () => {
     // Close any open modals before starting the tour
@@ -173,26 +191,28 @@ const UI = () => {
     if (isInfoModalOpen) closeInfoModal();
     if (ChatbotOpen) closeChatbotModal();
 
-    // Start the tour
-    driverObj.drive();
+    // Start the tour and update the Zustand state
+    if (driverRef.current) {
+      driverRef.current.drive();
+      activateDriver(); // Set Zustand state to active
+    }
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Check if the driver is active
-      if (driverObj.isActive() && !useProductStore.getState().driverActive) {
+    // Listen for driver active state changes and update Zustand
+    const checkDriverState = () => {
+      if (driverRef.current?.isActive()) {
         activateDriver();
-      } else if (
-        !driverObj.isActive() &&
-        useProductStore.getState().driverActive
-      ) {
+      } else {
         deactivateDriver();
       }
-    }, 100); // Check every 100ms
+    };
 
-    // Cleanup interval on unmount
+    // Poll the state of the driver
+    const interval = setInterval(checkDriverState, 100);
+
     return () => clearInterval(interval);
-  }, [activateDriver, deactivateDriver, driverObj]);
+  }, []);
 
   return (
     <div className="ui-root">
@@ -201,14 +221,6 @@ const UI = () => {
         !isModalOpen &&
         !isDiscountModalOpen && <div className={styles.aim} />}
 
-      <div className={styles.helpIconContainer}>
-        <img
-          src="/icons/Help.svg"
-          alt="Help"
-          className={styles.icon}
-          onClick={startTour}
-        />
-      </div>
 
       <div className={styles.iconsContainer}>
         <img
@@ -228,6 +240,12 @@ const UI = () => {
           alt="Info"
           className={styles.icon}
           onClick={openInfoModal}
+        />
+        <img
+          src="/icons/Help.svg"
+          alt="Help"
+          className={styles.icon}
+          onClick={startTour}
         />
       </div>
 
