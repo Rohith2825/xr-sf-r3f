@@ -6,7 +6,7 @@ import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
 import gsap from "gsap";
-import { useZustandStore } from "./stores/ZustandStore";
+import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -77,38 +77,38 @@ export const Player = () => {
 
     const JOYSTICK_SIZE = 130; // pixels
     const PORTRAIT_MARGIN = {
-      bottom: 70,  // pixels from edge
-      left: 80
+      bottom: 70, // pixels from edge
+      left: 80,
     };
     const LANDSCAPE_MARGIN = {
-      bottom: 80,  // smaller bottom margin for landscape
-      left: 120    // larger left margin for landscape
+      bottom: 80, // smaller bottom margin for landscape
+      left: 120, // larger left margin for landscape
     };
-    
+
     // Function to calculate position based on screen size and orientation
     const calculatePosition = () => {
       // Get current viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      
+
       // Determine if we're in landscape mode
       const isLandscape = viewportWidth > viewportHeight;
-      
+
       // Use different margins based on orientation
       const margins = isLandscape ? LANDSCAPE_MARGIN : PORTRAIT_MARGIN;
-      
+
       // Calculate position with orientation-specific adjustments
       const bottom = isLandscape
-        ? Math.min(margins.bottom, viewportHeight * 0.45)  // 15% in landscape
-        : Math.min(margins.bottom, viewportHeight * 0.1);  // 10% in portrait
-        
+        ? Math.min(margins.bottom, viewportHeight * 0.45) // 15% in landscape
+        : Math.min(margins.bottom, viewportHeight * 0.01); // 10% in portrait
+
       const left = isLandscape
-        ? Math.min(margins.left, viewportWidth * 0.08)    // 8% in landscape
-        : Math.min(margins.left, viewportWidth * 0.12);   // 12% in portrait
-    
-      return { 
-        bottom: `${bottom}px`, 
-        left: `${left}px` 
+        ? Math.min(margins.left, viewportWidth * 0.08) // 8% in landscape
+        : Math.min(margins.left, viewportWidth * 0.12); // 12% in portrait
+
+      return {
+        bottom: `${bottom}px`,
+        left: `${left}px`,
       };
     };
 
@@ -119,6 +119,7 @@ export const Player = () => {
       // position: { bottom: "10vh", left: "12vw" },
       position: calculatePosition(),
       color: "black",
+      dynamicPage: true,
     });
 
     const handleMove = (evt, data) => {
@@ -144,161 +145,208 @@ export const Player = () => {
     };
   }, [isMobile]);
 
-
   const initialTourComplete = useRef(false);
-  const isTransitioning = useRef(false);
   const { 
-    isTouchEnabled, enableTouch,
     isModalOpen, isCartOpen, isWishlistOpen,
     isInfoModalOpen 
-  } = useZustandStore();
+  } = useComponentStore();
 
+  const { isTouchEnabled, enableTouch} = useTouchStore();
+
+  //More pans
+  // useEffect(() => {
+  //   if (!playerRef.current || initialTourComplete.current) return;
+
+  //   // Set initial position off-screen
+  //   const startPosition = new THREE.Vector3(0, 15, -5);
+  //   playerRef.current.setTranslation(startPosition);
+  //   camera.position.copy(startPosition);
+
+  //   // Define the camera tour path
+  //   const tourTimeline = gsap.timeline({
+  //     onComplete: () => {
+  //       isTransitioning.current = true;
+
+  //       // Create a smooth transition to spawn point
+  //       const finalTimeline = gsap.timeline({
+  //         onComplete: () => {
+  //           initialTourComplete.current = true;
+  //           isTransitioning.current = false;
+  //           touchEnabler.current = true;
+  //           setTouchEnabled();
+
+  //           // Reset physics state after transition
+  //           playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+  //           playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
+  //         },
+  //       });
+
+  //       // First, smoothly move to a position above the spawn point
+  //       finalTimeline
+  //         .to(camera.position, {
+  //           duration: 1.5,
+  //           x: START_POSITION.x,
+  //           y: START_POSITION.y + 3,
+  //           z: START_POSITION.z,
+  //           ease: "power2.inOut",
+  //         })
+  //         // Then smoothly descend to the exact spawn point
+  //         .to(camera.position, {
+  //           duration: 0.8,
+  //           y: START_POSITION.y,
+  //           ease: "power2.out",
+  //         });
+  //     },
+  //   });
+
+  //   // Create the tour sequence
+  //   tourTimeline
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: -10,
+  //       y: 12,
+  //       z: -15,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: Math.PI * 0.25, // Rotate to the left view
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: 5,
+  //       y: 10,
+  //       z: -10,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: 0, // Return to center
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: 10,
+  //       y: 12,
+  //       z: -15,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: -Math.PI * 0.25, // Rotate to the right view
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 2,
+  //       x: 5,
+  //       y: 10,
+  //       z: -10,
+  //       ease: "power1.inOut",
+  //     })
+  //     .to(
+  //       camera.rotation,
+  //       {
+  //         duration: 1.5,
+  //         y: 0, // Return to center
+  //         ease: "power1.inOut",
+  //       },
+  //       "-=1.5"
+  //     )
+  //     .to(camera.position, {
+  //       duration: 1.5,
+  //       x: START_POSITION.x,
+  //       y: START_POSITION.y,
+  //       z: START_POSITION.z,
+  //       ease: "power2.inOut",
+  //     });
+
+  //   // Improved physics body synchronization
+  //   const updatePhysicsBody = () => {
+  //     if (!playerRef.current) return;
+
+  //     if (!initialTourComplete.current || isTransitioning.current) {
+  //       playerRef.current.wakeUp();
+  //       playerRef.current.setTranslation(camera.position);
+  //       playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+  //     }
+  //   };
+
+  //   // Smoother animation frame callback
+  //   let animationFrameId;
+  //   const animationFrame = () => {
+  //     updatePhysicsBody();
+  //     if (!initialTourComplete.current || isTransitioning.current) {
+  //       animationFrameId = requestAnimationFrame(animationFrame);
+  //     }
+  //   };
+  //   animationFrame();
+
+  //   return () => {
+  //     tourTimeline.kill();
+  //     if (animationFrameId) {
+  //       cancelAnimationFrame(animationFrameId);
+  //     }
+  //   };
+  // }, [camera]);
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
-
+  
     // Set initial position off-screen
-    const startPosition = new THREE.Vector3(0, 15, -5);
+    const startPosition = new THREE.Vector3(-3, 55, 80);
     playerRef.current.setTranslation(startPosition);
     camera.position.copy(startPosition);
-
-    // Define the camera tour path
-    const tourTimeline = gsap.timeline({
+  
+    // Single smooth transition to spawn point
+    const timeline = gsap.timeline({
       onComplete: () => {
-        isTransitioning.current = true;
-
-        // Create a smooth transition to spawn point
-        const finalTimeline = gsap.timeline({
-          onComplete: () => {
-            initialTourComplete.current = true;
-            isTransitioning.current = false;
-            enableTouch();
-
-            // Reset physics state after transition
-            playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
-            playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
-          },
-        });
-
-        // First, smoothly move to a position above the spawn point
-        finalTimeline
-          .to(camera.position, {
-            duration: 1.5,
-            x: START_POSITION.x,
-            y: START_POSITION.y + 3,
-            z: START_POSITION.z,
-            ease: "power2.inOut",
-          })
-          // Then smoothly descend to the exact spawn point
-          .to(camera.position, {
-            duration: 0.8,
-            y: START_POSITION.y,
-            ease: "power2.out",
-          });
+        initialTourComplete.current = true;
+        enableTouch();
+  
+        // Reset physics state
+        playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+        playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
       },
     });
-
-    // Create the tour sequence
-    tourTimeline
-      .to(camera.position, {
-        duration: 2,
-        x: -10,
-        y: 12,
-        z: -15,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: Math.PI * 0.25, // Rotate to the left view
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 2,
-        x: 5,
-        y: 10,
-        z: -10,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: 0, // Return to center
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 2,
-        x: 10,
-        y: 12,
-        z: -15,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: -Math.PI * 0.25, // Rotate to the right view
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 2,
-        x: 5,
-        y: 10,
-        z: -10,
-        ease: "power1.inOut",
-      })
-      .to(
-        camera.rotation,
-        {
-          duration: 1.5,
-          y: 0, // Return to center
-          ease: "power1.inOut",
-        },
-        "-=1.5"
-      )
-      .to(camera.position, {
-        duration: 1.5,
-        x: START_POSITION.x,
-        y: START_POSITION.y,
-        z: START_POSITION.z,
-        ease: "power2.inOut",
-      });
-
-    // Improved physics body synchronization
+  
+    // Direct transition to spawn point
+    timeline.to(camera.position, {
+      duration: 3,
+      x: START_POSITION.x,
+      y: START_POSITION.y,
+      z: START_POSITION.z,
+      ease: "power2.inOut",
+    });
+  
+    // Sync physics body during transition
     const updatePhysicsBody = () => {
-      if (!playerRef.current) return;
-
-      if (!initialTourComplete.current || isTransitioning.current) {
-        playerRef.current.wakeUp();
-        playerRef.current.setTranslation(camera.position);
-        playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
-      }
+      if (!playerRef.current || initialTourComplete.current) return;
+      
+      playerRef.current.wakeUp();
+      playerRef.current.setTranslation(camera.position);
+      playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
     };
-
-    // Smoother animation frame callback
-    let animationFrameId;
-    const animationFrame = () => {
-      updatePhysicsBody();
-      if (!initialTourComplete.current || isTransitioning.current) {
-        animationFrameId = requestAnimationFrame(animationFrame);
-      }
-    };
-    animationFrame();
-
+  
+    const animationFrameId = setInterval(updatePhysicsBody, 1000 / 60);
+  
     return () => {
-      tourTimeline.kill();
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-      }
+      timeline.kill();
+      clearInterval(animationFrameId);
     };
   }, [camera]);
+
   useEffect(() => {
     const handleTouchStart = (e) => {
       if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
@@ -353,6 +401,9 @@ export const Player = () => {
     };
 
     const handleTouchEnd = (e) => {
+      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen) return; // Return if any one of the components is open
+
       const remainingTouches = Array.from(e.touches);
       if (
         !remainingTouches.some(
@@ -385,39 +436,47 @@ export const Player = () => {
       respawnPlayer();
     }
 
-    const velocity = playerRef.current.linvel();
+    // Only allow movement when no component is open
+    if (!isModalOpen && !isInfoModalOpen && !isCartOpen && !isWishlistOpen) {
+      const velocity = playerRef.current.linvel();
 
-    // Combine joystick and keyboard inputs
-    frontVector.set(0, 0, backward - forward);
-    sideVector.set(right - left, 0, 0);
+      // Combine joystick and keyboard inputs
+      frontVector.set(0, 0, backward - forward);
+      sideVector.set(right - left, 0, 0);
 
-    // Combine inputs into a single movement direction
-    combinedInput.copy(frontVector).add(sideVector).add(direction).normalize();
+      // Combine inputs into a single movement direction
+      combinedInput
+        .copy(frontVector)
+        .add(sideVector)
+        .add(direction)
+        .normalize();
 
-    // Apply camera's rotation to align movement with camera orientation
-    movementDirection
-      .copy(combinedInput)
-      .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
-      .normalize()
-      .multiplyScalar(MOVE_SPEED);
+      // Apply camera's rotation to align movement with camera orientation
+      movementDirection
+        .copy(combinedInput)
+        .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
+        .normalize()
+        .multiplyScalar(MOVE_SPEED);
 
-    // Set the player's velocity based on movement direction
-    playerRef.current.wakeUp();
-    playerRef.current.setLinvel({
-      x: movementDirection.x,
-      y: velocity.y,
-      z: movementDirection.z,
-    });
+      // Set the player's velocity based on movement direction
+      playerRef.current.wakeUp();
+      playerRef.current.setLinvel({
+        x: movementDirection.x,
+        y: velocity.y,
+        z: movementDirection.z,
+      });
 
-    if (jump && canJump) {
-      doJump();
-      setCanJump(false);
-      setTimeout(() => setCanJump(true), 500);
+      if (jump && canJump) {
+        doJump();
+        setCanJump(false);
+        setTimeout(() => setCanJump(true), 500);
+      }
     }
 
     // Sync the camera's position with the player
     const { x, y, z } = playerRef.current.translation();
-    state.camera.position.set(x, y, z);
+    const lerpFactor = 0.05; // Adjust this value to control the smoothness (smaller is smoother)
+    state.camera.position.lerp({ x, y, z }, lerpFactor);
   });
 
   const doJump = () => {
@@ -446,7 +505,7 @@ export const Player = () => {
       canSleep={false}
     >
       <mesh castShadow>
-        <CapsuleCollider args={[1.7, 1]} />
+        <CapsuleCollider args={[1.2, 1]} />
       </mesh>
     </RigidBody>
   );

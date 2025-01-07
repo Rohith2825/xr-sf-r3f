@@ -5,10 +5,10 @@
 }
 
 html, body, #root, #container, canvas {
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
-    position: relative; 
+    position: fixed; 
     touch-action: none 
 }
 

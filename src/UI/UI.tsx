@@ -1,13 +1,46 @@
+import { useEffect, useRef, useState } from "react";
+import { driver, Driver } from "driver.js";
+import "driver.js/dist/driver.css";
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
-import { useState } from "react";
-import { useZustandStore } from "../stores/ZustandStore";
+import { useComponentStore, useDriverStore } from "../stores/ZustandStores";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
-import Modal from "../NewModal";
-import Cart from "../Cart";
+import Modal from "@/NewModal";
+import Cart from "@/Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal from "@/InfoModal";
 
+const customDriverStyles = `
+  .driver-popover {
+    font-family: 'Poppins', sans-serif !important;
+  }
+  
+  .driver-popover * {
+    font-family: 'Poppins', sans-serif !important;
+  }
+  
+  .driver-popover-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+  }
+  
+  .driver-popover-description {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 400 !important;
+    font-size: 14px !important;
+  }
+  
+  .driver-popover-progress-text {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 400 !important;
+  }
+  
+  .driver-popover-footer button {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 500 !important;
+  }
+`;
 
 const shopifyConfig = {
   storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
@@ -19,14 +52,15 @@ const UI = () => {
   // Zustand store for handling different components
   const {
     crosshairVisible, hideCrosshair,
-    isModalOpen,
-    isCartOpen, openCart,
-    isWishlistOpen, openWishlist,
-    isInfoModalOpen, openInfoModal,
-  } = useZustandStore();
+    isModalOpen, closeModal,
+    isCartOpen, openCart, closeCart,
+    isWishlistOpen, openWishlist, closeWishlist,
+    isInfoModalOpen, openInfoModal, closeInfoModal,
+  } = useComponentStore();
+  const { activateDriver, deactivateDriver} = useDriverStore();
+  const driverRef = useRef<Driver>(undefined);
 
   const [ChatbotOpen, setChatbotOpen] = useState(false);
-
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
       navigator.userAgent
@@ -41,6 +75,105 @@ const UI = () => {
     setChatbotOpen(false);
   };
 
+  useEffect(() => {
+    const styleSheet = document.createElement("style");
+    styleSheet.type = "text/css";
+    styleSheet.innerText = customDriverStyles;
+    document.head.appendChild(styleSheet);
+
+    //Initialize the driver instance and assign to ref
+    driverRef.current = driver({
+      showProgress: true,
+      steps: [
+        {
+          element: ".iconsContainer",
+          popover: {
+            title: "Navigation & Controls",
+            description: isMobile
+              ? "Use the virtual joystick to move around and interact with products"
+              : "Use WASD keys to navigate: W (up), A (left), S (down), D (right)",
+            side: "left",
+            align: "start",
+          },
+        },
+        {
+          element: '[alt="Cart"]',
+          popover: {
+            title: "Shopping Cart",
+            description: "View and manage items in your shopping cart",
+            side: "bottom",
+          },
+        },
+        {
+          element: '[alt="Wishlist"]',
+          popover: {
+            title: "Wishlist",
+            description: "Save items for later in your wishlist",
+            side: "bottom",
+          },
+        },
+        {
+          element: '[alt="Info"]',
+          popover: {
+            title: "Information",
+            description: "Get more details about our products and services",
+            side: "bottom",
+          },
+        },
+        {
+          element: '[alt="Chatbot"]',
+          popover: {
+            title: "Chat Assistant",
+            description: "Need help? Chat with our virtual assistant",
+            side: "left",
+          },
+        },
+      ],
+    });
+
+    return () => {
+      document.head.removeChild(styleSheet);
+    };
+  }, [isMobile]);
+
+
+
+  const startTour = () => {
+    // Close any open modals before starting the tour
+    if (isModalOpen) closeModal();
+    if (isCartOpen) closeCart();
+    if (isWishlistOpen) closeWishlist();
+    if (isInfoModalOpen) closeInfoModal();
+    if (ChatbotOpen) closeChatbotModal();
+
+    // Start the tour and update the Zustand state
+    if (driverRef.current) {
+      driverRef.current.drive();
+      activateDriver(); // Set Zustand state to active
+    }
+  };
+
+  useEffect(() => {
+    // Listen for driver active state changes and update Zustand
+    let lastState = driverRef.current?.isActive();
+    const checkDriverState = () => {
+      const currentState = driverRef.current?.isActive();
+      if(currentState !== lastState){
+        lastState = currentState;
+        if (currentState) {
+          activateDriver();
+        } else {
+          deactivateDriver();
+        }
+      }
+    };
+
+    // Poll the state of the driver
+    const interval = setInterval(checkDriverState, 100);
+
+    return () => clearInterval(interval);
+  }, [activateDriver, deactivateDriver]);
+
   return (
     <div className="ui-root">
       {crosshairVisible && !isMobile && <div className={styles.aim} />}
@@ -50,13 +183,13 @@ const UI = () => {
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
         <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
-
+        <img src="/icons/Help.svg" alt="Help" className={styles.icon} onClick={startTour}/>
       </div>
 
       {/* Brand logo on bottom-left */}
       <div className={styles.brandLogoContainer}>
         <img
-          src="/icons/Brand Logo.svg"
+          src="/logo.avif"
           alt="Brand Logo"
           className={styles.brandLogo}
         />
@@ -82,12 +215,7 @@ const UI = () => {
       >
         <CartProvider>
           {isModalOpen && (
-            // <Modal
-            //   isOpen={isModalOpen}
-            //   onClose={closeModal}
-            //   data={selectedProduct}
-            // />
-            <Modal/>
+            <Modal />
           )}
           {isCartOpen && (
             <Cart></Cart>
@@ -98,7 +226,7 @@ const UI = () => {
         <Wishlist></Wishlist>
       )}
 
-      { isInfoModalOpen && (
+      {isInfoModalOpen && (
         <InfoModal></InfoModal>
       )}
 

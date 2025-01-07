@@ -114,7 +114,8 @@ export const ProductService = {
           price: variant.node.price,
           compareAtPrice: variant.node.compareAtPrice,
           productId: Number(product.node.id.split("/").pop()),
-          selectedOptions: variant.node.selectedOptions
+          selectedOptions: variant.node.selectedOptions,
+          availableForSale: variant.node.availableForSale
         };
       });
 

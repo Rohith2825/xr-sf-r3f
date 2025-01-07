@@ -1,5 +1,5 @@
 {
-  "name": "fps-game",
+  "name": "delta-xr",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -23,7 +23,9 @@
     "@types/three": "^0.171.0",
     "@use-gesture/react": "^10.3.1",
     "dompurify": "^3.2.3",
+    "driver.js": "^1.3.1",
     "gsap": "^3.12.5",
+    "hydrogen-react": "^0.0.1-security",
     "lucide-react": "^0.469.0",
     "nipplejs": "^0.10.2",
     "react": "^18.2.0",

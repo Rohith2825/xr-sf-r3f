@@ -6,5 +6,6 @@ export default interface Variant{
   selectedOptions: {
     name: string,
     value: string
-  }[]
+  }[];
+  availableForSale: boolean;
 }

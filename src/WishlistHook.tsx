@@ -3,7 +3,12 @@ import { useState, useEffect } from 'react';
 function useWishlist() {
   const [wishlist, setWishlist] = useState(() => {
     const itemString = localStorage.getItem("wishlist");
-    return itemString ? JSON.parse(itemString) : [];
+    try {
+      return itemString ? JSON.parse(itemString) : []; // Use localStorage or an empty array
+    } catch (error) {
+      console.error("Error parsing wishlist from localStorage:", error);
+      return []; // Fallback to an empty array if parsing fails
+    }
   });
 
   useEffect(() => {

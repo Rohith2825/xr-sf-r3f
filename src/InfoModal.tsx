@@ -1,6 +1,6 @@
 import { X } from "lucide-react";
 import { useEffect } from "react";
-import { useZustandStore } from "./stores/ZustandStore";
+import { useComponentStore } from "./stores/ZustandStores";
 
 const styles = {
   backdrop: {
@@ -130,7 +130,7 @@ const styles = {
 };
 
 const InfoModal = () => {
-  const { isInfoModalOpen, closeInfoModal } = useZustandStore();
+  const { isInfoModalOpen, closeInfoModal } = useComponentStore();
   useEffect(() => {
     if (isInfoModalOpen) {
       // Save current scroll position

@@ -37,13 +37,13 @@
 /* Brand logo on bottom-left */
 .brandLogoContainer {
   position: absolute;
-  bottom: 2%;
-  left: 2%;
+  bottom: 1%;
+  left: 3%;
   pointer-events: auto;
 }
 
 .brandLogo {
-  width: 8vw;
+  width: 12vw;
   height: auto;
 }
 
@@ -56,7 +56,7 @@
 }
 
 .chatLogo {
-  width: 5vw;
+  width: 3vw;
   height: auto;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -97,9 +97,13 @@
     width: 7vw; /* Slightly larger icons for mobile */
   }
 
-  .brandLogo,
+  
   .chatLogo {
-    width: 10vw; /* Larger logos for mobile */
+    width: 7vw; /* Larger logos for mobile */
+  }
+
+  .brandLogo{
+    width: 40vw;
   }
 }
 
@@ -114,8 +118,13 @@
     width: 10vw; /* Larger icons for mobile */
   }
 
-  .brandLogo,
+
   .chatLogo {
-    width: 15vw; /* Adjust logos for smaller screens */
+    width: 10vw; /* Adjust logos for smaller screens */
+  }
+
+  .brandLogo{
+    width: 40vw;
   }
 }
+

@@ -1,28 +1,25 @@
 import * as TWEEN from "@tweenjs/tween.js";
-import { PointerLockControls, Sky } from "@react-three/drei";
+import { PointerLockControls } from "@react-three/drei";
 import { Ground } from "@/Ground.jsx";
 import { Physics } from "@react-three/rapier";
 import { Player } from "@/Player.jsx";
 import { useFrame } from "@react-three/fiber";
-import { create } from "zustand";
 import Television from "./Television";
-import WebPlane from "./WebPlane";
 import BrandPoster from "./BrandPoster";
 import Products from "./Products";
 import { Suspense, useState, useEffect } from "react";
 import Skybox from "./Skybox";
-import { useZustandStore } from "./stores/ZustandStore";
+import { useComponentStore, usePointerLockStore, useDriverStore } from "./stores/ZustandStores";
+import { useTouchStore } from "./stores/ZustandStores";
 
 const shadowOffset = 50;
 
-export const usePointerLockControlsStore = create(() => ({
-  isLock: false,
-}));
-
 export const App = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const { crosshairVisible, isTouchEnabled, isModalOpen, isWishlistOpen, isCartOpen, isInfoModalOpen } = useZustandStore();
-
+  const { crosshairVisible, isModalOpen, isWishlistOpen, isCartOpen, isInfoModalOpen } = useComponentStore();
+  const { lockPointer, unlockPointer } = usePointerLockStore();
+  const { driverActive } = useDriverStore();
+  const { isTouchEnabled } = useTouchStore();
 
   // Detect mobile devices
   useEffect(() => {
@@ -34,15 +31,15 @@ export const App = () => {
   });
 
   const pointerLockControlsLockHandler = () => {
-    if (isTouchEnabled && crosshairVisible && !isModalOpen && !isCartOpen && !isWishlistOpen && !isInfoModalOpen) {
-      usePointerLockControlsStore.setState({ isLock: true });
+    if (isTouchEnabled && crosshairVisible && !driverActive && !isModalOpen && !isCartOpen && !isWishlistOpen && !isInfoModalOpen) {
+      lockPointer();
     } else {
       document.exitPointerLock?.();
     }
   };
 
   const pointerLockControlsUnlockHandler = () => {
-    usePointerLockControlsStore.setState({ isLock: false });
+    unlockPointer();
   };
 
   return (
@@ -79,11 +76,13 @@ export const App = () => {
           position={[-4.5, 11, -91]}
           rotation={[0, -82.79, 0]}
         />
-        <WebPlane
+
+        {/*May crash if external website*/}
+        {/* <WebPlane
           scale={[0.2, 0.2, 0.1]}
           position={[-5, 0, 5.1]}
           rotation={[0, 162.5, 0]}
-        />
+        /> */}
         <BrandPoster
           imageUrl="https://th.bing.com/th/id/OIP.SNik-SOwvsExn4HNF47l2gHaEK?rs=1&pid=ImgDetMain"
           width={192 * 4} // Width in pixels

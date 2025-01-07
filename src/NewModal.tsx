@@ -1,7 +1,7 @@
 import { Box, Button, Card, Typography, ButtonBase } from "@mui/material";
 import { useCart, ModelViewer } from "@shopify/hydrogen-react";
 import { useEffect, useRef, useState } from "react";
-import { useZustandStore } from "./stores/ZustandStore";
+import { useComponentStore } from "./stores/ZustandStores";
 import Variant from "./Types/Variant";
 import DOMPurify from 'dompurify';
 import useWishlist from "./WishlistHook";
@@ -10,20 +10,25 @@ import styles from "@/UI/UI.module.scss";
 
 const Modal = () => {
   const { lines, checkoutUrl, linesAdd } = useCart();
-  const { closeModal, selectedProduct } = useZustandStore();
-
+  const { closeModal, selectedProduct } = useComponentStore();
+  
   // Wishlist Hooks
   const { wishlist, addItemsToWishlist, removeItemsFromWishlist } = useWishlist();
 
   // Set the initial variant
   const [selectedVariant, setSelectedVariant] = useState<Variant>();
   useEffect(() => {
-    selectedProduct && setSelectedVariant(selectedProduct.variants[0]);
+    selectedProduct && setSelectedVariant(selectedProduct.variants.find((variant) => variant.availableForSale));
   }, [selectedProduct]);
 
   // Quantity
-  const [quantity, setQuantity] = useState(1);
-
+  const [quantity, setQuantity] = useState<number>(1);
+  
+  // Media type photo or model
+  const PHOTOS = "Photos";
+  const MODEL = "3D Model";
+  const [mediaType, setMediaType] = useState(PHOTOS);
+  
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -51,10 +56,10 @@ const Modal = () => {
       await linesAdd([
         {
           merchandiseId: `gid://shopify/ProductVariant/${selectedVariant.id}`,
-          quantity: quantity,
+          quantity: 1,
         },
       ]);
-
+      
       Swal.fire({
         title: "Success",
         text: "Product added to cart!",
@@ -111,10 +116,8 @@ const Modal = () => {
   };
 
   const MediaViewer = () => {
-    const PHOTOS = "Photos";
-    const MODEL = "3D Model";
-    const [mediaType, setMediaType] = useState(PHOTOS);
-
+    
+    
     const MediaButtons = () => {
       return (
         <Box
@@ -404,7 +407,7 @@ const Modal = () => {
               for (let i = 0; i < num; i++) {
                 if (variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
               }
-              return variant.selectedOptions[num].value === optionValue;
+              return variant.selectedOptions[num].value === optionValue && variant.availableForSale;
             })
           );
         }
@@ -420,7 +423,7 @@ const Modal = () => {
             for (let i = 0; i < num; i++) {
               if (variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
             }
-            return variant.selectedOptions[num].value === optionValue;
+            return variant.selectedOptions[num].value === optionValue && variant.availableForSale;
           });
         }
         else {
@@ -690,7 +693,7 @@ const Modal = () => {
         <Box
           sx={{
             width: {xs: "100%", md: "50%"}, right: "0%", top: {xs: "90%", md: "84%"}, position: "fixed",
-            display: "flex", flexDirection: "row", justifyContent: {xs: "center", md: "start", lg: "center"}, alignItems: "center",
+            display: "flex", flexDirection: "row", justifyContent: {xs: "center", md: "start"}, alignItems: "center",
             gap: {xs: "10px", md: "20px"}
           }}
           className="ShopifyButtonsContainer"

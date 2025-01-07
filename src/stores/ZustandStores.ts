@@ -1,16 +1,11 @@
 import Product from "@/Types/Product";
 import { create } from "zustand";
 
-interface ZustandStore {
+interface ComponentStore {
   // Crosshair handling
   crosshairVisible: boolean,
   showCrosshair: () => void,
   hideCrosshair: () => void,
-
-  // Touch handling
-  isTouchEnabled: boolean,
-  enableTouch: () => void,
-  disableTouch: () => void,
 
   // Product handling
   products: Product[],
@@ -39,16 +34,11 @@ interface ZustandStore {
   closeInfoModal: () => void,
 }
 
-export const useZustandStore = create<ZustandStore>((set) => ({
+const useComponentStore = create<ComponentStore>((set) => ({
   // Crosshair
   crosshairVisible: true,
   showCrosshair: () => set({ crosshairVisible: true }),
   hideCrosshair: () => set({ crosshairVisible: false }),
-
-  // Touch handling
-  isTouchEnabled: false,
-  enableTouch: () => set({ isTouchEnabled: true }),
-  disableTouch: () => set({ isTouchEnabled: false }),
 
   // Product Handling
   products: [],
@@ -106,3 +96,47 @@ export const useZustandStore = create<ZustandStore>((set) => ({
     set({ isInfoModalOpen: false });
   }
 }));
+
+
+// Pointer lock handling
+interface PointerLockStore {
+  isPointerLocked: boolean,
+  lockPointer: () => void,
+  unlockPointer: () => void
+}
+
+const usePointerLockStore = create<PointerLockStore>((set) => ({
+  isPointerLocked: false,
+  lockPointer: () => set({ isPointerLocked: true }),
+  unlockPointer: () => set({ isPointerLocked: false })
+}));
+
+
+// Touch handling
+interface TouchStore {
+  isTouchEnabled: boolean,
+  enableTouch: () => void,
+  disableTouch: () => void,
+}
+
+const useTouchStore = create<TouchStore>((set) => ({
+  isTouchEnabled: false,
+  enableTouch: () => set({ isTouchEnabled: true }),
+  disableTouch: () => set({ isTouchEnabled: false }),
+}));
+
+
+// Driver handling
+interface DriverStore{
+  driverActive: boolean,
+  activateDriver: () => void,
+  deactivateDriver: () => void,
+  }
+
+const useDriverStore = create<DriverStore>((set) => ({
+  driverActive: false,
+  activateDriver: () => set({ driverActive: true }),
+  deactivateDriver: () => set({ driverActive: false }),
+}));
+
+export {useComponentStore, usePointerLockStore, useTouchStore, useDriverStore}
