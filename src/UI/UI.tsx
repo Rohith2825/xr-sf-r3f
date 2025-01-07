@@ -59,9 +59,12 @@ const UI = () => {
     driverActive,
     activateDriver,
     deactivateDriver,
+    setTourComplete,
   } = useProductStore();
 
   const driverRef = useRef(null);
+  const shouldMoveCamera = useRef(false);
+
 
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const { isInfoModalOpen, openInfoModal, closeInfoModal } =
@@ -138,6 +141,18 @@ const UI = () => {
             title: "Wishlist",
             description: "Save items for later in your wishlist",
             side: "bottom",
+          },
+        },
+        {
+          popover: {
+            title: "Showcasing the Product",
+            description: "Walk to these products to essentially buy or add them to  cart",
+            position: "mid-center", // Custom position for the popover
+          },
+          onHighlightStarted: () => {
+            // Custom logic to handle the camera movement
+            shouldMoveCamera.current = true; // Trigger camera movement
+            setTourComplete(true);
           },
         },
         {
