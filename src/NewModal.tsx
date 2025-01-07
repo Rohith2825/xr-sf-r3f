@@ -134,11 +134,13 @@ const Modal = () => {
               backgroundColor: (mediaType === PHOTOS && "#8D8B96") || "rgba(0, 0, 0, 0)",
               borderRadius: "100px",
               color: "white",
-              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              fontSize: {xs: "12px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
               textTransform: "none",
               "&:hover": (mediaType !== PHOTOS && {
                 backgroundColor: "rgba(255, 255, 255, 0.1)"
-              }) || {}
+              }) || {},
+              whiteSpace: "nowrap",
+              overflow: "hidden"
             }}
             onClick={() => setMediaType(PHOTOS)}
             className="MediaViewerPhotosButton"
@@ -151,11 +153,13 @@ const Modal = () => {
               backgroundColor: (mediaType === MODEL && "#8D8B96") || "rgba(0, 0, 0, 0)",
               borderRadius: "100px",
               color: "white",
-              fontSize: 16, fontFamily: "'Poppins', sans-serif",
+              fontSize: {xs: "12px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
               textTransform: "none",
               "&:hover": (mediaType !== MODEL && {
                 backgroundColor: "rgba(255, 255, 255, 0.1)"
-              }) || {}
+              }) || {},
+              whiteSpace: "nowrap",
+              overflow: "hidden"
             }}
             onClick={() => setMediaType(MODEL)}
             className="MediaViewerModelButton"
@@ -187,7 +191,7 @@ const Modal = () => {
           sx={{
             width: "100%", height: "100%",
             display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
-            gap: "3%"
+            gap: "2%"
           }}
           className="PhotosCarousel"
         >
@@ -207,7 +211,7 @@ const Modal = () => {
           </ButtonBase>
           <Box
             sx={{
-              width: "60%", height: "100%",
+              width: "70%", height: "100%",
               display: "block",
               overflow: "hidden"
             }}
@@ -280,7 +284,7 @@ const Modal = () => {
         <ModelViewer
           style={{
             height: "100%",
-            width: "100%",
+            width: "100%"
           }}
           data={modelData}
           ar={true} // Enable AR
@@ -289,7 +293,7 @@ const Modal = () => {
           iosSrc={iosSrc} // Link to the .usdz file for iOS
           cameraControls={true} // Enable camera controls
           environmentImage="neutral" // Optional: Environment image for lighting
-          poster="https://example.com/poster.png" // Optional: Poster image for loading
+          poster="" // Optional: Poster image for loading
           alt="A 3D model of a product" // Accessibility text
           onArStatus={(event: unknown) => console.log("AR Status:", event)} // Optional: Log AR status
           onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
@@ -302,7 +306,7 @@ const Modal = () => {
         sx={{
           width: { xs: "100%", md: "50%" }, height: { md: "100%" },
           display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-          gap: "5%",
+          gap: {xs: "30px", md: "5%"}, marginTop: {xs: "10px"}
         }}
         className="MediaViewer"
       >
@@ -323,15 +327,18 @@ const Modal = () => {
         </Box>
         <Button
           sx={{
-            width: "30%",
+            minWidth: {xs: "20%", md: "30%"},
             backgroundColor: "#424147",
             borderRadius: "100px",
             color: "white", fontWeight: "bold",
-            fontSize: 16, fontFamily: "'Poppins', sans-serif",
+            fontSize: {xs: "12px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
             textTransform: "none",
             "&:hover": {
               backgroundColor: "rgba(255, 255, 255, 0.3)"
-            }
+            },
+            padding: "auto 25px auto 25px", boxSizing: "border-box",
+            whiteSpace: "nowrap",
+            overflow: "hidden"
           }}
           className="ARViewButton"
         >
@@ -355,7 +362,16 @@ const Modal = () => {
         >
           <Typography
             sx={{
-              fontSize: "20px", fontFamily: "'Poppins', sans-serif",
+              color: "rgba(255, 255, 255)",
+              fontFamily: "'Poppins', sans-seriff", fontSize: "20px", fontWeight: 500,
+              display: {xs: "block", md: "none"}
+            }}
+          >
+            Price :  
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: {xs: "18px", md: "20px"}, fontFamily: "'Poppins', sans-serif",
               color: "rgb(194, 194, 194)"
             }}
             className="ProductPrice"
@@ -365,7 +381,7 @@ const Modal = () => {
           {selectedVariant && selectedVariant.compareAtPrice &&
             <Typography
               sx={{
-                fontSize: "14px", fontFamily: "'Poppins', sans-serif",
+                fontSize: {md: "14px"}, fontFamily: "'Poppins', sans-serif",
                 color: "rgb(255, 0, 0)",
                 textDecoration: "line-through"
               }}
@@ -494,7 +510,7 @@ const Modal = () => {
       return (
         <Box
           sx={{
-            width: {xs: "80%", md: "40%"}, height: "30px",
+            width: {xs: "80%", md: "65%"}, height: "30px",
             display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between",
             marginTop: "25px"
           }}
@@ -506,7 +522,7 @@ const Modal = () => {
               fontFamily: "'Poppins', sans-seriff", fontSize: "20px", fontWeight: 500,
             }}
           >
-            Quantity:
+            Quantity : 
           </Typography>
           <Button
             sx={{
@@ -564,7 +580,7 @@ const Modal = () => {
         sx={{
           width: { xs: "100%", md: "50%" }, height: {xs: "auto", md: "70%" },
           display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "left",
-          gap: "2%", marginTop: "5%",
+          gap: "2%", marginTop: {md: "5%"},
           overflowY: {md: "scroll"}, scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" },
           padding: {xs: "7%", md: "0"}, boxSizing: "border-box"
         }}
@@ -573,7 +589,8 @@ const Modal = () => {
         <Typography
           sx={{
             fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
-            color: "rgb(255, 255, 255)"
+            color: "rgb(255, 255, 255)",
+            display: {xs: "none", md: "block"}
           }}
           className="ProductTitle"
         >
@@ -595,10 +612,9 @@ const Modal = () => {
         <Box
           dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           sx={{ 
-            width: {xs: "100%", md: "80%"}, 
+            width: {xs: "100%", md: "85%"}, 
             fontSize: {xs: "16px", md: "18px"}, fontFamily: "'Poppins', sans-serif", fontWeight: {xs: "300", md: "400"}, 
-            color: "rgb(255, 255, 255)", 
-            marginBottom: "50px",
+            color: "rgb(255, 255, 255)",
             textAlign: "justify"
           }}
         >
@@ -622,10 +638,11 @@ const Modal = () => {
         sx={{
           position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "95vw", md: "70vw" }, height: { xs: "85vh", md: "75vh" }, // Size
+          width: { xs: "90vw", md: "70vw" }, height: { xs: "85vh", md: "75vh" }, // Size
           backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
           borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
-          overflow: "none"
+          overflow: "none",
+          
         }}
         className="Modal"
       >
@@ -649,7 +666,7 @@ const Modal = () => {
         </Typography>
         <Box
           sx={{
-            width: "100%", height: "95%",
+            width: "100%", height: {xs: "85%", md: "95%"},
             display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-evenly", alignItems: {xs: "center", md: "start"},
             marginTop: "2%", gap: "2%",
             backgroundColor: "rgba(0, 0, 0, 0)",
@@ -657,28 +674,41 @@ const Modal = () => {
           }}
           className="MediaAndDetails"
         >
+          <Typography
+            sx={{
+              fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+              color: "rgb(255, 255, 255)",
+              display: {xs: "block", md: "none"}, marginTop: {xs: "20px"}
+            }}
+            className="ProductTitle"
+          >
+            {selectedProduct && selectedProduct.title}
+          </Typography>
           <MediaViewer />
           <ContentViewer />
         </Box>
         <Box
           sx={{
-            width: {xs: "100%", md: "50%"}, right: "0%", top: "84%", position: "fixed",
-            display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center",
-            gap: "20px"
+            width: {xs: "100%", md: "50%"}, right: "0%", top: {xs: "90%", md: "84%"}, position: "fixed",
+            display: "flex", flexDirection: "row", justifyContent: {xs: "center", md: "start", lg: "center"}, alignItems: "center",
+            gap: {xs: "10px", md: "20px"}
           }}
           className="ShopifyButtonsContainer"
         >
           <Button
             sx={{
-              width: "30%",
+              minWidth: "30%",
               backgroundColor: "#424147",
               borderRadius: "100px",
-              color: "white", fontWeight: "bold",
-              fontSize: {xs: "14px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
+              color: "white", fontWeight: {xs: "normal", md: "bold"},
+              fontSize: {xs: "12px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
               textTransform: "none",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.3)"
-              }
+              },
+              padding: "auto 25px auto 25px", boxSizing: "border-box",
+              whiteSpace: "nowrap",
+              overflow: "hidden"
             }}
             className="AddToCartButton"
             onClick={handleAddToCart}
@@ -687,15 +717,18 @@ const Modal = () => {
           </Button>
           <Button
             sx={{
-              width: "30%",
+              minWidth: "30%",
               backgroundColor: "#424147",
               borderRadius: "100px",
-              color: "white", fontWeight: "bold",
-              fontSize: {xs: "14px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
+              color: "white", fontWeight: {xs: "normal", md: "bold"},
+              fontSize: {xs: "12px", md: "16px"}, fontFamily: "'Poppins', sans-serif",
               textTransform: "none",
               "&:hover": {
                 backgroundColor: "rgba(255, 255, 255, 0.3)"
-              }
+              },
+              padding: "auto 25px auto 25px", boxSizing: "border-box",
+              whiteSpace: "nowrap",
+              overflow: "hidden"
             }}
             className="CheckoutButton"
             onClick={handleCheckout}
