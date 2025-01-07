@@ -23,9 +23,14 @@ export const usePointerLockControlsStore = create(() => ({
 
 export const App = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const { isModalOpen , crosshairVisible ,touchEnabled ,driverActive } = useProductStore();
-  const { isInfoModalOpen} = useInfoModalStore();
-
+  const {
+    isModalOpen,
+    crosshairVisible,
+    touchEnabled,
+    driverActive,
+    isDiscountModalOpen,
+  } = useProductStore();
+  const { isInfoModalOpen } = useInfoModalStore();
 
   // Detect mobile devices
   useEffect(() => {
@@ -37,7 +42,14 @@ export const App = () => {
   });
 
   const pointerLockControlsLockHandler = () => {
-    if (!isModalOpen && !crosshairVisible && !isInfoModalOpen && touchEnabled && !driverActive) {
+    if (
+      !isModalOpen &&
+      !crosshairVisible &&
+      !isInfoModalOpen &&
+      touchEnabled &&
+      !driverActive &&
+      !isDiscountModalOpen
+    ) {
       usePointerLockControlsStore.setState({ isLock: true });
     } else {
       document.exitPointerLock?.();
@@ -76,7 +88,11 @@ export const App = () => {
           <Player />
         </Suspense>
         <Products />
-        <ChestBox />
+        <ChestBox
+          position={[8, -4, -77]}
+          scale={1}
+          path={"/models/old_chest.glb"}
+        />
         <Television
           videoPath="/media/backhome.mp4"
           scale={[0.9, 0.9, 0.9]}

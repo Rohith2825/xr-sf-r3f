@@ -33,12 +33,14 @@ export const Player = () => {
   const modalRef = useRef(false);
   const crosshairRef = useRef(false);
   const InfoModalRef = useRef(false);
+  const DiscountModalRef = useRef(false);
 
   // Add this useEffect to watch modal state changes
   useEffect(() => {
     const unsubscribe = useProductStore.subscribe((state) => {
       modalRef.current = state.isModalOpen;
       crosshairRef.current = state.crosshairVisible;
+      DiscountModalRef.current = state.isDiscountModalOpen;
     });
 
     return () => unsubscribe();
@@ -404,7 +406,8 @@ export const Player = () => {
         !touchEnabler.current ||
         modalRef.current ||
         crosshairRef.current ||
-        InfoModalRef.current
+        InfoModalRef.current ||
+        DiscountModalRef.current
       )
         return;
 
@@ -433,7 +436,8 @@ export const Player = () => {
         !touchEnabler.current ||
         modalRef.current ||
         crosshairRef.current ||
-        InfoModalRef.current
+        InfoModalRef.current ||
+        DiscountModalRef.current
       )
         return;
 
@@ -466,7 +470,8 @@ export const Player = () => {
         !touchEnabler.current ||
         modalRef.current ||
         crosshairRef.current ||
-        InfoModalRef.current
+        InfoModalRef.current ||
+        DiscountModalRef.current
       )
         return;
 
@@ -503,7 +508,12 @@ export const Player = () => {
     }
 
     // Only allow movement when the crosshair is not visible
-    if (!crosshairRef.current && !modalRef.current && !InfoModalRef.current) {
+    if (
+      !crosshairRef.current &&
+      !modalRef.current &&
+      !InfoModalRef.current &&
+      !DiscountModalRef.current
+    ) {
       const velocity = playerRef.current.linvel();
 
       // Combine joystick and keyboard inputs

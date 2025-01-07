@@ -196,9 +196,10 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {!crosshairVisible && !isMobile && !isModalOpen && (
-        <div className={styles.aim} />
-      )}
+      {!crosshairVisible &&
+        !isMobile &&
+        !isModalOpen &&
+        !isDiscountModalOpen && <div className={styles.aim} />}
 
       <div className={styles.helpIconContainer}>
         <img
@@ -267,7 +268,10 @@ const UI = () => {
       {isWishlistOpen && <Wishlist onClose={handleWishlistClose}></Wishlist>}
 
       <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
-      <DiscountModal isOpen={isDiscountModalOpen} onClose={closeDiscountModal}  />
+      <DiscountModal
+        isOpen={isDiscountModalOpen}
+        onClose={closeDiscountModal}
+      />
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}

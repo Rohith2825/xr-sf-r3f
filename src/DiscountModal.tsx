@@ -85,7 +85,6 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
         <Card
           ref={modalRef}
           sx={{
-            flexDirection: "column",
             gap: "10px",
             backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
             backdropFilter: "blur(5px)", // Blur effect for glass morphism
@@ -94,9 +93,16 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
             boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Subtle shadow
             border: "1px solid rgba(255, 255, 255, 0.2)", // Optional border
             zIndex: 999,
+            maxWidth: "400px",
           }}
         >
-          <CardContent>
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Typography
               sx={{
                 fontFamily: "'Poppins', sans-serif",
@@ -113,11 +119,31 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
                 fontFamily: "'Poppins', sans-serif",
                 color: "white",
                 fontSize: "1rem",
+                textAlign: "center",
               }}
             >
               Hurray! You have unlocked the Coupon Code! Click to copy the code
               and add it in the Checkout!
             </Typography>
+            <br />
+            <Box
+              sx={{
+                padding: 1,
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                width: "fit-content",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: "'Poppins', sans-serif",
+                  color: "white",
+                  fontSize: "1.3rem",
+                  fontWeight: "bold",
+                }}
+              >
+                STRATEGYFOX10
+              </Typography>
+            </Box>
           </CardContent>
         </Card>
       </Box>

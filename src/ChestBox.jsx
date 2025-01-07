@@ -2,18 +2,27 @@ import React, { useMemo } from "react";
 import { PivotControls } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useGLTFWithKTX2 } from "./useGTLFwithKTX";
+import { useProductStore } from "../store/productStore";
 
-const ChestBox = () => {
-  const { scene } = useGLTFWithKTX2("/models/old_chest.glb");
-  return <ChestBoxLoader position={[8, -4, -77]} scale={1} model={{ scene }} />;
+const ChestBox = ({
+  position = [0, 0, 0],
+  scale = 1,
+  rotation = [0, 0, 0],
+  path,
+}) => {
+  const { scene } = useGLTFWithKTX2(path);
+  return (
+    <ChestBoxLoader
+      position={position}
+      scale={scale}
+      model={{ scene }}
+      rotation={rotation}
+    />
+  );
 };
 
-const ChestBoxLoader = ({
-  position = [0, 0, 0],
-  rotation = [0, 0, 0],
-  scale = 1,
-  model,
-}) => {
+const ChestBoxLoader = ({ position, rotation, scale, model }) => {
+  const { openDiscountModal } = useProductStore();
   // Memoize scale
   const computedScale = useMemo(() => {
     return typeof scale === "number" ? [scale, scale, scale] : scale;
@@ -40,7 +49,7 @@ const ChestBoxLoader = ({
           rotation={computedRotation}
           scale={computedScale}
           onPointerDown={(e) => {
-            console.log("Chest Box clicked");
+            openDiscountModal();
           }}
           castShadow
           receiveShadow
