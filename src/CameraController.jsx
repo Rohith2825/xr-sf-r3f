@@ -16,7 +16,7 @@ export const CameraController = ({ setAnimating }) => {
       gsap.to(camera.position, {
         x: 0, // target position
         y: 4,
-        z: -65,
+        z: -58,
         duration: 5,
         ease: "power2.inOut",
       });
