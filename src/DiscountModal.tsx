@@ -93,7 +93,6 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
             boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Subtle shadow
             border: "1px solid rgba(255, 255, 255, 0.2)", // Optional border
             zIndex: 999,
-            maxWidth: "400px",
           }}
         >
           <CardContent
@@ -101,6 +100,13 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              maxWidth: {
+                xs: "300px",
+                sm: "400px",
+                md: "400p",
+                lg: "400px",
+                xl: "400px",
+              },
             }}
           >
             <Typography
