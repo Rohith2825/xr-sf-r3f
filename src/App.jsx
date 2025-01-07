@@ -9,6 +9,7 @@ import Television from "./Television";
 import WebPlane from "./WebPlane";
 import BrandPoster from "./BrandPoster";
 import Products from "./Products";
+import ChestBox from "./ChestBox";
 import { Suspense, useState, useEffect } from "react";
 import Skybox from "./Skybox";
 import { useProductStore } from "../store/productStore";
@@ -22,9 +23,8 @@ export const usePointerLockControlsStore = create(() => ({
 
 export const App = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const { isModalOpen , crosshairVisible ,touchEnabled } = useProductStore();
-  const { isInfoModalOpen} = useInfoModalStore();
-
+  const { isModalOpen, crosshairVisible, touchEnabled } = useProductStore();
+  const { isInfoModalOpen } = useInfoModalStore();
 
   // Detect mobile devices
   useEffect(() => {
@@ -56,7 +56,7 @@ export const App = () => {
           onUnlock={pointerLockControlsUnlockHandler}
         />
       )}
-        <Skybox />
+      <Skybox />
       <ambientLight intensity={3.5} />
       <directionalLight
         castShadow
@@ -75,6 +75,7 @@ export const App = () => {
           <Player />
         </Suspense>
         <Products />
+        <ChestBox />
         <Television
           videoPath="/media/backhome.mp4"
           scale={[0.9, 0.9, 0.9]}
