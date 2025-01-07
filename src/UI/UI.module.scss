@@ -43,7 +43,7 @@
 }
 
 .brandLogo {
-  width: 15vw;
+  width: 12vw;
   height: auto;
 }
 
@@ -128,44 +128,3 @@
   }
 }
 
-
-.helpIconContainer {
-  position: absolute; /* Consistent with other icons */
-  top: 2%; /* Align with the desktop top spacing */
-  left: 2%; /* Same padding as right-aligned icons */
-  width: 3vw; /* Match the size with `.icon` */
-  height: auto; /* Maintain aspect ratio */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: auto; /* Enable interaction */
-  z-index: 2; /* Keep consistent z-index with other icons */
-
-  img {
-    width: 100%; /* Let the container define the size */
-    height: auto;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-
-    &:hover {
-      transform: scale(1.1);
-    }
-  }
-}
-
-/* Mobile responsiveness */
-@media screen and (max-width: 768px) {
-  .helpIconContainer {
-    top: 3%; /* Adjust for mobile like `.iconsContainer` */
-    left: 5%; /* Add padding for smaller screens */
-    width: 7vw; /* Match the mobile size for `.icon` */
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .helpIconContainer {
-    top: 2%; /* Closer to the top for very small devices */
-    left: 5%; /* Maintain padding */
-    width: 10vw; /* Match the smallest screen size for `.icon` */
-  }
-}

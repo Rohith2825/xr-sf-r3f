@@ -203,14 +203,6 @@ const UI = () => {
         <div className={styles.aim} />
       )}
 
-      <div className={styles.helpIconContainer}>
-        <img
-          src="/icons/Help.svg"
-          alt="Help"
-          className={styles.icon}
-          onClick={startTour}
-        />
-      </div>
 
       <div className={styles.iconsContainer}>
         <img
@@ -230,6 +222,12 @@ const UI = () => {
           alt="Info"
           className={styles.icon}
           onClick={openInfoModal}
+        />
+        <img
+          src="/icons/Help.svg"
+          alt="Help"
+          className={styles.icon}
+          onClick={startTour}
         />
       </div>
 
