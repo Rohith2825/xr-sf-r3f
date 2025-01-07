@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { PivotControls, Billboard, Text } from "@react-three/drei";
+import { PivotControls, Billboard, Image } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useProductStore } from "../store/productStore";
 
@@ -69,13 +69,7 @@ const DraggableMannequin = ({
             lockY={false}
             lockZ={false} // Lock the rotation on the z axis (default=false)
           >
-            <Text
-              fontSize={0.15}
-              color={"#DC143C"}
-              font="/fonts/SF-Pro-Display-Regular.woff"
-            >
-              SALE !
-            </Text>
+            <Image url="/icons/Sale.png" transparent scale={[0.75, 0.25]} />
           </Billboard>
         )}
       </PivotControls>
