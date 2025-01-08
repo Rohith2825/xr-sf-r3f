@@ -27,18 +27,46 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
   };
 
   const handleCopy = (couponCode: string) => {
-    navigator.clipboard.writeText(couponCode);
-    Swal.fire({
-      title: "Copied!",
-      text: "Coupon code copied to clipboard",
-      icon: "success",
-      timer: 1500,
-      showConfirmButton: false,
-      customClass: {
-        title: styles.swalTitle,
-        popup: styles.swalPopup,
-      },
-    });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard
+        .writeText(couponCode)
+        .then(() => {
+          Swal.fire({
+            title: "Copied!",
+            text: "Coupon code copied to clipboard",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false,
+            customClass: {
+              title: styles.swalTitle,
+              popup: styles.swalPopup,
+            },
+          });
+        })
+        .catch((err) => {
+          console.error("Failed to copy: ", err);
+        });
+    } else {
+      // Fallback for unsupported browsers
+      const textarea = document.createElement("textarea");
+      textarea.value = couponCode;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+
+      Swal.fire({
+        title: "Copied!",
+        text: "Coupon code copied to clipboard",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+    }
   };
 
   useEffect(() => {
