@@ -145,8 +145,8 @@ const UI = () => {
         },
         {
           popover: {
-            title: "Showcasing the Product",
-            description: "Walk to these products to essentially buy or add them to  cart",
+            title: "Find products across the experience",
+            description: "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
           },
           onHighlightStarted: () => {
             // Custom logic to handle the camera movement
