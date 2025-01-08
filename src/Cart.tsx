@@ -1,18 +1,13 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { FC, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Box, Button, Card, Typography } from "@mui/material";
 import { useCart } from "@shopify/hydrogen-react";
 import Swal from "sweetalert2";
 import styles from './UI/UI.module.scss';
+import { useComponentStore } from "./stores/ZustandStores"
 
-interface CartProps {
-  onClose: () => void
-}
-
-const Cart: FC<CartProps> = ({ onClose }) => {
+const Cart = () => {
   const { lines, linesUpdate, checkoutUrl, linesRemove } = useCart();
-
-
+  const { closeCart } = useComponentStore();
 
   useEffect(() => {
     const scrollY = window.scrollY;
@@ -116,7 +111,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const cart = cartRef.current;
     if (cart && !cart.contains(event.target as Node))
-      onClose();
+      closeCart();
   };
 
   return (
@@ -166,7 +161,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
             }
           }}
           className="CartCloseButton"
-          onClick={() => onClose()}
+          onClick={closeCart}
         >
           &times;
         </Typography>
@@ -214,7 +209,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
             return (
               <Box
                 sx={{
-                  width: "95%", height: { xs: "30%", sm: "30%", md: "30%" },
+                  width: "95%", height: { xs: "35%", sm: "35%", md: "30%" },
                   padding: { xs: "2%", sm: "2%", md: "2%" }, gap: { xs: "5%", sm: "2%" },
                   display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
                   borderRadius: "20px",
@@ -222,6 +217,7 @@ const Cart: FC<CartProps> = ({ onClose }) => {
                   boxSizing: "border-box"
                 }}
                 className="CartItem"
+                key={line?.id}
               >
                 <Box
                   component="img"

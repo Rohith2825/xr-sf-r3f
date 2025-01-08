@@ -1,23 +1,6 @@
-import { create } from "zustand";
 import { X } from "lucide-react";
 import { useEffect } from "react";
-
-type InfoModalStore = {
-  isInfoModalOpen: boolean;
-  openInfoModal: () => void;
-  closeInfoModal: () => void;
-};
-
-type InfoModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-export const useInfoModalStore = create<InfoModalStore>((set) => ({
-  isInfoModalOpen: false,
-  openInfoModal: () => set({ isInfoModalOpen: true }),
-  closeInfoModal: () => set({ isInfoModalOpen: false }),
-}));
+import { useComponentStore } from "./stores/ZustandStores";
 
 const styles = {
   backdrop: {
@@ -146,9 +129,10 @@ const styles = {
   `,
 };
 
-const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
+const InfoModal = () => {
+  const { isInfoModalOpen, closeInfoModal } = useComponentStore();
   useEffect(() => {
-    if (isOpen) {
+    if (isInfoModalOpen) {
       // Save current scroll position
       const scrollY = window.scrollY;
       const joystickZone = document.getElementById("joystickZone");
@@ -180,17 +164,15 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         window.scrollTo(0, scrollY);
       };
     }
-  }, [isOpen]);
+  }, [isInfoModalOpen]);
 
-  const handleClose = (e: React.MouseEvent) => {
+  const handleClose = () => {
     const joystickZone = document.getElementById("joystickZone");
     if (joystickZone) {
       joystickZone.style.display = "block";
     }
-    onClose();
+    closeInfoModal();
   };
-
-  if (!isOpen) return null;
 
   return (
     <>

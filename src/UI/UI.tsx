@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
-import { driver } from "driver.js";
+import { useEffect, useRef, useState } from "react";
+import { driver, Driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
-import { useProductStore } from "../../store/productStore";
+import { useComponentStore, useDriverStore, useTourStore } from "../stores/ZustandStores";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
-import Modal from "../Modal";
-import Cart from "../Cart";
+import Modal from "@/NewModal";
+import Cart from "@/Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal, { useInfoModalStore } from "../InfoModal";
 import DiscountModal from "../DiscountModal";
@@ -44,12 +44,13 @@ const customDriverStyles = `
 `;
 
 const shopifyConfig = {
-  storeDomain: "gsv01y-gx.myshopify.com" || "", // Replace with your Shopify store domain
-  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110" || "",
+  storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
+  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110",
   storefrontApiVersion: "2024-10",
 };
 
 const UI = () => {
+  // Zustand store for handling different components
   const {
     isModalOpen,
     selectedProduct,
@@ -65,13 +66,10 @@ const UI = () => {
     closeDiscountModal,
   } = useProductStore();
 
-  const driverRef = useRef(null);
+  const driverRef = useRef<Driver>(undefined);
   const shouldMoveCamera = useRef(false);
-
-
+  
   const [ChatbotOpen, setChatbotOpen] = useState(false);
-  const { isInfoModalOpen, openInfoModal, closeInfoModal } =
-    useInfoModalStore();
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
       navigator.userAgent
@@ -86,36 +84,13 @@ const UI = () => {
     setChatbotOpen(false);
   };
 
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
-
-  const handleCartOpen = () => {
-    setIsCartOpen(true);
-    hideCrosshair();
-  };
-
-  const handleCartClose = () => {
-    setIsCartOpen(false);
-    showCrosshair();
-  };
-
-  const handleWishlistOpen = () => {
-    setIsWishlistOpen(true);
-    hideCrosshair();
-  };
-
-  const handleWishlistClose = () => {
-    setIsWishlistOpen(false);
-    showCrosshair();
-  };
-
   useEffect(() => {
     const styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
     styleSheet.innerText = customDriverStyles;
     document.head.appendChild(styleSheet);
 
-    // Initialize the driver instance and assign to ref
+    //Initialize the driver instance and assign to ref
     driverRef.current = driver({
       showProgress: true,
       steps: [
@@ -148,8 +123,8 @@ const UI = () => {
         },
         {
           popover: {
-            title: "Showcasing the Product",
-            description: "Walk to these products to essentially buy or add them to  cart",
+            title: "Find products across the experience",
+            description: "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
           },
           onHighlightStarted: () => {
             // Custom logic to handle the camera movement
@@ -179,15 +154,15 @@ const UI = () => {
     return () => {
       document.head.removeChild(styleSheet);
     };
-  }, []);
+  }, [isMobile]);
 
 
 
   const startTour = () => {
     // Close any open modals before starting the tour
     if (isModalOpen) closeModal();
-    if (isCartOpen) handleCartClose();
-    if (isWishlistOpen) handleWishlistClose();
+    if (isCartOpen) closeCart();
+    if (isWishlistOpen) closeWishlist();
     if (isInfoModalOpen) closeInfoModal();
     if (ChatbotOpen) closeChatbotModal();
 
@@ -200,11 +175,16 @@ const UI = () => {
 
   useEffect(() => {
     // Listen for driver active state changes and update Zustand
+    let lastState = driverRef.current?.isActive();
     const checkDriverState = () => {
-      if (driverRef.current?.isActive()) {
-        activateDriver();
-      } else {
-        deactivateDriver();
+      const currentState = driverRef.current?.isActive();
+      if(currentState !== lastState){
+        lastState = currentState;
+        if (currentState) {
+          activateDriver();
+        } else {
+          deactivateDriver();
+        }
       }
     };
 
@@ -212,40 +192,18 @@ const UI = () => {
     const interval = setInterval(checkDriverState, 100);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [activateDriver, deactivateDriver]);
 
   return (
     <div className="ui-root">
-      {!crosshairVisible && !isMobile && !isModalOpen && (
-        <div className={styles.aim} />
-      )}
-
+      {crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
-        <img
-          src="/icons/Cart.svg"
-          alt="Cart"
-          className={styles.icon}
-          onClick={handleCartOpen}
-        />
-        <img
-          src="/icons/Wishlist.svg"
-          alt="Wishlist"
-          className={styles.icon}
-          onClick={handleWishlistOpen}
-        />
-        <img
-          src="/icons/Info.svg"
-          alt="Info"
-          className={styles.icon}
-          onClick={openInfoModal}
-        />
-        <img
-          src="/icons/Help.svg"
-          alt="Help"
-          className={styles.icon}
-          onClick={startTour}
-        />
+
+        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
+        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
+        <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
+        <img src="/icons/Help.svg" alt="Help" className={styles.icon} onClick={startTour}/>
       </div>
 
       {/* Brand logo on bottom-left */}
@@ -273,16 +231,16 @@ const UI = () => {
       >
         <CartProvider>
           {isModalOpen && (
-            <Modal
-              isOpen={isModalOpen}
-              onClose={closeModal}
-              data={selectedProduct}
-            />
+            <Modal />
           )}
-          {isCartOpen && <Cart onClose={handleCartClose}></Cart>}
+          {isCartOpen && (
+            <Cart></Cart>
+          )}
         </CartProvider>
       </ShopifyProvider>
-      {isWishlistOpen && <Wishlist onClose={handleWishlistClose}></Wishlist>}
+      {isWishlistOpen && (
+        <Wishlist></Wishlist>
+      )}
 
       <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
       <DiscountModal isOpen={isDiscountModalOpen} onClose={closeDiscountModal}  />

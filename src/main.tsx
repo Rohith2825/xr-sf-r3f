@@ -7,22 +7,23 @@ import "@/index.scss";
 import UI from "@/UI/UI.tsx";
 import Load from "@/Loader.tsx";
 import { ProductService } from "./api/shopifyAPIService";
-import { useProductStore } from "../store/productStore";
+import { useComponentStore } from "./stores/ZustandStores";
 
 function CanvasWrapper() {
-  const { products, setProducts } = useProductStore();
+  const { setProducts } = useComponentStore();
   const { progress } = useProgress();
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await ProductService.getAllProducts();
-        setProducts(response.data.products.edges);
-        
-      } catch (err) {
-        console.error(err);
-      }
+  // Fetch products from shopify store
+  async function fetchProducts() {
+    try {
+      const response = await ProductService.getAllProducts();
+      setProducts(response);
+      
+    } catch (err) {
+      console.error(err);
     }
+  }
+  useEffect(() => {
     fetchProducts();
   }, []);
 

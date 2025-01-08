@@ -6,9 +6,9 @@ import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
 import gsap from "gsap";
-import { useProductStore } from "../store/productStore";
-import { useInfoModalStore } from "./InfoModal";
-import { CameraController} from "./CameraController";
+import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
+import { CameraController } from "./CameraController";
+
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
   PORTRAIT: {
@@ -29,30 +29,6 @@ const RESPAWN_HEIGHT = -5;
 const START_POSITION = new THREE.Vector3(0, 7, -5);
 
 export const Player = () => {
-  // Add this with your other refs at the top of the component
-  const modalRef = useRef(false);
-  const crosshairRef = useRef(false);
-  const InfoModalRef = useRef(false);
-
-  // Add this useEffect to watch modal state changes
-  useEffect(() => {
-    const unsubscribe = useProductStore.subscribe((state) => {
-      modalRef.current = state.isModalOpen;
-      crosshairRef.current = state.crosshairVisible;
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  // Watch InfoModal state changes
-  useEffect(() => {
-    const unsubscribe = useInfoModalStore.subscribe((state) => {
-      InfoModalRef.current = state.isInfoModalOpen;
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   const playerRef = useRef();
   const touchRef = useRef({
     cameraTouch: null,
@@ -172,10 +148,12 @@ export const Player = () => {
   }, [isMobile]);
 
   const initialTourComplete = useRef(false);
-  const isTransitioning = useRef(false);
-  const touchEnabler = useRef(false);
-  const touchEnabled = useProductStore((state) => state.touchEnabled);
-  const setTouchEnabled = useProductStore((state) => state.setTouchEnabled);
+  const { 
+    isModalOpen, isCartOpen, isWishlistOpen,
+    isInfoModalOpen 
+  } = useComponentStore();
+
+  const { isTouchEnabled, enableTouch} = useTouchStore();
 
   //More pans
   // useEffect(() => {
@@ -337,8 +315,7 @@ export const Player = () => {
     const timeline = gsap.timeline({
       onComplete: () => {
         initialTourComplete.current = true;
-        touchEnabler.current = true;
-        setTouchEnabled();
+        enableTouch();
   
         // Reset physics state
         playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
@@ -374,13 +351,8 @@ export const Player = () => {
 
   useEffect(() => {
     const handleTouchStart = (e) => {
-      if (
-        !touchEnabler.current ||
-        modalRef.current ||
-        crosshairRef.current ||
-        InfoModalRef.current
-      )
-        return;
+      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen) return; // Return if any one of the components is open
 
       if (e.target.closest("#joystickZone")) return;
 
@@ -403,13 +375,8 @@ export const Player = () => {
 
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
-      if (
-        !touchEnabler.current ||
-        modalRef.current ||
-        crosshairRef.current ||
-        InfoModalRef.current
-      )
-        return;
+      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen) return; // Return if any one of the components is open
 
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
@@ -436,13 +403,8 @@ export const Player = () => {
     };
 
     const handleTouchEnd = (e) => {
-      if (
-        !touchEnabler.current ||
-        modalRef.current ||
-        crosshairRef.current ||
-        InfoModalRef.current
-      )
-        return;
+      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen) return; // Return if any one of the components is open
 
       const remainingTouches = Array.from(e.touches);
       if (
@@ -464,7 +426,7 @@ export const Player = () => {
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [camera, isPortrait]);
+  }, [camera, isPortrait, isTouchEnabled, isModalOpen, isCartOpen, isWishlistOpen, isInfoModalOpen]);
 
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
@@ -476,8 +438,8 @@ export const Player = () => {
       respawnPlayer();
     }
 
-    // Only allow movement when the crosshair is not visible
-    if (!crosshairRef.current && !modalRef.current && !InfoModalRef.current) {
+    // Only allow movement when no component is open
+    if (!isModalOpen && !isInfoModalOpen && !isCartOpen && !isWishlistOpen) {
       const velocity = playerRef.current.linvel();
 
       // Combine joystick and keyboard inputs
@@ -544,7 +506,7 @@ export const Player = () => {
       lockRotations
       canSleep={false}
     >
-      <CameraController setAnimating={setAnimating} />
+      <CameraController setAnimating={setAnimating} playerRef={playerRef} />
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>

@@ -1,4 +1,4 @@
-import { FC, useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import {
   Card,
   Box,
@@ -6,25 +6,22 @@ import {
   Button
 } from '@mui/material';
 import useWishlist from './WishlistHook';
-import { Product } from './api/shopifyAPIService';
 import Swal from 'sweetalert2';
 import styles from '@/UI/UI.module.scss';
+import { useComponentStore } from '@/stores/ZustandStores';
 
-interface WishlistProps {
-  onClose: () => void
-}
-
-const Wishlist: FC<WishlistProps> = ({ onClose }) => {
-  const { wishlist, productList, removeItemsFromWishlist, clearWishlist } = useWishlist();
+const Wishlist = () => {
+  const { wishlist, removeItemsFromWishlist, clearWishlist } = useWishlist();
+  const { closeWishlist, products } = useComponentStore();
 
   const wishlistRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const wishlistElement = wishlistRef.current;
     if (wishlistElement && !wishlistElement.contains(event.target as Node)) {
-      onClose();
+      closeWishlist();
     }
   };
-
+  
   useEffect(() => {
     const scrollY = window.scrollY;
     const joystickZone = document.getElementById("joystickZone");
@@ -125,7 +122,7 @@ const Wishlist: FC<WishlistProps> = ({ onClose }) => {
             }
           }}
           className="WishlistCloseButton"
-          onClick={() => onClose()}
+          onClick={closeWishlist}
         >
           &times;
         </Typography>
@@ -141,14 +138,18 @@ const Wishlist: FC<WishlistProps> = ({ onClose }) => {
           className="WishlistItems"
         >
           {
-            productList && productList.map((product: Product) => {
+            wishlist && wishlist.map((productId:number) => {
+              const product = products.find((product) => product.id === productId);
+              if (!product) return null;
+
               const deleteItem = () => {
                 removeItemsFromWishlist([product.id]);
-              }
+              };
+
               return (
                 <Box
                   sx={{
-                    width: "95%", height: { xs: "20%", sm: "30%", md: "30%" },
+                    width: "95%", height: { xs: "25%", sm: "30%", md: "30%" },
                     padding: { xs: "2%", sm: "2%", md: "2%" }, gap: { xs: "5%", sm: "2%" },
                     display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
                     borderRadius: { xs: "10px", md: "20px" },
@@ -160,7 +161,7 @@ const Wishlist: FC<WishlistProps> = ({ onClose }) => {
                 >
                   <Box
                     component="img"
-                    src={product.image.src}
+                    src={product.images[0].src}
                     sx={{
                       height: { xs: "90%", md: "75%" }, aspectRatio: "1 / 1",
                       backgroundColor: "rgb(255, 255, 255)",

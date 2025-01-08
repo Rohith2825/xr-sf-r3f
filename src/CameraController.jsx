@@ -1,52 +1,57 @@
 import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
-import { useProductStore } from "../store/productStore";
+import { useTourStore } from "./stores/ZustandStores";
 import { useEffect } from "react";
 
-export const CameraController = ({ setAnimating }) => {
+export const CameraController = ({ setAnimating, playerRef }) => {
   const { camera } = useThree();
-  const { tourComplete } = useProductStore();
+  const { tourComplete } = useTourStore();
 
   useEffect(() => {
-    if (tourComplete) {
-      // Notify Player component to suspend camera sync
+    if (tourComplete && playerRef.current) {
       setAnimating(true);
 
-      // Animate the camera's position and rotation using GSAP
-      gsap.to(camera.position, {
-        x: 0, // target position
-        y: 4,
-        z: -58,
-        duration: 5,
-        ease: "power2.inOut",
-      });
+      const targetPosition = {
+        x: 0,
+        y: -1,
+        z: -64
+      };
 
-      gsap.to(camera.rotation, {
-        x: -0.5, // target rotation in radians (e.g., look straight)
-        y: 0, // rotate 45 degrees around the Y-axis
-        z: 0, // no tilt
-        duration: 5,
-        ease: "power2.inOut",
+      // Create a timeline for sequential animations
+      const timeline = gsap.timeline({
         onComplete: () => {
-          // Reset camera rotation to its default state
-          gsap.to(camera.rotation, {
-            x: 0, // Reset x rotation
-            y: 0, // Reset y rotation
-            z: 0, // Reset z rotation
-            duration: 1,
-            ease: "power2.inOut",
-            onComplete: () => {
-              // Notify Player component to resume camera sync
-              setAnimating(false);
-
-              // Reset tourComplete flag
-              useProductStore.setState({ tourComplete: false });
-            },
-          });
-        },
+          if (playerRef.current) {
+            playerRef.current.setTranslation(targetPosition);
+            playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+            playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
+          }
+          
+          setAnimating(false);
+          useTourStore.setState({ tourComplete: false });
+        }
       });
+
+      // First reset rotation
+      timeline.to(camera.rotation, {
+        x: 0,
+        y: 0,
+        z: 0,
+        duration: 2,
+        ease: "power2.inOut"
+      });
+
+      // Then move to target position
+      timeline.to(camera.position, {
+        x: targetPosition.x,
+        y: targetPosition.y,
+        z: targetPosition.z,
+        duration: 4,
+        ease: "power2.inOut"
+      });
+
+      return () => timeline.kill();
     }
-  }, [tourComplete, camera, setAnimating]);
+  }, [tourComplete, camera, setAnimating, playerRef]);
 
   return null;
 };
