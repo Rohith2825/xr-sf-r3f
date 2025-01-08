@@ -61,6 +61,7 @@ const UI = () => {
   const { setTourComplete } = useTourStore();
 
   const driverRef = useRef<Driver>(undefined);
+  const shouldMoveCamera = useRef(false);
   
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(
@@ -112,6 +113,17 @@ const UI = () => {
             title: "Wishlist",
             description: "Save items for later in your wishlist",
             side: "bottom",
+          },
+        },
+        {
+          popover: {
+            title: "Find products across the experience",
+            description: "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
+          },
+          onHighlightStarted: () => {
+            // Custom logic to handle the camera movement
+            shouldMoveCamera.current = true; // Trigger camera movement
+            setTourComplete(true);
           },
         },
         {

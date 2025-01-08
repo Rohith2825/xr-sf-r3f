@@ -506,7 +506,7 @@ export const Player = () => {
       lockRotations
       canSleep={false}
     >
-      <CameraController setAnimating={setAnimating} playerRef={playerRef} />
+      <CameraController setAnimating={setAnimating} playerRef={playerRef} />
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>
