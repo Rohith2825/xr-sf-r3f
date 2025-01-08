@@ -1,5 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
+import Swal from "sweetalert2";
+import styles from "./UI/UI.module.scss";
 
 interface DiscountModalProps {
   isOpen: boolean;
@@ -26,6 +28,17 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
 
   const handleCopy = (couponCode: string) => {
     navigator.clipboard.writeText(couponCode);
+    Swal.fire({
+      title: "Copied!",
+      text: "Coupon code copied to clipboard",
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+      customClass: {
+        title: styles.swalTitle,
+        popup: styles.swalPopup,
+      },
+    });
   };
 
   useEffect(() => {
@@ -138,7 +151,7 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
             </Typography>
             <br />
             <Box
-              onClick={() => handleCopy(props.discountCode)}
+              onPointerDown={() => handleCopy(props.discountCode)}
               sx={{
                 padding: 1,
                 backgroundColor: "rgba(255, 255, 255, 0.2)",

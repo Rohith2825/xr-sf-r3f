@@ -1,20 +1,21 @@
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense, useMemo, useRef, useState } from "react";
 import { PivotControls } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useGLTFWithKTX2 } from "./useGTLFwithKTX";
 import { useProductStore } from "../store/productStore";
+import { useFrame } from "@react-three/fiber";
 
 const ChestBox = () => {
   const chestBoxData = [
     {
-      position: [-22, -3.5, -63],
+      position: [-22, -3.2, -63],
       scale: 1,
       rotation: [0, 90, 0],
       path: "/models/compressed_old_chest.glb",
       discountCode: "STRATEGYFOX10",
     },
     {
-      position: [32, -4.5, -33],
+      position: [32, -4.2, -33],
       scale: 1,
       rotation: [0, -40, 0],
       path: "/models/compressed_old_chest1.glb",
@@ -60,7 +61,20 @@ const ChestBoxWrapper = ({ position, scale, rotation, path, discountCode }) => {
 };
 
 const ChestBoxLoader = ({ position, rotation, scale, model, discountCode }) => {
+  const modelRef = useRef();
+  const [isHovered, setIsHovered] = useState(false);
   const { openDiscountModal, setDiscountCode } = useProductStore();
+
+  // Wobble Effect: Only trigger useFrame when the model is hovered
+  useFrame((state) => {
+    if (isHovered && modelRef.current) {
+      const time = state.clock.getElapsedTime(); // Total elapsed time in seconds
+      modelRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2; // Add wobble effect
+    } else if (modelRef.current) {
+      modelRef.current.position.y = position[1]; // Reset position when not hovered
+    }
+  });
+
   // Memoize scale
   const computedScale = useMemo(() => {
     return typeof scale === "number" ? [scale, scale, scale] : scale;
@@ -82,10 +96,13 @@ const ChestBoxLoader = ({ position, rotation, scale, model, discountCode }) => {
         activeAxes={[false, false, false]}
       >
         <primitive
+          ref={modelRef}
           object={memoizedModelScene}
           position={position}
           rotation={computedRotation}
           scale={computedScale}
+          onPointerOver={() => setIsHovered(true)} // Enable wobble on hover
+          onPointerOut={() => setIsHovered(false)} // Disable wobble on hover out
           onPointerDown={(e) => {
             openDiscountModal();
             setDiscountCode(discountCode);
