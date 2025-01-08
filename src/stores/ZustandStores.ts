@@ -131,7 +131,7 @@ interface DriverStore{
   driverActive: boolean,
   activateDriver: () => void,
   deactivateDriver: () => void,
-  }
+}
 
 const useDriverStore = create<DriverStore>((set) => ({
   driverActive: false,
@@ -139,4 +139,15 @@ const useDriverStore = create<DriverStore>((set) => ({
   deactivateDriver: () => set({ driverActive: false }),
 }));
 
-export {useComponentStore, usePointerLockStore, useTouchStore, useDriverStore}
+// Tour handling
+interface TourStore{
+  tourComplete: boolean,
+  setTourComplete: (value: boolean) => void
+}
+
+const useTourStore = create<TourStore>((set) => ({
+  tourComplete: false,
+  setTourComplete: (value) => set({ tourComplete: value }),
+}));
+
+export {useComponentStore, usePointerLockStore, useTouchStore, useDriverStore, useTourStore}

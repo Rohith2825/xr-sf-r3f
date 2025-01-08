@@ -3,7 +3,7 @@ import { driver, Driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
-import { useComponentStore, useDriverStore } from "../stores/ZustandStores";
+import { useComponentStore, useDriverStore, useTourStore } from "../stores/ZustandStores";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "@/NewModal";
 import Cart from "@/Cart";
@@ -58,8 +58,10 @@ const UI = () => {
     isInfoModalOpen, openInfoModal, closeInfoModal,
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
-  const driverRef = useRef<Driver>(undefined);
+  const { setTourComplete } = useTourStore();
 
+  const driverRef = useRef<Driver>(undefined);
+  
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(

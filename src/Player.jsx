@@ -7,6 +7,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
 import gsap from "gsap";
 import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
+import { CameraController } from "./CameraController";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -35,6 +36,7 @@ export const Player = () => {
   });
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
+  const [isAnimating, setAnimating] = useState(false);
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
       navigator.userAgent
@@ -429,7 +431,7 @@ export const Player = () => {
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
   useFrame((state) => {
-    if (!playerRef.current) return;
+    if (!playerRef.current || isAnimating ) return;
 
     const { y: playerY } = playerRef.current.translation();
     if (playerY < RESPAWN_HEIGHT) {
@@ -504,6 +506,7 @@ export const Player = () => {
       lockRotations
       canSleep={false}
     >
+      <CameraController setAnimating={setAnimating} playerRef={playerRef} />
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>
