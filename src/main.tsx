@@ -13,16 +13,17 @@ function CanvasWrapper() {
   const { setProducts } = useComponentStore();
   const { progress } = useProgress();
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await ProductService.getAllProducts();
-        setProducts(response);
-        
-      } catch (err) {
-        console.error(err);
-      }
+  // Fetch products from shopify store
+  async function fetchProducts() {
+    try {
+      const response = await ProductService.getAllProducts();
+      setProducts(response);
+      
+    } catch (err) {
+      console.error(err);
     }
+  }
+  useEffect(() => {
     fetchProducts();
   }, []);
 

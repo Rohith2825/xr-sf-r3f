@@ -2,6 +2,9 @@ import React, { useMemo } from "react";
 import { PivotControls, Billboard, Image } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useComponentStore } from "./stores/ZustandStores";
+import Swal from "sweetalert2";
+import styles from "@/UI/UI.module.scss";
+import { ProductService } from "./api/shopifyAPIService";
 
 const DraggableMannequin = ({
   position = [0, 0, 0],
@@ -13,7 +16,8 @@ const DraggableMannequin = ({
   model,
   sale = false, // New sale prop
 }) => {
-  const { openModal, setSelectedProduct } = useComponentStore();
+  const { openModal, setSelectedProduct, products, setProducts } = useComponentStore();
+
   //console.log("Position prop in DraggableMannequin:", position);
 
   // const findProductById = (id) => {
@@ -41,6 +45,37 @@ const DraggableMannequin = ({
     return [x, y + 2.5, z];
   }, [position]);
 
+  // On clicking product
+  const handleProductOpen = () => {
+    // Check if products are loaded
+    if(products && products.length > 0){
+      setSelectedProduct(productId);
+      openModal();
+    }
+    else{
+      const fetchProducts = async () => {
+        try {
+          const response = await ProductService.getAllProducts();
+          setProducts(response);
+          
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchProducts();
+      
+      Swal.fire({
+        title: "Could Not Load Product",
+        text: "The products couldn't be loaded. Please try again.",
+        icon: "error",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup
+        }
+      });
+    }
+  };
+
   return (
     <RigidBody type="fixed">
       <PivotControls
@@ -53,14 +88,8 @@ const DraggableMannequin = ({
           position={position}
           rotation={computedRotation}
           scale={computedScale}
-          onTouchStart={(e) => {
-            setSelectedProduct(productId);
-            openModal();
-          }}
-          onClick={(e) => {
-            setSelectedProduct(productId);
-            openModal();
-          }}
+          onTouchStart={handleProductOpen}
+          onClick={handleProductOpen}
           castShadow
           receiveShadow
         />
