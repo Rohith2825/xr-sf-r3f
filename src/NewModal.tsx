@@ -23,12 +23,43 @@ const Modal = () => {
 
   // Quantity
   const [quantity, setQuantity] = useState<number>(1);
+  useEffect(() => {//Whenever variant changes
+    setQuantity(1);
+  }, [selectedVariant, setQuantity]);
   
   // Media type photo or model
   const PHOTOS = "Photos";
   const MODEL = "3D Model";
   const [mediaType, setMediaType] = useState(PHOTOS);
   
+  useEffect(() => {
+    const scrollY = window.scrollY;
+    const joystickZone = document.getElementById("joystickZone");
+
+    if (joystickZone) {
+      joystickZone.style.display = "none";
+    }
+
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+
+    return () => {
+      if (joystickZone) {
+        joystickZone.style.display = "block";
+      }
+
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -284,23 +315,29 @@ const Modal = () => {
       const iosSrc = model.sources && model.sources[1].url;
 
       return (
-        <ModelViewer
-          style={{
-            height: "100%",
-            width: "100%"
+        <Box
+          sx={{
+            width: "100%", height: "100%", minHeight: "300px"
           }}
-          data={modelData}
-          ar={true} // Enable AR
-          arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
-          arScale="auto" // Automatically scale the model in AR
-          iosSrc={iosSrc} // Link to the .usdz file for iOS
-          cameraControls={true} // Enable camera controls
-          environmentImage="neutral" // Optional: Environment image for lighting
-          poster="" // Optional: Poster image for loading
-          alt="A 3D model of a product" // Accessibility text
-          onArStatus={(event: unknown) => console.log("AR Status:", event)} // Optional: Log AR status
-          onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
-        />
+        >
+          <ModelViewer
+            style={{
+              height: "100%",
+              width: "100%"
+            }}
+            data={modelData}
+            ar={true} // Enable AR
+            arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
+            arScale="auto" // Automatically scale the model in AR
+            iosSrc={iosSrc} // Link to the .usdz file for iOS
+            cameraControls={true} // Enable camera controls
+            environmentImage="neutral" // Optional: Environment image for lighting
+            poster="" // Optional: Poster image for loading
+            alt="A 3D model of a product" // Accessibility text
+            onArStatus={(event: unknown) => console.log("AR Status:", event)} // Optional: Log AR status
+            onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
+          />
+        </Box>
       );
     };
 
@@ -641,7 +678,7 @@ const Modal = () => {
         sx={{
           position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "90vw", md: "70vw" }, height: { xs: "85vh", md: "75vh" }, // Size
+          width: { xs: "90vw", md: "70vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, // Size
           backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
           borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
           overflow: "none",

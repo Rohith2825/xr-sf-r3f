@@ -149,7 +149,7 @@ const Wishlist = () => {
               return (
                 <Box
                   sx={{
-                    width: "95%", height: { xs: "20%", sm: "30%", md: "30%" },
+                    width: "95%", height: { xs: "25%", sm: "30%", md: "30%" },
                     padding: { xs: "2%", sm: "2%", md: "2%" }, gap: { xs: "5%", sm: "2%" },
                     display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
                     borderRadius: { xs: "10px", md: "20px" },
