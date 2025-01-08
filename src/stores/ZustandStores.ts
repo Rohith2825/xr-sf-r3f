@@ -3,35 +3,42 @@ import { create } from "zustand";
 
 interface ComponentStore {
   // Crosshair handling
-  crosshairVisible: boolean,
-  showCrosshair: () => void,
-  hideCrosshair: () => void,
+  crosshairVisible: boolean;
+  showCrosshair: () => void;
+  hideCrosshair: () => void;
 
   // Product handling
-  products: Product[],
-  selectedProduct: Product | undefined,
-  setProducts: (products: Product[]) => void,
-  setSelectedProduct: (productId: number) => void
+  products: Product[];
+  selectedProduct: Product | undefined;
+  setProducts: (products: Product[]) => void;
+  setSelectedProduct: (productId: number) => void;
 
   // Modal Handling
-  isModalOpen: boolean,
-  openModal: () => void,
-  closeModal: () => void,
+  isModalOpen: boolean;
+  openModal: () => void;
+  closeModal: () => void;
 
   // Cart Handling
-  isCartOpen: boolean,
-  openCart: () => void,
-  closeCart: () => void,
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 
   // Wishlist Handling
-  isWishlistOpen: boolean,
-  openWishlist: () => void,
-  closeWishlist: () => void,
+  isWishlistOpen: boolean;
+  openWishlist: () => void;
+  closeWishlist: () => void;
 
   // Info Handling
-  isInfoModalOpen: boolean,
-  openInfoModal: () => void,
-  closeInfoModal: () => void,
+  isInfoModalOpen: boolean;
+  openInfoModal: () => void;
+  closeInfoModal: () => void;
+
+  // Discount Handling
+  discountCode: string;
+  isDiscountModalOpen: boolean;
+  openDiscountModal: () => void;
+  closeDiscountModal: () => void;
+  setDiscountCode: (code: string) => void;
 }
 
 const useComponentStore = create<ComponentStore>((set) => ({
@@ -94,29 +101,40 @@ const useComponentStore = create<ComponentStore>((set) => ({
   closeInfoModal: () => {
     set({ crosshairVisible: true });
     set({ isInfoModalOpen: false });
-  }
-}));
+  },
 
+  // Discount Handling
+  discountCode: "",
+  isDiscountModalOpen: false,
+  openDiscountModal: () => {
+    set({ crosshairVisible: false });
+    set({ isDiscountModalOpen: true });
+  },
+  closeDiscountModal: () => {
+    set({ crosshairVisible: true });
+    set({ isDiscountModalOpen: false });
+  },
+  setDiscountCode: (code: string) => set({ discountCode: code }),
+}));
 
 // Pointer lock handling
 interface PointerLockStore {
-  isPointerLocked: boolean,
-  lockPointer: () => void,
-  unlockPointer: () => void
+  isPointerLocked: boolean;
+  lockPointer: () => void;
+  unlockPointer: () => void;
 }
 
 const usePointerLockStore = create<PointerLockStore>((set) => ({
   isPointerLocked: false,
   lockPointer: () => set({ isPointerLocked: true }),
-  unlockPointer: () => set({ isPointerLocked: false })
+  unlockPointer: () => set({ isPointerLocked: false }),
 }));
-
 
 // Touch handling
 interface TouchStore {
-  isTouchEnabled: boolean,
-  enableTouch: () => void,
-  disableTouch: () => void,
+  isTouchEnabled: boolean;
+  enableTouch: () => void;
+  disableTouch: () => void;
 }
 
 const useTouchStore = create<TouchStore>((set) => ({
@@ -125,12 +143,11 @@ const useTouchStore = create<TouchStore>((set) => ({
   disableTouch: () => set({ isTouchEnabled: false }),
 }));
 
-
 // Driver handling
-interface DriverStore{
-  driverActive: boolean,
-  activateDriver: () => void,
-  deactivateDriver: () => void,
+interface DriverStore {
+  driverActive: boolean;
+  activateDriver: () => void;
+  deactivateDriver: () => void;
 }
 
 const useDriverStore = create<DriverStore>((set) => ({
@@ -140,9 +157,9 @@ const useDriverStore = create<DriverStore>((set) => ({
 }));
 
 // Tour handling
-interface TourStore{
-  tourComplete: boolean,
-  setTourComplete: (value: boolean) => void
+interface TourStore {
+  tourComplete: boolean;
+  setTourComplete: (value: boolean) => void;
 }
 
 const useTourStore = create<TourStore>((set) => ({
@@ -150,4 +167,10 @@ const useTourStore = create<TourStore>((set) => ({
   setTourComplete: (value) => set({ tourComplete: value }),
 }));
 
-export {useComponentStore, usePointerLockStore, useTouchStore, useDriverStore, useTourStore}
+export {
+  useComponentStore,
+  usePointerLockStore,
+  useTouchStore,
+  useDriverStore,
+  useTourStore,
+};

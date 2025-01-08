@@ -9,6 +9,7 @@ import Modal from "@/NewModal";
 import Cart from "@/Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal from "@/InfoModal";
+import DiscountModal from "@/DiscountModal";
 
 const customDriverStyles = `
   .driver-popover {
@@ -56,6 +57,7 @@ const UI = () => {
     isCartOpen, openCart, closeCart,
     isWishlistOpen, openWishlist, closeWishlist,
     isInfoModalOpen, openInfoModal, closeInfoModal,
+    discountCode, isDiscountModalOpen, closeDiscountModal,
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
   const { setTourComplete } = useTourStore();
@@ -243,7 +245,11 @@ const UI = () => {
       {isInfoModalOpen && (
         <InfoModal></InfoModal>
       )}
-
+      <DiscountModal
+        isOpen={isDiscountModalOpen}
+        onClose={closeDiscountModal}
+        discountCode={discountCode}
+      />
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}

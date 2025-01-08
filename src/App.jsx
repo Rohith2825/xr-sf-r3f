@@ -7,16 +7,27 @@ import { useFrame } from "@react-three/fiber";
 import Television from "./Television";
 import BrandPoster from "./BrandPoster";
 import Products from "./Products";
+import ChestBox from "./Chestbox";
 import { Suspense, useState, useEffect } from "react";
 import Skybox from "./Skybox";
-import { useComponentStore, usePointerLockStore, useDriverStore } from "./stores/ZustandStores";
+import {
+  useComponentStore,
+  usePointerLockStore,
+  useDriverStore,
+} from "./stores/ZustandStores";
 import { useTouchStore } from "./stores/ZustandStores";
 
 const shadowOffset = 50;
 
 export const App = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const { crosshairVisible, isModalOpen, isWishlistOpen, isCartOpen, isInfoModalOpen } = useComponentStore();
+  const {
+    crosshairVisible,
+    isModalOpen,
+    isWishlistOpen,
+    isCartOpen,
+    isInfoModalOpen,
+  } = useComponentStore();
   const { lockPointer, unlockPointer } = usePointerLockStore();
   const { driverActive } = useDriverStore();
   const { isTouchEnabled } = useTouchStore();
@@ -31,7 +42,15 @@ export const App = () => {
   });
 
   const pointerLockControlsLockHandler = () => {
-    if (isTouchEnabled && crosshairVisible && !driverActive && !isModalOpen && !isCartOpen && !isWishlistOpen && !isInfoModalOpen) {
+    if (
+      isTouchEnabled &&
+      crosshairVisible &&
+      !driverActive &&
+      !isModalOpen &&
+      !isCartOpen &&
+      !isWishlistOpen &&
+      !isInfoModalOpen
+    ) {
       lockPointer();
     } else {
       document.exitPointerLock?.();
@@ -70,6 +89,7 @@ export const App = () => {
           <Player />
         </Suspense>
         <Products />
+        <ChestBox />
         <Television
           videoPath="/media/backhome.mp4"
           scale={[0.9, 0.9, 0.9]}
