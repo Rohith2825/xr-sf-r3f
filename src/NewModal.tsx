@@ -94,7 +94,7 @@ const Modal = () => {
       await linesAdd([
         {
           merchandiseId: `gid://shopify/ProductVariant/${selectedVariant.id}`,
-          quantity: 1,
+          quantity: quantity,
         },
       ]);
 
