@@ -4,6 +4,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 interface DiscountModalProps {
   isOpen: boolean;
   onClose: VoidFunction;
+  discountCode: string;
 }
 
 const DiscountModal: React.FC<DiscountModalProps> = (props) => {
@@ -21,6 +22,10 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const modal = modalRef.current;
     if (modal && !modal.contains(event.target as Node)) handleClose();
+  };
+
+  const handleCopy = (couponCode: string) => {
+    navigator.clipboard.writeText(couponCode);
   };
 
   useEffect(() => {
@@ -133,6 +138,7 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
             </Typography>
             <br />
             <Box
+              onClick={() => handleCopy(props.discountCode)}
               sx={{
                 padding: 1,
                 backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -147,7 +153,7 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
                   fontWeight: "bold",
                 }}
               >
-                STRATEGYFOX10
+                {props.discountCode}
               </Typography>
             </Box>
           </CardContent>

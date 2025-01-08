@@ -9,6 +9,7 @@ export const useProductStore = create((set) => ({
   touchEnabled: false,
   driverActive: false,
   tourComplete: false,
+  discountCode: "",
   setProducts: (products: any) => set({ products }),
   setSelectedProduct: (productId: number) =>
     set((state) => {
@@ -27,4 +28,5 @@ export const useProductStore = create((set) => ({
   activateDriver: () => set({ driverActive: true }),
   deactivateDriver: () => set({ driverActive: false }),
   setTourComplete: (value) => set({ tourComplete: value }),
+  setDiscountCode: (code: string) => set({ discountCode: code }),
 }));

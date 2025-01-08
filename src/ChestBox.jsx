@@ -1,28 +1,66 @@
-import React, { useMemo } from "react";
+import React, { Suspense, useMemo } from "react";
 import { PivotControls } from "@react-three/drei";
 import { RigidBody } from "@react-three/rapier";
 import { useGLTFWithKTX2 } from "./useGTLFwithKTX";
 import { useProductStore } from "../store/productStore";
 
-const ChestBox = ({
-  position = [0, 0, 0],
-  scale = 1,
-  rotation = [0, 0, 0],
-  path,
-}) => {
-  const { scene } = useGLTFWithKTX2(path);
+const ChestBox = () => {
+  const chestBoxData = [
+    {
+      position: [-22, -3.5, -63],
+      scale: 1,
+      rotation: [0, 90, 0],
+      path: "/models/compressed_old_chest.glb",
+      discountCode: "STRATEGYFOX10",
+    },
+    {
+      position: [32, -4.5, -33],
+      scale: 1,
+      rotation: [0, -40, 0],
+      path: "/models/compressed_old_chest1.glb",
+      discountCode: "STRATEGYFOX15",
+    },
+    {
+      position: [18, -4, -65],
+      scale: 1,
+      rotation: [0, -70, 0],
+      path: "/models/compressed_old_chest2.glb",
+      discountCode: "STRATEGYFOX20",
+    },
+  ];
+
   return (
-    <ChestBoxLoader
-      position={position}
-      scale={scale}
-      model={{ scene }}
-      rotation={rotation}
-    />
+    <Suspense fallback={null}>
+      {chestBoxData.map((data, index) => (
+        <ChestBoxWrapper
+          key={index}
+          position={data.position}
+          scale={data.scale}
+          rotation={data.rotation}
+          path={data.path}
+          discountCode={data.discountCode}
+        />
+      ))}
+    </Suspense>
   );
 };
 
-const ChestBoxLoader = ({ position, rotation, scale, model }) => {
-  const { openDiscountModal } = useProductStore();
+const ChestBoxWrapper = ({ position, scale, rotation, path, discountCode }) => {
+  const { scene } = useGLTFWithKTX2(path);
+
+  return scene ? (
+    <ChestBoxLoader
+      position={position}
+      scale={scale}
+      rotation={rotation}
+      model={{ scene }}
+      discountCode={discountCode}
+    />
+  ) : null;
+};
+
+const ChestBoxLoader = ({ position, rotation, scale, model, discountCode }) => {
+  const { openDiscountModal, setDiscountCode } = useProductStore();
   // Memoize scale
   const computedScale = useMemo(() => {
     return typeof scale === "number" ? [scale, scale, scale] : scale;
@@ -50,6 +88,7 @@ const ChestBoxLoader = ({ position, rotation, scale, model }) => {
           scale={computedScale}
           onPointerDown={(e) => {
             openDiscountModal();
+            setDiscountCode(discountCode);
           }}
           castShadow
           receiveShadow

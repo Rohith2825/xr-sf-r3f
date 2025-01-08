@@ -63,11 +63,11 @@ const UI = () => {
     setTourComplete,
     isDiscountModalOpen,
     closeDiscountModal,
+    discountCode,
   } = useProductStore();
 
   const driverRef = useRef(null);
   const shouldMoveCamera = useRef(false);
-
 
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const { isInfoModalOpen, openInfoModal, closeInfoModal } =
@@ -149,7 +149,8 @@ const UI = () => {
         {
           popover: {
             title: "Showcasing the Product",
-            description: "Walk to these products to essentially buy or add them to  cart",
+            description:
+              "Walk to these products to essentially buy or add them to  cart",
           },
           onHighlightStarted: () => {
             // Custom logic to handle the camera movement
@@ -180,8 +181,6 @@ const UI = () => {
       document.head.removeChild(styleSheet);
     };
   }, []);
-
-
 
   const startTour = () => {
     // Close any open modals before starting the tour
@@ -220,7 +219,6 @@ const UI = () => {
         !isMobile &&
         !isModalOpen &&
         !isDiscountModalOpen && <div className={styles.aim} />}
-
 
       <div className={styles.iconsContainer}>
         <img
@@ -289,6 +287,7 @@ const UI = () => {
       <DiscountModal
         isOpen={isDiscountModalOpen}
         onClose={closeDiscountModal}
+        discountCode={discountCode}
       />
       <div>
         <ChatbotModal

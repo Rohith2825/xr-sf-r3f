@@ -88,11 +88,7 @@ export const App = () => {
           <Player />
         </Suspense>
         <Products />
-        <ChestBox
-          position={[8, -4, -77]}
-          scale={1}
-          path={"/models/old_chest.glb"}
-        />
+        <ChestBox />
         <Television
           videoPath="/media/backhome.mp4"
           scale={[0.9, 0.9, 0.9]}
