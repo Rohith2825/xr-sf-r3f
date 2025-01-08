@@ -8,25 +8,28 @@ import { useComponentStore } from "./stores/ZustandStores";
 const ChestBox = () => {
   const chestBoxData = [
     {
-      position: [-22, -3.2, -63],
+      position: [-22, -3.45, -63],
       scale: 1,
       rotation: [0, 90, 0],
       path: "/models/compressed_old_chest.glb",
       discountCode: "STRATEGYFOX10",
+      isRotate: false,
     },
     {
-      position: [32, -4.2, -33],
+      position: [32, -4.4, -33],
       scale: 1,
       rotation: [0, -40, 0],
       path: "/models/compressed_old_chest1.glb",
       discountCode: "STRATEGYFOX15",
+      isRotate: false,
     },
     {
-      position: [18, -4, -65],
+      position: [18, -4.5, -65],
       scale: 1,
       rotation: [0, -70, 0],
       path: "/models/compressed_old_chest2.glb",
       discountCode: "STRATEGYFOX20",
+      isRotate: false,
     },
   ];
 
@@ -40,13 +43,21 @@ const ChestBox = () => {
           rotation={data.rotation}
           path={data.path}
           discountCode={data.discountCode}
+          isRotate={data.isRotate}
         />
       ))}
     </Suspense>
   );
 };
 
-const ChestBoxWrapper = ({ position, scale, rotation, path, discountCode }) => {
+const ChestBoxWrapper = ({
+  position,
+  scale,
+  rotation,
+  path,
+  discountCode,
+  isRotate,
+}) => {
   const { scene } = useGLTFWithKTX2(path);
 
   return scene ? (
@@ -56,16 +67,25 @@ const ChestBoxWrapper = ({ position, scale, rotation, path, discountCode }) => {
       rotation={rotation}
       model={{ scene }}
       discountCode={discountCode}
+      isRotate={isRotate}
     />
   ) : null;
 };
 
-const ChestBoxLoader = ({ position, rotation, scale, model, discountCode }) => {
+const ChestBoxLoader = ({
+  position,
+  rotation,
+  scale,
+  model,
+  discountCode,
+  isRotate,
+}) => {
   const modelRef = useRef();
   const { openDiscountModal, setDiscountCode } = useComponentStore();
 
   // Wobble Effect: Only trigger useFrame when the model is hovered
   useFrame((state) => {
+    if (!isRotate) return;
     const time = state.clock.getElapsedTime(); // Total elapsed time in seconds
     modelRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2; // Add wobble effect
   });
