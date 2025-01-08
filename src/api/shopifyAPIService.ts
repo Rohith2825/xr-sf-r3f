@@ -1,24 +1,8 @@
+import Variant from '@/Types/Variant';
+import Product from '../Types/Product';
+
 const BASE_URL = "https://strategy-fox-go-bked.com/api/shopify";
 
-export interface Variant {
-  id: string|number;
-  price: number;
-  product_id: string|number;
-}
-
-export interface Product {
-  id: string|number;
-  title: string;
-  description?: string;
-  price: number;
-  image: {src:string};
-  variants:Variant[];
-  [key: string]: any;
-}
-
-export interface ProductResponse {
-  products: Product[];
-}
 async function fetchData<T>(method: "GET", endpoint: string): Promise<T> {
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, {
@@ -39,13 +23,120 @@ async function fetchData<T>(method: "GET", endpoint: string): Promise<T> {
   }
 }
 
+interface ProductResponse {
+  data: {
+    products: {
+      edges: {
+        node: {
+          id: string,
+          title: string,
+          media: {
+            edges: {
+              node: {
+                mediaContentType: string,
+                image?: {
+                  url: string,
+                  altText: string
+                },
+                id?: string,
+                sources?: {
+                  url: string,
+                  format: string,
+                  mimeType: string
+                }[]
+              }
+            }[]
+          }
+          options: {
+            id: string,
+            name: string,
+            position: number,
+            values: string[]
+          }[],
+          variants: {
+            edges: {
+              node: {
+                id: string,
+                title: string,
+                price: string,
+                compareAtPrice?: string,
+                availableForSale: boolean,
+                selectedOptions: {
+                  name: string,
+                  value: string
+                }[],
+              }
+            }[]
+          },
+          bodyHtml: string
+        }
+      }[]
+    }
+  }
+}
+
 export const ProductService = {
-  async getAllProducts(): Promise<ProductResponse> {
-    return fetchData<ProductResponse>("GET", "/v1/products");
+  async getAllProducts(): Promise<Product[]> {
+    const response = await fetchData<ProductResponse>("GET", "/v1/products");
+
+    // Parse the response to suit the Product and Variant types
+    const products: Product[] = response.data.products.edges.map((product) => {
+      // Extract Images
+      const productImages: { src: string }[] = product.node.media.edges.filter((edge) =>
+        edge.node.mediaContentType.toUpperCase() === "IMAGE" // Filter images
+        && edge.node.image // Filter images that might not have url
+      ).map((edge) => {
+        return { src: edge.node.image?.url || "" };
+      });
+
+      // Extract 3d Models
+      const models: {
+        id: string|undefined,
+        sources: {
+          url: string,
+          format: string,
+          mimeType: string
+        }[] | undefined
+      }[] = product.node.media.edges.filter((edge) => 
+        edge.node.mediaContentType.toUpperCase() === "MODEL_3D"
+        && edge.node.sources
+      ).map((edge) => {
+        return { 
+          id: edge.node.id,
+          sources: edge.node.sources
+        };
+      });
+
+      // Variants
+      const productVariants: Variant[] = product.node.variants.edges.map((variant) => {
+        return {
+          id: Number(variant.node.id.split("/").pop()),
+          price: variant.node.price,
+          compareAtPrice: variant.node.compareAtPrice,
+          productId: Number(product.node.id.split("/").pop()),
+          selectedOptions: variant.node.selectedOptions,
+          availableForSale: variant.node.availableForSale
+        };
+      });
+
+      const parsedProduct: Product = {
+        id: Number(product.node.id.split("/").pop()),
+        title: product.node.title,
+        description: product.node.bodyHtml,
+        images: productImages,
+        options: product.node.options,
+        variants: productVariants,
+        models: models
+      };
+
+      return parsedProduct;
+    });
+
+    return products;
   },
 
   async getProductById(id: number | string): Promise<Product> {
-    const response = await fetchData<{product:Product}>("GET", `/products/${id}`);
+    const response = await fetchData<{ product: Product }>("GET", `/products/${id}`);
     return response.product;
   },
 

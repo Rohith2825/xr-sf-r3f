@@ -1,11 +1,11 @@
 import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
-import { useProductStore } from "../store/productStore";
+import { useTourStore } from "./stores/ZustandStores";
 import { useEffect } from "react";
 
 export const CameraController = ({ setAnimating, playerRef }) => {
   const { camera } = useThree();
-  const { tourComplete } = useProductStore();
+  const { tourComplete } = useTourStore();
 
   useEffect(() => {
     if (tourComplete && playerRef.current) {
@@ -27,7 +27,7 @@ export const CameraController = ({ setAnimating, playerRef }) => {
           }
           
           setAnimating(false);
-          useProductStore.setState({ tourComplete: false });
+          useTourStore.setState({ tourComplete: false });
         }
       });
 
