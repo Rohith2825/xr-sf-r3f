@@ -7,12 +7,10 @@ import { styled } from "@mui/material/styles";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 
 const SettingsModal = () => {
-  // State for the IOSSwitch
-  const [isMusicEnabled, setIsMusicEnabled] = useState(false);
-
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
-  const { closeSettingsModal } = useComponentStore();
+  const { closeSettingsModal, isAudioPlaying, setAudioPlaying } =
+    useComponentStore();
 
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const modal = modalRef.current;
@@ -20,8 +18,12 @@ const SettingsModal = () => {
   };
 
   const handleSwitchToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsMusicEnabled(event.target.checked);
-    console.log("Music Enabled:", event.target.checked); // Debugging log
+    setAudioPlaying(event.target.checked);
+    // if (event.target.checked) {
+    //   audioPlayerRef.current.audioEl.current.play();
+    // } else {
+    //   audioPlayerRef.current.audioEl.current.pause();
+    // }
   };
 
   const IOSSwitch = styled((props: SwitchProps) => (
@@ -37,7 +39,7 @@ const SettingsModal = () => {
     "& .MuiSwitch-switchBase": {
       padding: 0,
       margin: 2,
-      transitionDuration: "300ms",
+      transitionDuration: "1000ms",
       "&.Mui-checked": {
         transform: "translateX(16px)",
         color: "#fff",
@@ -137,7 +139,13 @@ const SettingsModal = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: "350px",
+          width: {
+            xs: "300px",
+            sm: "400px",
+            md: "400px",
+            lg: "400px",
+            xl: "400px",
+          },
           backgroundColor: "rgba(0, 0, 0, 0.8)",
           backdropFilter: "blur(10px)",
           boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
@@ -244,7 +252,7 @@ const SettingsModal = () => {
           >
             Music
           </Typography>
-          <IOSSwitch checked={isMusicEnabled} onChange={handleSwitchToggle} />
+          <IOSSwitch checked={isAudioPlaying} onChange={handleSwitchToggle} />
         </Box>
       </Card>
     </div>

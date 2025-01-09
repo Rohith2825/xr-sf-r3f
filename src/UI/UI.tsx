@@ -11,6 +11,7 @@ import Wishlist from "@/Wishlist";
 import InfoModal from "@/InfoModal";
 import DiscountModal from "@/DiscountModal";
 import SettingsModal from "@/SettingsModal";
+import ReactAudioPlayer from "react-audio-player";
 
 const customDriverStyles = `
   .driver-popover {
@@ -59,12 +60,14 @@ const UI = () => {
     isWishlistOpen, openWishlist, closeWishlist,
     isInfoModalOpen, openInfoModal, closeInfoModal,
     discountCode, isDiscountModalOpen, closeDiscountModal,
-    isSettingsModalOpen , openSettingsModal, closeSettingsModal
+    isSettingsModalOpen , openSettingsModal, closeSettingsModal,
+    isAudioPlaying
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
   const { setTourComplete } = useTourStore();
 
   const driverRef = useRef<Driver>(undefined);
+  const audioPlayerRef = useRef<any>(null);
   const shouldMoveCamera = useRef(false);
   
   const [ChatbotOpen, setChatbotOpen] = useState(false);
@@ -154,6 +157,15 @@ const UI = () => {
     };
   }, [isMobile]);
 
+  useEffect(() => {
+    if(isAudioPlaying)
+    {
+      audioPlayerRef.current.audioEl.current.play();
+    }
+    else {
+      audioPlayerRef.current.audioEl.current.pause();
+    }
+  },[isAudioPlaying])
 
 
   const startTour = () => {
@@ -264,6 +276,12 @@ const UI = () => {
           }}
         />
       </div>
+      <ReactAudioPlayer
+          ref={audioPlayerRef}
+          src="/media/Soundtrack.mp3" // Replace with your audio file URL
+          autoPlay={false}
+          loop
+      />
     </div>
   );
 };
