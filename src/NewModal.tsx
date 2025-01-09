@@ -16,8 +16,43 @@ const client = Client.buildClient({
 });
 
 const Modal = () => {
+  const containerRef = useRef(null); // Reference to the wrapper
+  const modelViewerElement = useRef(null); // Reference to the <model-viewer> element
+  const [arSupported, setArSupported] = useState(false); // Ref for the native <model-viewer> element
+
+  useEffect(() => {
+    const observeModelViewer = () => {
+      const observer = new MutationObserver(() => {
+        const element = containerRef.current?.querySelector("model-viewer");
+        if (element) {
+          modelViewerElement.current = element; // Store reference
+          console.log("Found <model-viewer> element:", element);
+
+          if (element.activateAR) {
+            setArSupported(true); // AR is supported
+          }
+          observer.disconnect(); // Stop observing once found
+        }
+      });
+
+      if (containerRef.current) {
+        observer.observe(containerRef.current, { childList: true, subtree: true });
+      }
+
+      return () => observer.disconnect();
+    };
+
+    observeModelViewer();
+  }, []);
   const { lines, checkoutUrl, linesAdd } = useCart();
   const { closeModal, selectedProduct } = useComponentStore();
+
+  const [isMobile, setIsMobile] = useState(
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
+      navigator.userAgent
+    )
+  );
+  const [isIosChrome, setIsIosChrome] = useState(false);
 
   // Wishlist Hooks
   const { wishlist, addItemsToWishlist, removeItemsFromWishlist } = useWishlist();
@@ -66,6 +101,25 @@ const Modal = () => {
       window.scrollTo(0, scrollY);
     };
   }, []);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    const isChrome = /CriOS/.test(userAgent); // Chrome on iOS
+  
+    if (isIOS && isChrome) {
+      setIsIosChrome(true);
+    }
+  }, []);
+  
+    const handleViewInAR = () => {
+      if (modelViewerElement.current?.activateAR) {
+        modelViewerElement.current.activateAR(); // Trigger AR viewer
+        console.log("AR support exist");
+      } else {
+        console.error("AR is not supported or activateAR is undefined");
+      }
+    };
 
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -172,6 +226,7 @@ const Modal = () => {
     const MediaButtons = () => {
       return (
         <Box
+        ref={containerRef}
           sx={{
             width: "50%",
             display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
@@ -265,7 +320,7 @@ const Modal = () => {
           </ButtonBase>
           <Box
             sx={{
-              width: "70%", height: "100%",
+              width: "70%", 
               display: "block",
               overflow: "hidden"
             }}
@@ -343,7 +398,8 @@ const Modal = () => {
           <ModelViewer
             style={{
               height: "100%",
-              width: "100%"
+              width: "100%",
+              "--poster-color": "transparent",
             }}
             data={modelData}
             ar={true} // Enable AR
@@ -365,8 +421,8 @@ const Modal = () => {
       <Box
         sx={{
           width: { xs: "100%", md: "50%" }, height: { md: "100%" },
-          display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-          gap: { xs: "30px", md: "5%" }, marginTop: { xs: "10px" }
+          display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center",
+          gap: { xs: "30px", md: "5%" },
         }}
         className="MediaViewer"
       >
@@ -386,17 +442,19 @@ const Modal = () => {
           }
         </Box>
         <Button
+        disabled={!isMobile || isIosChrome}
+        onClick={handleViewInAR}
           sx={{
-            minWidth: { xs: "20%", md: "30%" },
+            minWidth: "30%",
             backgroundColor: "#424147",
             borderRadius: "100px",
-            color: "white", fontWeight: "bold",
+            color: "white", fontWeight: "normal",
             fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
             textTransform: "none",
             "&:hover": {
               backgroundColor: "rgba(255, 255, 255, 0.3)"
             },
-            padding: "auto 25px auto 25px", boxSizing: "border-box",
+            padding: "auto 35px auto 35px", boxSizing: "border-box",
             whiteSpace: "nowrap",
             overflow: "hidden"
           }}
@@ -638,47 +696,141 @@ const Modal = () => {
     return (
       <Box
         sx={{
-          width: { xs: "100%", md: "50%" }, height: { xs: "auto", md: "70%" },
-          display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "left",
-          gap: "2%", marginTop: { md: "5%" },
-          overflowY: { md: "scroll" }, scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" },
-          padding: { xs: "7%", md: "0" }, boxSizing: "border-box"
+          width: { xs: "100%", md: "50%" }, height: { xs: "auto", md: "100%" },
+          display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "left",
         }}
-        className="Contentviewer"
       >
-        <Typography
-          sx={{
-            fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
-            color: "rgb(255, 255, 255)",
-            display: { xs: "none", md: "block" }
-          }}
-          className="ProductTitle"
-        >
-          {selectedProduct && selectedProduct.title}
-        </Typography>
-        <PriceContainer />
-        <VariantSelector />
-        <QuantitySelector />
-        <Typography
-          sx={{
-            fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
-            color: "rgb(255, 255, 255)",
-            marginTop: "20px"
-          }}
-          className="DescriptionTitle"
-        >
-          Description
-        </Typography>
         <Box
-          dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
           sx={{
-            width: { xs: "100%", md: "85%" },
-            fontSize: { xs: "16px", md: "18px" }, fontFamily: "'Poppins', sans-serif", fontWeight: { xs: "300", md: "400" },
-            color: "rgb(255, 255, 255)",
-            textAlign: "justify"
+            width: "100%", height: "calc(100% - 70px)",
+            display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "left",
+            gap: "2%",
+            overflowY: { md: "scroll" }, scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" },
+            padding: { xs: "7%", md: "0" }, paddingRight: {md: "15%"}, boxSizing: "border-box"
+          }}
+          className="ContentScroller"
+        >
+          <Typography
+            sx={{
+              fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+              color: "rgb(255, 255, 255)",
+              display: { xs: "none", md: "block" }
+            }}
+            className="ProductTitle"
+          >
+            {selectedProduct && selectedProduct.title}
+          </Typography>
+          <PriceContainer />
+          <VariantSelector />
+          <QuantitySelector />
+          <Typography
+            sx={{
+              fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+              color: "rgb(255, 255, 255)",
+              marginTop: "20px"
+            }}
+            className="DescriptionTitle"
+          >
+            Description
+          </Typography>
+          <Box
+            dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+            sx={{
+              width: { xs: "100%", md: "100%" },
+              fontSize: { xs: "16px", md: "18px" }, fontFamily: "'Poppins', sans-serif", fontWeight: { xs: "300", md: "400" },
+              color: "rgb(255, 255, 255)",
+              textAlign: "justify"
+            }}
+          >
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: {xs: "none", md: "block"}
           }}
         >
+          <ShopifyButtons />
         </Box>
+      </Box>
+    );
+  }
+
+  const ShopifyButtons = () => {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex", flexDirection: "row", justifyContent: { xs: "center", md: "start" }, alignItems: "center",
+          gap: { xs: "10px", md: "20px" }
+        }}
+        className="ShopifyButtonsContainer"
+      >
+        <Button
+          sx={{
+            minWidth: {xs: "40%", md: "30%"},
+            backgroundColor: "#424147",
+            borderRadius: "100px",
+            color: "white", fontWeight: "normal",
+            fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.3)"
+            },
+            padding: {md: "auto 35px auto 35px"}, boxSizing: "border-box",
+            whiteSpace: "nowrap",
+            overflow: "hidden"
+          }}
+          className="AddToCartButton"
+          onClick={handleAddToCart}
+        >
+          Add to Cart
+        </Button>
+        <Button
+          sx={{
+            minWidth: {xs: "40%", md: "30%"},
+            backgroundColor: "#424147",
+            borderRadius: "100px",
+            color: "white", fontWeight: "normal",
+            fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.3)"
+            },
+            padding: {md: "auto 35px auto 35px"}, boxSizing: "border-box",
+            whiteSpace: "nowrap",
+            overflow: "hidden"
+          }}
+          className="BuyNowButton"
+          onClick={handleBuyNow}
+        >
+          Buy Now
+        </Button>
+        <Button
+          sx={{
+            minWidth: "35px", width: "35px", height: "35px",
+            padding: "5px",
+            backgroundColor: "#424147",
+            borderRadius: "50%",
+            color: "white", fontWeight: "bold",
+            fontSize: { xs: "16px", md: "18px" }, fontFamily: "'Poppins', sans-serif",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.3)"
+            }
+          }}
+          className="WishlistButton"
+          onClick={() => {
+            if (selectedProduct && wishlist.find((productId: number) => productId === selectedProduct.id)) {
+              removeItemsFromWishlist([selectedProduct.id]);
+            }
+            else if (selectedProduct) {
+              addItemsToWishlist([selectedProduct.id]);
+            }
+          }}
+        >
+          {!wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="far fa-heart"></i>}
+          {wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="fas fa-heart"></i>}
+        </Button>
       </Box>
     );
   }
@@ -701,7 +853,7 @@ const Modal = () => {
           width: { xs: "90vw", md: "70vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, // Size
           backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
           borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
-          overflow: "none",
+          overflow: "none", paddingTop: {xs: 0, md: "5%"}, paddingBottom: {xs: 0, md: "5%"}, boxSizing: "border-box"
 
         }}
         className="Modal"
@@ -726,9 +878,9 @@ const Modal = () => {
         </Typography>
         <Box
           sx={{
-            width: "100%", height: { xs: "85%", md: "95%" },
+            width: "100%", height: { xs: "85%", md: "100%" }, 
             display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-evenly", alignItems: { xs: "center", md: "start" },
-            marginTop: "2%", gap: "2%",
+            gap: "2%", boxSizing: "border-box",
             backgroundColor: "rgba(0, 0, 0, 0)",
             overflowY: { xs: "scroll", md: "hidden" }, scrollbarWidth: 0, "&::-webkit-scrollbar": { display: "none" }
           }}
@@ -736,9 +888,10 @@ const Modal = () => {
         >
           <Typography
             sx={{
-              fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+              fontSize: "22px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
               color: "rgb(255, 255, 255)",
-              display: { xs: "block", md: "none" }, marginTop: { xs: "20px" }
+              display: { xs: "block", md: "none" }, marginTop: { xs: "20px" },
+              padding: "20px", paddingBottom: 0, textAlign: "center"
             }}
             className="ProductTitle"
           >
@@ -749,78 +902,12 @@ const Modal = () => {
         </Box>
         <Box
           sx={{
-            width: { xs: "100%", md: "50%" }, right: "0%", top: { xs: "90%", md: "84%" }, position: "fixed",
-            display: "flex", flexDirection: "row", justifyContent: { xs: "center", md: "start" }, alignItems: "center",
-            gap: { xs: "10px", md: "20px" }
+            width: "100%", padding: "0 20px 0 20px", boxSizing: "border-box",
+            display: {xs: "block", md: "none"},
+            marginBottom: "30px"
           }}
-          className="ShopifyButtonsContainer"
         >
-          <Button
-            sx={{
-              minWidth: "30%",
-              backgroundColor: "#424147",
-              borderRadius: "100px",
-              color: "white", fontWeight: { xs: "normal", md: "bold" },
-              fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
-              textTransform: "none",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.3)"
-              },
-              padding: "auto 25px auto 25px", boxSizing: "border-box",
-              whiteSpace: "nowrap",
-              overflow: "hidden"
-            }}
-            className="AddToCartButton"
-            onClick={handleAddToCart}
-          >
-            Add to Cart
-          </Button>
-          <Button
-            sx={{
-              minWidth: "30%",
-              backgroundColor: "#424147",
-              borderRadius: "100px",
-              color: "white", fontWeight: { xs: "normal", md: "bold" },
-              fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
-              textTransform: "none",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.3)"
-              },
-              padding: "auto 25px auto 25px", boxSizing: "border-box",
-              whiteSpace: "nowrap",
-              overflow: "hidden"
-            }}
-            className="BuyNowButton"
-            onClick={handleBuyNow}
-          >
-            Buy Now
-          </Button>
-          <Button
-            sx={{
-              minWidth: "35px", width: "35px", height: "35px",
-              padding: "5px",
-              backgroundColor: "#424147",
-              borderRadius: "50%",
-              color: "white", fontWeight: "bold",
-              fontSize: { xs: "16px", md: "18px" }, fontFamily: "'Poppins', sans-serif",
-              textTransform: "none",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.3)"
-              }
-            }}
-            className="WishlistButton"
-            onClick={() => {
-              if (selectedProduct && wishlist.find((productId: number) => productId === selectedProduct.id)) {
-                removeItemsFromWishlist([selectedProduct.id]);
-              }
-              else if (selectedProduct) {
-                addItemsToWishlist([selectedProduct.id]);
-              }
-            }}
-          >
-            {!wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="far fa-heart"></i>}
-            {wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="fas fa-heart"></i>}
-          </Button>
+          <ShopifyButtons />
         </Box>
       </Card>
     </div>
