@@ -128,3 +128,33 @@
   }
 }
 
+
+/* Landscape mode adjustments */
+@media screen and (orientation: landscape) and (max-height: 768px) {
+  .brandLogo {
+    width: 15vw; /* Half the size compared to portrait */
+  }
+
+  .icon {
+    width: 5vw; /* Smaller icons in landscape */
+  }
+
+  .chatLogo {
+    width: 5vw;
+  }
+}
+
+/* Small devices in landscape */
+@media screen and (orientation: landscape) and (max-height: 480px) {
+  .brandLogo {
+    width: 12vw; /* Even smaller for very small devices in landscape */
+  }
+
+  .icon {
+    width: 4vw;
+  }
+
+  .chatLogo {
+    width: 4vw;
+  }
+}
