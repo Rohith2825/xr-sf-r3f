@@ -401,7 +401,6 @@ const Modal = () => {
               width: "100%",
               "--poster-color": "transparent",
             }}
-            onclick={handleViewInAR}
             data={modelData}
             ar={true} // Enable AR
             arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
@@ -444,7 +443,7 @@ const Modal = () => {
         </Box>
         <Button
         disabled={!isMobile || isIosChrome}
-        onClick={handleViewInAR}
+        onPointerDown={handleViewInAR}
           sx={{
             minWidth: "30%",
             backgroundColor: "#424147",
