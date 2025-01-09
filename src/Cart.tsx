@@ -235,7 +235,7 @@ const Cart = () => {
                   sx={{
                     display: "flex", flexDirection: { xs: "column", sm: "column", md: "row" },
                     justifyContent: { xs: "space-evenly", sm: "space-evenly", md: "space-evenly" }, alignItems: { md: "center" },
-                    width: "80%", height: "100%",
+                    width: {xs: "", md: "80%"}, height: "100%", flexGrow: {xs: 1, md: 0},
                     marginLeft: { xs: "0", sm: "5%", md: "0" }
                   }}
                   className="CartItemDetails"
@@ -248,16 +248,18 @@ const Cart = () => {
                   >
                     <Typography
                       sx={{
-                        width: "100%", maxHeight: { xs: "24px", sm: "30px", md: "60%" },
+                        width: "100%", maxHeight: { xs: "24px", sm: "30px" },
                         fontSize: { xs: "16px", sm: "20px" },
                         fontFamily: "'Poppins', sans-serif", fontWeight: "normal",
                         color: "rgba(255, 255, 255, 0.83)",
-                        overflowY: { xs: "hidden", sm: "hidden", md: "scroll" },
+                        overflowY: { xs: "hidden", sm: "hidden", md: "hidden" },
                         scrollbarWidth: 0,
                         "&::-webkit-scrollbar": {
                           display: "none"
                         },
-                        textAlign: "left"
+                        textAlign: "left",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
                       }}
                       className="CartItemTitle"
                     >

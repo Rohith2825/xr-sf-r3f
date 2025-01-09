@@ -193,7 +193,6 @@ const UI = () => {
       {crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
-
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
         <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />

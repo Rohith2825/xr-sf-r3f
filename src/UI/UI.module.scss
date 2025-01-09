@@ -93,6 +93,11 @@
     gap: 2vh; /* Keep spacing consistent */
   }
 
+  .chatLogoContainer {
+    right: 5%;
+    bottom: 3%;
+  }
+
   .icon {
     width: 7vw; /* Slightly larger icons for mobile */
   }
@@ -112,6 +117,11 @@
     top: 2%; /* Closer to the top for very small devices */
     right: 5%;
     gap: 2vh; /* Maintain consistent spacing */
+  }
+
+  .chatLogoContainer {
+    right: 5%;
+    bottom: 2%;
   }
 
   .icon {
