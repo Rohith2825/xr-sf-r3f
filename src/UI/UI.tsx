@@ -10,6 +10,8 @@ import Cart from "@/Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal from "@/InfoModal";
 import DiscountModal from "@/DiscountModal";
+import SettingsModal from "@/SettingsModal";
+import ReactAudioPlayer from "react-audio-player";
 
 const customDriverStyles = `
   .driver-popover {
@@ -58,11 +60,14 @@ const UI = () => {
     isWishlistOpen, openWishlist, closeWishlist,
     isInfoModalOpen, openInfoModal, closeInfoModal,
     discountCode, isDiscountModalOpen, closeDiscountModal,
+    isSettingsModalOpen , openSettingsModal, closeSettingsModal,
+    isAudioPlaying
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
   const { setTourComplete } = useTourStore();
 
   const driverRef = useRef<Driver>(undefined);
+  const audioPlayerRef = useRef<any>(null);
   const shouldMoveCamera = useRef(false);
   
   const [ChatbotOpen, setChatbotOpen] = useState(false);
@@ -152,6 +157,15 @@ const UI = () => {
     };
   }, [isMobile]);
 
+  useEffect(() => {
+    if(isAudioPlaying)
+    {
+      audioPlayerRef.current.audioEl.current.play();
+    }
+    else {
+      audioPlayerRef.current.audioEl.current.pause();
+    }
+  },[isAudioPlaying])
 
 
   const startTour = () => {
@@ -161,6 +175,8 @@ const UI = () => {
     if (isWishlistOpen) closeWishlist();
     if (isInfoModalOpen) closeInfoModal();
     if (ChatbotOpen) closeChatbotModal();
+    if (isDiscountModalOpen) closeDiscountModal();
+    if (isSettingsModalOpen) closeSettingsModal();
 
     // Start the tour and update the Zustand state
     if (driverRef.current) {
@@ -197,7 +213,8 @@ const UI = () => {
       <div className={styles.iconsContainer}>
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
-        <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
+        <img src="/icons/Settings.svg"  alt="Settings" className={styles.icon} onClick={openSettingsModal} style={{backgroundColor: "black",borderRadius:"15px"}}/>
+        {/* <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} /> */}
         <img src="/icons/Help.svg" alt="Help" className={styles.icon} onClick={startTour}/>
       </div>
 
@@ -249,6 +266,7 @@ const UI = () => {
         onClose={closeDiscountModal}
         discountCode={discountCode}
       />
+      {isSettingsModalOpen && <SettingsModal />}
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}
@@ -257,6 +275,12 @@ const UI = () => {
           }}
         />
       </div>
+      <ReactAudioPlayer
+          ref={audioPlayerRef}
+          src="/media/Soundtrack.mp3" // Replace with your audio file URL
+          autoPlay={false}
+          loop
+      />
     </div>
   );
 };

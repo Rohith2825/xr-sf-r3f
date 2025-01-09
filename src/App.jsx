@@ -28,6 +28,7 @@ export const App = () => {
     isCartOpen,
     isInfoModalOpen,
     isDiscountModalOpen,
+    isSettingsModalOpen,
   } = useComponentStore();
   const { lockPointer, unlockPointer } = usePointerLockStore();
   const { driverActive } = useDriverStore();
@@ -51,7 +52,8 @@ export const App = () => {
       !isCartOpen &&
       !isWishlistOpen &&
       !isInfoModalOpen &&
-      !isDiscountModalOpen
+      !isDiscountModalOpen && 
+      !isSettingsModalOpen
     ) {
       lockPointer();
     } else {

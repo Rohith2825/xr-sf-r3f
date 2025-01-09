@@ -33,6 +33,13 @@ interface ComponentStore {
   openInfoModal: () => void;
   closeInfoModal: () => void;
 
+  // Settings Handling
+  isSettingsModalOpen: boolean;
+  isAudioPlaying:boolean;
+  openSettingsModal: () => void;
+  closeSettingsModal: () => void;
+  setAudioPlaying : (play:boolean) => void;
+
   // Discount Handling
   discountCode: string;
   isDiscountModalOpen: boolean;
@@ -102,6 +109,19 @@ const useComponentStore = create<ComponentStore>((set) => ({
     set({ crosshairVisible: true });
     set({ isInfoModalOpen: false });
   },
+
+  // Settings Handling
+  isSettingsModalOpen: false,
+  isAudioPlaying:false,
+  openSettingsModal: () => {
+    set({ crosshairVisible: false });
+    set({ isSettingsModalOpen: true });
+  },
+  closeSettingsModal: () => {
+    set({ crosshairVisible: true });
+    set({ isSettingsModalOpen: false });
+  },
+  setAudioPlaying:(play:boolean) => set({isAudioPlaying:play}),
 
   // Discount Handling
   discountCode: "",
