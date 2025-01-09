@@ -11,6 +11,8 @@ import Wishlist from "@/Wishlist";
 import InfoModal from "@/InfoModal";
 import DiscountModal from "@/DiscountModal";
 import SettingsModal from "@/SettingsModal";
+import TermsConditionsModal from "@/TermsModal";
+import ContactUsModal from "@/ContactUsModal";
 import ReactAudioPlayer from "react-audio-player";
 
 const customDriverStyles = `
@@ -61,7 +63,8 @@ const UI = () => {
     isInfoModalOpen, openInfoModal, closeInfoModal,
     discountCode, isDiscountModalOpen, closeDiscountModal,
     isSettingsModalOpen , openSettingsModal, closeSettingsModal,
-    isAudioPlaying
+    isAudioPlaying,
+    isTermsModalOpen,isContactModalOpen
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
   const { setTourComplete } = useTourStore();
@@ -213,8 +216,8 @@ const UI = () => {
       <div className={styles.iconsContainer}>
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
-        <img src="/icons/Settings.svg"  alt="Settings" className={styles.icon} onClick={openSettingsModal} style={{backgroundColor: "black",borderRadius:"15px"}}/>
-        {/* <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} /> */}
+        <img src="/icons/Settings.svg"  alt="Settings" className={styles.icon} onClick={openSettingsModal} style={{backgroundColor: "black",borderRadius:"12px"}}/>
+        <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
         <img src="/icons/Help.svg" alt="Help" className={styles.icon} onClick={startTour}/>
       </div>
 
@@ -257,9 +260,14 @@ const UI = () => {
       {isWishlistOpen && (
         <Wishlist></Wishlist>
       )}
-
       {isInfoModalOpen && (
         <InfoModal></InfoModal>
+      )}
+      {isTermsModalOpen && (
+        <TermsConditionsModal />
+      )}
+      {isContactModalOpen && (
+        <ContactUsModal />
       )}
       <DiscountModal
         isOpen={isDiscountModalOpen}

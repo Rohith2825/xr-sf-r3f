@@ -33,12 +33,22 @@ interface ComponentStore {
   openInfoModal: () => void;
   closeInfoModal: () => void;
 
+  // Terms Handling
+  isTermsModalOpen: boolean;
+  openTermsModal: () => void;
+  closeTermsModal: () => void;
+
+  // Contact Handling
+  isContactModalOpen: boolean;
+  openContactModal: () => void;
+  closeContactModal: () => void;
+
   // Settings Handling
   isSettingsModalOpen: boolean;
-  isAudioPlaying:boolean;
+  isAudioPlaying: boolean;
   openSettingsModal: () => void;
   closeSettingsModal: () => void;
-  setAudioPlaying : (play:boolean) => void;
+  setAudioPlaying: (play: boolean) => void;
 
   // Discount Handling
   discountCode: string;
@@ -106,13 +116,35 @@ const useComponentStore = create<ComponentStore>((set) => ({
     set({ isInfoModalOpen: true });
   },
   closeInfoModal: () => {
-    set({ crosshairVisible: true });
+    set({ crosshairVisible: false });
     set({ isInfoModalOpen: false });
+  },
+
+  // Terms Handling
+  isTermsModalOpen: false,
+  openTermsModal: () => {
+    set({ crosshairVisible: false });
+    set({ isTermsModalOpen: true });
+  },
+  closeTermsModal: () => {
+    set({ crosshairVisible: false });
+    set({ isTermsModalOpen: false });
+  },
+
+  // Contact Handling
+  isContactModalOpen: false,
+  openContactModal: () => {
+    set({ crosshairVisible: false });
+    set({ isContactModalOpen: true });
+  },
+  closeContactModal: () => {
+    set({ crosshairVisible: false });
+    set({ isContactModalOpen: false });
   },
 
   // Settings Handling
   isSettingsModalOpen: false,
-  isAudioPlaying:false,
+  isAudioPlaying: false,
   openSettingsModal: () => {
     set({ crosshairVisible: false });
     set({ isSettingsModalOpen: true });
@@ -121,7 +153,7 @@ const useComponentStore = create<ComponentStore>((set) => ({
     set({ crosshairVisible: true });
     set({ isSettingsModalOpen: false });
   },
-  setAudioPlaying:(play:boolean) => set({isAudioPlaying:play}),
+  setAudioPlaying: (play: boolean) => set({ isAudioPlaying: play }),
 
   // Discount Handling
   discountCode: "",
