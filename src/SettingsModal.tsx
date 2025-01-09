@@ -9,8 +9,14 @@ import Switch, { SwitchProps } from "@mui/material/Switch";
 const SettingsModal = () => {
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
-  const { closeSettingsModal, isAudioPlaying, setAudioPlaying } =
-    useComponentStore();
+  const {
+    closeSettingsModal,
+    isAudioPlaying,
+    setAudioPlaying,
+    openInfoModal,
+    openTermsModal,
+    openContactModal,
+  } = useComponentStore();
 
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const modal = modalRef.current;
@@ -19,11 +25,6 @@ const SettingsModal = () => {
 
   const handleSwitchToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAudioPlaying(event.target.checked);
-    // if (event.target.checked) {
-    //   audioPlayerRef.current.audioEl.current.play();
-    // } else {
-    //   audioPlayerRef.current.audioEl.current.pause();
-    // }
   };
 
   const IOSSwitch = styled((props: SwitchProps) => (
@@ -188,6 +189,9 @@ const SettingsModal = () => {
             color: "white",
             borderRadius: "10px",
           }}
+          onClick={() => {
+            openInfoModal();
+          }}
         >
           <Typography
             sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "bold" }}
@@ -205,6 +209,9 @@ const SettingsModal = () => {
             backgroundColor: "#424147",
             color: "white",
             borderRadius: "10px",
+          }}
+          onClick={() => {
+            openTermsModal();
           }}
         >
           <Typography
@@ -227,6 +234,9 @@ const SettingsModal = () => {
             backgroundColor: "#424147",
             color: "white",
             borderRadius: "10px",
+          }}
+          onClick={() => {
+            openContactModal();
           }}
         >
           <Typography
