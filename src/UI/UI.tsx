@@ -10,6 +10,7 @@ import Cart from "@/Cart";
 import Wishlist from "@/Wishlist";
 import InfoModal from "@/InfoModal";
 import DiscountModal from "@/DiscountModal";
+import SettingsModal from "@/SettingsModal";
 
 const customDriverStyles = `
   .driver-popover {
@@ -58,6 +59,7 @@ const UI = () => {
     isWishlistOpen, openWishlist, closeWishlist,
     isInfoModalOpen, openInfoModal, closeInfoModal,
     discountCode, isDiscountModalOpen, closeDiscountModal,
+    isSettingsModalOpen , openSettingsModal, closeSettingsModal
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
   const { setTourComplete } = useTourStore();
@@ -161,6 +163,8 @@ const UI = () => {
     if (isWishlistOpen) closeWishlist();
     if (isInfoModalOpen) closeInfoModal();
     if (ChatbotOpen) closeChatbotModal();
+    if (isDiscountModalOpen) closeDiscountModal();
+    if (isSettingsModalOpen) closeSettingsModal();
 
     // Start the tour and update the Zustand state
     if (driverRef.current) {
@@ -198,7 +202,8 @@ const UI = () => {
 
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
-        <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} />
+        <img src="/icons/Settings.svg"  alt="Settings" className={styles.icon} onClick={openSettingsModal} style={{backgroundColor: "black",borderRadius:"15px"}}/>
+        {/* <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} /> */}
         <img src="/icons/Help.svg" alt="Help" className={styles.icon} onClick={startTour}/>
       </div>
 
@@ -250,6 +255,7 @@ const UI = () => {
         onClose={closeDiscountModal}
         discountCode={discountCode}
       />
+      {isSettingsModalOpen && <SettingsModal />}
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}

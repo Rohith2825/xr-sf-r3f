@@ -33,6 +33,11 @@ interface ComponentStore {
   openInfoModal: () => void;
   closeInfoModal: () => void;
 
+  // Settings Handling
+  isSettingsModalOpen: boolean;
+  openSettingsModal: () => void;
+  closeSettingsModal: () => void;
+
   // Discount Handling
   discountCode: string;
   isDiscountModalOpen: boolean;
@@ -101,6 +106,17 @@ const useComponentStore = create<ComponentStore>((set) => ({
   closeInfoModal: () => {
     set({ crosshairVisible: true });
     set({ isInfoModalOpen: false });
+  },
+
+  // Settings Handling
+  isSettingsModalOpen: false,
+  openSettingsModal: () => {
+    set({ crosshairVisible: false });
+    set({ isSettingsModalOpen: true });
+  },
+  closeSettingsModal: () => {
+    set({ crosshairVisible: true });
+    set({ isSettingsModalOpen: false });
   },
 
   // Discount Handling
