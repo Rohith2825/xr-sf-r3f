@@ -398,7 +398,8 @@ const Modal = () => {
           <ModelViewer
             style={{
               height: "100%",
-              width: "100%"
+              width: "100%",
+              "--poster-color": "transparent",
             }}
             data={modelData}
             ar={true} // Enable AR
