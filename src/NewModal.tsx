@@ -16,8 +16,43 @@ const client = Client.buildClient({
 });
 
 const Modal = () => {
+  const containerRef = useRef(null); // Reference to the wrapper
+  const modelViewerElement = useRef(null); // Reference to the <model-viewer> element
+  const [arSupported, setArSupported] = useState(false); // Ref for the native <model-viewer> element
+
+  useEffect(() => {
+    const observeModelViewer = () => {
+      const observer = new MutationObserver(() => {
+        const element = containerRef.current?.querySelector("model-viewer");
+        if (element) {
+          modelViewerElement.current = element; // Store reference
+          console.log("Found <model-viewer> element:", element);
+
+          if (element.activateAR) {
+            setArSupported(true); // AR is supported
+          }
+          observer.disconnect(); // Stop observing once found
+        }
+      });
+
+      if (containerRef.current) {
+        observer.observe(containerRef.current, { childList: true, subtree: true });
+      }
+
+      return () => observer.disconnect();
+    };
+
+    observeModelViewer();
+  }, []);
   const { lines, checkoutUrl, linesAdd } = useCart();
   const { closeModal, selectedProduct } = useComponentStore();
+
+  const [isMobile, setIsMobile] = useState(
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
+      navigator.userAgent
+    )
+  );
+  const [isIosChrome, setIsIosChrome] = useState(false);
 
   // Wishlist Hooks
   const { wishlist, addItemsToWishlist, removeItemsFromWishlist } = useWishlist();
@@ -66,6 +101,25 @@ const Modal = () => {
       window.scrollTo(0, scrollY);
     };
   }, []);
+
+  useEffect(() => {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+    const isChrome = /CriOS/.test(userAgent); // Chrome on iOS
+  
+    if (isIOS && isChrome) {
+      setIsIosChrome(true);
+    }
+  }, []);
+  
+    const handleViewInAR = () => {
+      if (modelViewerElement.current?.activateAR) {
+        modelViewerElement.current.activateAR(); // Trigger AR viewer
+        console.log("AR support exist");
+      } else {
+        console.error("AR is not supported or activateAR is undefined");
+      }
+    };
 
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -172,6 +226,7 @@ const Modal = () => {
     const MediaButtons = () => {
       return (
         <Box
+        ref={containerRef}
           sx={{
             width: "50%",
             display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
@@ -386,6 +441,8 @@ const Modal = () => {
           }
         </Box>
         <Button
+        disabled={!isMobile || isIosChrome}
+        onClick={handleViewInAR}
           sx={{
             minWidth: "30%",
             backgroundColor: "#424147",
