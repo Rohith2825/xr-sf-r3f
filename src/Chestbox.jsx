@@ -13,7 +13,7 @@ const ChestBox = () => {
       rotation: [0, 90, 0],
       path: "/models/compressed_old_chest.glb",
       discountCode: "STRATEGYFOX10",
-      isRotate: false,
+      isRotate: true,
     },
     {
       position: [32, -4.4, -33],
@@ -29,7 +29,7 @@ const ChestBox = () => {
       rotation: [0, -70, 0],
       path: "/models/compressed_old_chest2.glb",
       discountCode: "STRATEGYFOX20",
-      isRotate: false,
+      isRotate: true,
     },
   ];
 
@@ -87,7 +87,7 @@ const ChestBoxLoader = ({
   useFrame((state) => {
     if (!isRotate) return;
     const time = state.clock.getElapsedTime(); // Total elapsed time in seconds
-    modelRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2; // Add wobble effect
+    modelRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2 + 0.5; // Add wobble effect
   });
 
   // Memoize scale
