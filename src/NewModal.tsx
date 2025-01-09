@@ -401,6 +401,7 @@ const Modal = () => {
               width: "100%",
               "--poster-color": "transparent",
             }}
+            onclick={handleViewInAR}
             data={modelData}
             ar={true} // Enable AR
             arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
