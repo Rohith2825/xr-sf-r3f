@@ -133,16 +133,13 @@ const TermsConditionsModal = () => {
   const { isTermsModalOpen, closeTermsModal } = useComponentStore();
   useEffect(() => {
     if (isTermsModalOpen) {
-      // Save current scroll position
       const scrollY = window.scrollY;
       const joystickZone = document.getElementById("joystickZone");
 
-      // Handle joystick visibility
       if (joystickZone) {
         joystickZone.style.display = "none";
       }
 
-      // Add styles to prevent scrolling
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
@@ -150,12 +147,10 @@ const TermsConditionsModal = () => {
       document.body.style.touchAction = "none";
 
       return () => {
-        // Show joystick
         if (joystickZone) {
           joystickZone.style.display = "block";
         }
 
-        // Remove styles and restore scroll position
         document.body.style.position = "";
         document.body.style.top = "";
         document.body.style.width = "";
@@ -209,38 +204,133 @@ const TermsConditionsModal = () => {
           <h2 style={styles.title}>Terms and Conditions</h2>
 
           <div style={styles.content}>
+            <h3 style={styles.sectionTitle}>1. Introduction</h3>
             <p style={styles.text}>
-              By accessing or using our services, you agree to be bound by these
-              terms and conditions.
+              Welcome to <strong>Delta XR</strong> (the "Experience"), created and managed by <strong>Strategy Fox</strong>. These Terms and Conditions ("Terms") govern your access to and use of the Delta XR Experience, including any content, functionality, and services offered within the platform.
             </p>
-            <h3 style={styles.sectionTitle}>User Responsibilities</h3>
             <p style={styles.text}>
-              Users must ensure that they provide accurate and up-to-date
-              information when using our services.
+              By accessing or using Delta XR, you agree to comply with and be bound by these Terms. If you do not agree with these Terms, you may not use the Experience.
             </p>
-            <h3 style={styles.sectionTitle}>Prohibited Activities</h3>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>2. Eligibility</h3>
             <ul style={styles.list}>
               <li style={styles.listItem}>
-                Engaging in fraudulent or deceptive activities.
+                You must be at least <strong>13 years old</strong> to use Delta XR. If you are under the age of majority in your jurisdiction, you must have parental or guardian consent to access the Experience.
               </li>
               <li style={styles.listItem}>
-                Violating any applicable laws or regulations.
-              </li>
-              <li style={styles.listItem}>
-                Disrupting the functionality of our platform.
+                By using Delta XR, you confirm that you meet the eligibility requirements.
               </li>
             </ul>
             <div style={styles.divider}></div>
-            <h3 style={styles.sectionTitle}>Termination</h3>
+
+            <h3 style={styles.sectionTitle}>3. Use of the Experience</h3>
+            <p style={styles.text}>When using Delta XR, you agree:</p>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>To use the Experience only for lawful and personal purposes.</li>
+              <li style={styles.listItem}>Not to engage in any activity that interferes with or disrupts the Experience or its servers.</li>
+              <li style={styles.listItem}>Not to upload, share, or transmit any harmful, offensive, or unauthorized content.</li>
+              <li style={styles.listItem}>Not to attempt unauthorized access to Delta XR systems or data.</li>
+            </ul>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>4. Intellectual Property</h3>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>
+                All content within Delta XR, including text, graphics, logos, images, 3D models, software, and interactive features, is the property of <strong>Strategy Fox</strong> or its licensors.
+              </li>
+              <li style={styles.listItem}>
+                You are granted a limited, non-exclusive, non-transferable license to use the Experience for personal, non-commercial purposes.
+              </li>
+              <li style={styles.listItem}>
+                Any reproduction, distribution, modification, or public display of Delta XR content without prior written consent is strictly prohibited.
+              </li>
+            </ul>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>5. Purchases and Payments</h3>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>
+                Any purchases made within Delta XR are processed through secure third-party platforms such as Shopify or other integrated services.
+              </li>
+              <li style={styles.listItem}>
+                Refunds, if applicable, will follow the terms outlined in our <strong>Refund Policy</strong>. Please refer to the payment gateway or contact us for more details.
+              </li>
+            </ul>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>6. Privacy and Data Collection</h3>
             <p style={styles.text}>
-              We reserve the right to suspend or terminate access to our
-              services for users who violate these terms.
+              By using Delta XR, you consent to the collection and use of your data as described in our <strong>Privacy Policy</strong>.
+            </p>
+            <p style={styles.text}>
+              Data collected is used to enhance the Experience and ensure personalized and secure services. We prioritize user privacy and comply with applicable data protection regulations.
             </p>
             <div style={styles.divider}></div>
-            <h3 style={styles.sectionTitle}>Limitation of Liability</h3>
+
+            <h3 style={styles.sectionTitle}>7. Limitation of Liability</h3>
             <p style={styles.text}>
-              Our liability is limited to the maximum extent permitted by law.
+              Delta XR is provided on an "as is" basis without any warranties, express or implied. <strong>Strategy Fox</strong> is not liable for any direct, indirect, incidental, or consequential damages arising from the use or inability to use Delta XR, including but not limited to:
             </p>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>Data loss</li>
+              <li style={styles.listItem}>Device damage</li>
+              <li style={styles.listItem}>Connectivity issues</li>
+              <li style={styles.listItem}>Third-party content inaccuracies</li>
+            </ul>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>8. User Content</h3>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>
+                Users may upload or share content within Delta XR, including text, audio, or visual media. By doing so, you:
+                <ul style={styles.list}>
+                  <li style={styles.listItem}>Grant <strong>Strategy Fox</strong> a non-exclusive, worldwide, royalty-free license to use, display, and adapt the content for operational and promotional purposes.</li>
+                  <li style={styles.listItem}>Confirm that the content does not violate the rights of any third party or any applicable laws.</li>
+                </ul>
+              </li>
+            </ul>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>9. Termination</h3>
+            <ul style={styles.list}>
+              <li style={styles.listItem}>We reserve the right to suspend or terminate access to Delta XR, without notice, if:</li>
+              <ul style={styles.list}>
+                <li style={styles.listItem}>You violate these Terms.</li>
+                <li style={styles.listItem}>Your actions harm other users or the platform’s integrity.</li>
+              </ul>
+            </ul>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>10. Updates to the Terms</h3>
+            <p style={styles.text}>
+              <strong>Strategy Fox</strong> reserves the right to update or modify these Terms at any time. Changes will take effect immediately upon posting in Delta XR.
+            </p>
+            <p style={styles.text}>
+              Continued use of Delta XR after any updates indicates your acceptance of the revised Terms.
+            </p>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>11. Governing Law</h3>
+            <p style={styles.text}>
+              These Terms are governed by the laws of <strong>India</strong>, and specifically the state of <strong>Tamil Nadu</strong>. Any disputes arising under these Terms or related to Delta XR will be subject to the exclusive jurisdiction of the courts located in <strong>Chennai, Tamil Nadu, India</strong>.
+            </p>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>12. Third-Party Services</h3>
+            <p style={styles.text}>
+              Delta XR may integrate with third-party services, such as Shopify, for payments or external applications for specific functionalities. <strong>Strategy Fox</strong> is not responsible for the practices or content of these third-party services.
+            </p>
+            <p style={styles.text}>
+              Use of third-party services is governed by their respective terms and conditions.
+            </p>
+            <div style={styles.divider}></div>
+
+            <h3 style={styles.sectionTitle}>13. Contact Information</h3>
+            <p style={styles.text}>For questions or concerns about these Terms, please contact <strong>Strategy Fox</strong> at:</p>
+            <p style={styles.text}><strong>Email:</strong> deltaXR@support.com</p>
+            <p style={styles.text}><strong>Phone:</strong> 022 4444 502</p>
+            <p style={styles.text}><strong>Address:</strong> Chennai, Tamil Nadu, India</p>
           </div>
 
           <button

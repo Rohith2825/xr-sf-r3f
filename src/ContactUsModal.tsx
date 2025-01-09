@@ -77,6 +77,13 @@ const styles = {
     lineHeight: 1.6,
     marginBottom: "0.75rem",
   },
+  list: {
+    margin: "0.5rem 0",
+    paddingLeft: "1.5rem",
+    color: "#ccc",
+    fontSize: "0.9rem",
+    lineHeight: 1.6,
+  },
   divider: {
     height: "1px",
     backgroundColor: "#333",
@@ -124,16 +131,13 @@ const ContactUsModal = () => {
   const { isContactModalOpen, closeContactModal } = useComponentStore();
   useEffect(() => {
     if (isContactModalOpen) {
-      // Save current scroll position
       const scrollY = window.scrollY;
       const joystickZone = document.getElementById("joystickZone");
 
-      // Handle joystick visibility
       if (joystickZone) {
         joystickZone.style.display = "none";
       }
 
-      // Add styles to prevent scrolling
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
@@ -141,12 +145,10 @@ const ContactUsModal = () => {
       document.body.style.touchAction = "none";
 
       return () => {
-        // Show joystick
         if (joystickZone) {
           joystickZone.style.display = "block";
         }
 
-        // Remove styles and restore scroll position
         document.body.style.position = "";
         document.body.style.top = "";
         document.body.style.width = "";
@@ -218,6 +220,60 @@ const ContactUsModal = () => {
             </p>
             <p style={styles.text}>
               <strong>Address:</strong> Chennai, Tamil Nadu, India
+            </p>
+
+            <h3 style={styles.sectionTitle}>Frequently Asked Questions (FAQs)</h3>
+            <div style={styles.divider}></div>
+            <h4 style={styles.sectionTitle}>1. What is Delta XR?</h4>
+            <p style={styles.text}>
+              Delta XR is an immersive extended reality (XR) platform developed
+              by Strategy Fox. It allows users to explore virtual 3D
+              environments, interact with products, and enjoy unique digital
+              experiences.
+            </p>
+
+            <h4 style={styles.sectionTitle}>2. What devices can I use to access Delta XR?</h4>
+            <p style={styles.text}>
+              Delta XR is compatible with modern browsers and devices that
+              support WebGL, including:
+            </p>
+            <ul style={styles.list}>
+              <li>Desktop/Laptops: Chrome, Firefox, Edge, Safari</li>
+              <li>Mobile/Tablet: iOS and Android devices with updated browsers</li>
+            </ul>
+
+            <h4 style={styles.sectionTitle}>3. How can I make purchases within Delta XR?</h4>
+            <p style={styles.text}>
+              All purchases made within Delta XR are processed through secure
+              third-party platforms, such as Shopify. Simply click on the
+              product within the experience to view details and complete the
+              transaction.
+            </p>
+
+            <h4 style={styles.sectionTitle}>4. What if I face technical issues while using Delta XR?</h4>
+            <p style={styles.text}>
+              If you experience any technical problems, please:
+            </p>
+            <ul style={styles.list}>
+              <li>Ensure your browser or app is updated to the latest version.</li>
+              <li>Check your internet connection.</li>
+              <li>Clear your browser cache and cookies.</li>
+              <li>Contact our support team at deltaXR@support.com or call us at 022 4444 502 for further assistance.</li>
+            </ul>
+
+            <h4 style={styles.sectionTitle}>5. Are my data and privacy secure?</h4>
+            <p style={styles.text}>
+              Yes, we take user privacy seriously. Data collected is used solely
+              to enhance your experience and ensure personalized services.
+              Please refer to our Privacy Policy for more details on how your
+              information is handled.
+            </p>
+
+            <h4 style={styles.sectionTitle}>6. Can I request a refund for purchases?</h4>
+            <p style={styles.text}>
+              Refunds, if applicable, will be processed in accordance with our
+              Refund Policy. Please contact our support team with your order
+              details to initiate the refund process.
             </p>
           </div>
 

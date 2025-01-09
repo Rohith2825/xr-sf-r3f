@@ -164,6 +164,7 @@ const SettingsModal = () => {
               borderRadius: "50%",
               fontSize: "18px",
               padding: 0.2,
+              cursor: "pointer",
             }}
             onClick={closeSettingsModal}
           />
@@ -174,6 +175,7 @@ const SettingsModal = () => {
               fontFamily: "'Poppins', sans-serif",
               fontWeight: "bold",
               color: "white",
+              fontSize:"24px",
             }}
           >
             Settings
@@ -188,13 +190,14 @@ const SettingsModal = () => {
             backgroundColor: "#424147",
             color: "white",
             borderRadius: "10px",
+            cursor: "pointer",
           }}
           onClick={() => {
             openInfoModal();
           }}
         >
           <Typography
-            sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "bold" }}
+            sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "medium" }}
           >
             Privacy Policy
           </Typography>
@@ -209,6 +212,7 @@ const SettingsModal = () => {
             backgroundColor: "#424147",
             color: "white",
             borderRadius: "10px",
+            cursor: "pointer",
           }}
           onClick={() => {
             openTermsModal();
@@ -217,7 +221,7 @@ const SettingsModal = () => {
           <Typography
             sx={{
               fontFamily: "'Poppins', sans-serif",
-              fontWeight: "bold",
+              fontWeight: "medium",
               backgroundColor: "#424147",
             }}
           >
@@ -234,13 +238,14 @@ const SettingsModal = () => {
             backgroundColor: "#424147",
             color: "white",
             borderRadius: "10px",
+            cursor: "pointer",
           }}
           onClick={() => {
             openContactModal();
           }}
         >
           <Typography
-            sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "bold" }}
+            sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "medium" }}
           >
             Contact us
           </Typography>
@@ -258,7 +263,7 @@ const SettingsModal = () => {
           }}
         >
           <Typography
-            sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "bold" }}
+            sx={{ fontFamily: "'Poppins', sans-serif", fontWeight: "medium" }}
           >
             Music
           </Typography>
