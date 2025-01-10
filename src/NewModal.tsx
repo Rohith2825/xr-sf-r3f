@@ -69,6 +69,49 @@ const Modal = () => {
     setQuantity(1);
   }, [selectedVariant, setQuantity]);
 
+  const handleBuyNow = async () => {
+    try {
+      const checkout = await client.checkout.create();
+      const updatedCheckout = await client.checkout.addLineItems(
+        checkout.id,
+        [{
+          variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
+          quantity: quantity
+        }]
+      );
+
+      // Show brief loading message
+      Swal.fire({
+        title: "Starting Checkout",
+        text: "Redirecting to secure checkout...",
+        icon: "success",
+        timer: 1000,
+        showConfirmButton: false,
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      }).then(() => {
+        // Redirect in same window
+        window.location.href = updatedCheckout.webUrl;
+      });
+
+    } catch(e) {
+      console.error('Checkout error:', e);
+      Swal.fire({
+        title: "Checkout Failed",
+        text: "Unable to start checkout. Please try again.",
+        icon: "error",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+    }
+  };
+
+
   // Media type photo or model
   const PHOTOS = "Photos";
   const MODEL = "3D Model";
@@ -178,47 +221,47 @@ const Modal = () => {
     }
   };
 
-  const handleBuyNow = async () => {
-    try {
-      const checkout = await client.checkout.create();
-      const updatedCheckout = await client.checkout.addLineItems(
-        checkout.id,
-        [{
-          variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
-          quantity: quantity
-        }]
-      );
+  // const handleBuyNow = async () => {
+  //   try {
+  //     const checkout = await client.checkout.create();
+  //     const updatedCheckout = await client.checkout.addLineItems(
+  //       checkout.id,
+  //       [{
+  //         variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
+  //         quantity: quantity
+  //       }]
+  //     );
 
-      Swal.fire({
-        title: "Checkout Success",
-        text: "You will be redirected shortly.",
-        icon: "success",
-        timer: 5000,
-        customClass: {
-          title: styles.swalTitle,
-          popup: styles.swalPopup,
-        },
-      });
+  //     Swal.fire({
+  //       title: "Checkout Success",
+  //       text: "You will be redirected shortly.",
+  //       icon: "success",
+  //       timer: 5000,
+  //       customClass: {
+  //         title: styles.swalTitle,
+  //         popup: styles.swalPopup,
+  //       },
+  //     });
 
-      const checkoutUrl = updatedCheckout.webUrl;
-      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
-    }
-    catch(e){
-      console.error(e);
-      Swal.fire({
-        title: "Failed",
-        text: "Failed to redirect to checkout. Please try again.",
-        icon: "error",
-        timer: 3000,
-        confirmButtonText: "Okay",
-        customClass: {
-          title: styles.swalTitle,
-          popup: styles.swalPopup,
-        },
-      });
-    }
+  //     const checkoutUrl = updatedCheckout.webUrl;
+  //     window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+  //   }
+  //   catch(e){
+  //     console.error(e);
+  //     Swal.fire({
+  //       title: "Failed",
+  //       text: "Failed to redirect to checkout. Please try again.",
+  //       icon: "error",
+  //       timer: 3000,
+  //       confirmButtonText: "Okay",
+  //       customClass: {
+  //         title: styles.swalTitle,
+  //         popup: styles.swalPopup,
+  //       },
+  //     });
+  //   }
 
-  };
+  // };
 
   const MediaViewer = () => {
 
