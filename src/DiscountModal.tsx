@@ -22,10 +22,6 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
     props.onClose();
   };
 
-  const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
-    const modal = modalRef.current;
-    if (modal && !modal.contains(event.target as Node)) handleClose();
-  };
 
   const handleCopy = (couponCode: string) => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -139,7 +135,6 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
           justifyContent: "center",
           alignItems: "center",
         }}
-        onClick={onClickOutside}
       >
         <Card
           ref={modalRef}
