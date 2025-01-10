@@ -853,7 +853,7 @@ const Modal = () => {
           width: { xs: "90vw", md: "70vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, // Size
           backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
           borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
-          overflow: "none", paddingTop: {xs: 0, md: "5%"}, paddingBottom: {xs: 0, md: "5%"}, boxSizing: "border-box"
+          overflow: "none", paddingTop: {xs: 0, md: "5%"}, paddingBottom: {xs: 0, md: "2%"}, boxSizing: "border-box"
 
         }}
         className="Modal"
