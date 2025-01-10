@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close"; // Ensure you import the CloseIcon
 import Swal from "sweetalert2";
 import styles from "./UI/UI.module.scss";
 
@@ -143,16 +144,31 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
         <Card
           ref={modalRef}
           sx={{
+            position: "relative", // Needed for positioning the CloseIcon
             gap: "10px",
             backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
             backdropFilter: "blur(5px)", // Blur effect for glass morphism
-            borderRadius: "10px",
+            borderRadius: { xs: "10px", md: "25px" },
             padding: 2,
             boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Subtle shadow
             border: "1px solid rgba(255, 255, 255, 0.2)", // Optional border
             zIndex: 999,
           }}
         >
+          <CloseIcon
+            sx={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              backgroundColor: "#424147",
+              borderRadius: "50%",
+              fontSize: "18px",
+              padding: 0.2,
+              cursor: "pointer",
+              color: "white",
+            }}
+            onClick={handleClose}
+          />
           <CardContent
             sx={{
               display: "flex",
@@ -161,7 +177,7 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
               maxWidth: {
                 xs: "300px",
                 sm: "400px",
-                md: "400p",
+                md: "400px",
                 lg: "400px",
                 xl: "400px",
               },
@@ -197,7 +213,7 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
                 backgroundColor: "rgba(255, 255, 255, 0.2)",
                 width: "fit-content",
                 cursor: "pointer",
-                pointerEvents:"auto",
+                pointerEvents: "auto",
               }}
             >
               <Typography
