@@ -178,8 +178,57 @@ const Modal = () => {
     }
   };
 
+  // const handleBuyNow = async () => {
+  //   try {
+  //     const checkout = await client.checkout.create();
+  //     const updatedCheckout = await client.checkout.addLineItems(
+  //       checkout.id,
+  //       [{
+  //         variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
+  //         quantity: quantity
+  //       }]
+  //     );
+
+  //     Swal.fire({
+  //       title: "Checkout Success",
+  //       text: "You will be redirected shortly.",
+  //       icon: "success",
+  //       timer: 5000,
+  //       customClass: {
+  //         title: styles.swalTitle,
+  //         popup: styles.swalPopup,
+  //       },
+  //     });
+
+  //     const checkoutUrl = updatedCheckout.webUrl;
+  //     window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+  //   }
+  //   catch(e){
+  //     console.error(e);
+  //     Swal.fire({
+  //       title: "Failed",
+  //       text: "Failed to redirect to checkout. Please try again.",
+  //       icon: "error",
+  //       timer: 3000,
+  //       confirmButtonText: "Okay",
+  //       customClass: {
+  //         title: styles.swalTitle,
+  //         popup: styles.swalPopup,
+  //       },
+  //     });
+  //   }
+
+  // };
+
   const handleBuyNow = async () => {
     try {
+      // Open a new tab immediately to avoid popup blockers
+      const newTab = window.open("", "_blank", "noopener,noreferrer");
+  
+      if (!newTab) {
+        throw new Error("Unable to open a new tab. Check your browser's popup settings.");
+      }
+  
       const checkout = await client.checkout.create();
       const updatedCheckout = await client.checkout.addLineItems(
         checkout.id,
@@ -188,7 +237,13 @@ const Modal = () => {
           quantity: quantity
         }]
       );
-
+  
+      const checkoutUrl = updatedCheckout.webUrl;
+  
+      // Redirect the new tab to the checkout URL
+      newTab.location.href = checkoutUrl;
+  
+      // Show success alert
       Swal.fire({
         title: "Checkout Success",
         text: "You will be redirected shortly.",
@@ -199,12 +254,10 @@ const Modal = () => {
           popup: styles.swalPopup,
         },
       });
-
-      const checkoutUrl = updatedCheckout.webUrl;
-      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
-    }
-    catch(e){
+    } catch (e) {
       console.error(e);
+  
+      // Show error alert
       Swal.fire({
         title: "Failed",
         text: "Failed to redirect to checkout. Please try again.",
@@ -217,8 +270,8 @@ const Modal = () => {
         },
       });
     }
-
   };
+  
 
   const MediaViewer = () => {
 
