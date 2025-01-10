@@ -185,6 +185,7 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
                 backgroundColor: "rgba(255, 255, 255, 0.2)",
                 width: "fit-content",
                 cursor: "pointer",
+                pointerEvents:"auto",
               }}
             >
               <Typography
