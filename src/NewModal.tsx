@@ -47,6 +47,8 @@ const Modal = () => {
   const { lines, checkoutUrl, linesAdd } = useCart();
   const { closeModal, selectedProduct } = useComponentStore();
 
+  console.log("Selected Product:", selectedProduct);
+
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
       navigator.userAgent
@@ -163,6 +165,14 @@ const Modal = () => {
         console.error("AR is not supported or activateAR is undefined");
       }
     };
+
+    const handleARTryOn = () => {
+      if(selectedProduct && selectedProduct.arLensLink)
+      { 
+        // window.open(selectedProduct.arLensLink, "_blank"); // Opens the link in a new tab
+        window.location.href =selectedProduct.arLensLink; // for opening the arLink in the current tab
+      }
+    }
 
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -484,6 +494,7 @@ const Modal = () => {
             <ModelViewerComponent />
           }
         </Box>
+        <Box sx={{display: "flex", flexDirection: "row",width: "100%",justifyContent:"center",gap:"10px"}}>
         <Button
         disabled={!isMobile || isIosChrome}
         onPointerDown={handleViewInAR}
@@ -505,6 +516,27 @@ const Modal = () => {
         >
           View in AR
         </Button>
+        <Button
+        onPointerDown={handleARTryOn}
+          sx={{
+            minWidth: "30%",
+            backgroundColor: "#424147",
+            borderRadius: "100px",
+            color: "white", fontWeight: "normal",
+            fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
+            textTransform: "none",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.3)"
+            },
+            padding: "auto 35px auto 35px", boxSizing: "border-box",
+            whiteSpace: "nowrap",
+            overflow: "hidden"
+          }}
+          className="ARViewButton"
+        >
+          AR Try On
+        </Button>
+        </Box>
 
       </Box>
     );

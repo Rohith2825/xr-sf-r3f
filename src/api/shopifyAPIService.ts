@@ -68,6 +68,17 @@ interface ProductResponse {
               }
             }[]
           },
+          metafields:{
+            edges:{
+              node:{
+                namespace: string,
+                key: string,
+                value: string,
+                type: string,
+                description: string,
+              }
+            }[]
+          }
           bodyHtml: string
         }
       }[]
@@ -119,6 +130,11 @@ export const ProductService = {
         };
       });
 
+      // AR Lens link
+      const arLensLink = product.node.metafields.edges.find((metafield) => 
+        metafield.node.namespace === "custom" && metafield.node.key === "snapchat_lens_link"
+      )?.node.value;
+
       const parsedProduct: Product = {
         id: Number(product.node.id.split("/").pop()),
         title: product.node.title,
@@ -126,7 +142,8 @@ export const ProductService = {
         images: productImages,
         options: product.node.options,
         variants: productVariants,
-        models: models
+        models: models,
+        arLensLink: arLensLink
       };
 
       return parsedProduct;
