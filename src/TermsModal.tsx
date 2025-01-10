@@ -1,5 +1,4 @@
 import { X } from "lucide-react";
-import { useEffect } from "react";
 import { useComponentStore } from "./stores/ZustandStores";
 
 const styles = {
@@ -131,35 +130,7 @@ const styles = {
 
 const TermsConditionsModal = () => {
   const { isTermsModalOpen, closeTermsModal } = useComponentStore();
-  useEffect(() => {
-    if (isTermsModalOpen) {
-      const scrollY = window.scrollY;
-      const joystickZone = document.getElementById("joystickZone");
 
-      if (joystickZone) {
-        joystickZone.style.display = "none";
-      }
-
-      document.body.style.position = "fixed";
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = "100%";
-      document.body.style.overflow = "hidden";
-      document.body.style.touchAction = "none";
-
-      return () => {
-        if (joystickZone) {
-          joystickZone.style.display = "block";
-        }
-
-        document.body.style.position = "";
-        document.body.style.top = "";
-        document.body.style.width = "";
-        document.body.style.overflow = "";
-        document.body.style.touchAction = "";
-        window.scrollTo(0, scrollY);
-      };
-    }
-  }, [isTermsModalOpen]);
 
   const handleClose = () => {
     const joystickZone = document.getElementById("joystickZone");

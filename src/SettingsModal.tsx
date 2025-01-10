@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef } from "react";
 import { useComponentStore } from "./stores/ZustandStores";
 import { Card, Box, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -91,33 +91,7 @@ const SettingsModal = () => {
     },
   }));
 
-  useEffect(() => {
-    const scrollY = window.scrollY;
-    const joystickZone = document.getElementById("joystickZone");
 
-    if (joystickZone) {
-      joystickZone.style.display = "none";
-    }
-
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = "100%";
-    document.body.style.overflow = "hidden";
-    document.body.style.touchAction = "none";
-
-    return () => {
-      if (joystickZone) {
-        joystickZone.style.display = "block";
-      }
-
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
-      document.body.style.touchAction = "";
-      window.scrollTo(0, scrollY);
-    };
-  }, []);
 
   return (
     <div

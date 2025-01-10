@@ -14,6 +14,7 @@ import SettingsModal from "@/SettingsModal";
 import TermsConditionsModal from "@/TermsModal";
 import ContactUsModal from "@/ContactUsModal";
 import ReactAudioPlayer from "react-audio-player";
+import ModalWrapper from "@/ModalWrapper";
 
 const customDriverStyles = `
   .driver-popover {
@@ -274,7 +275,7 @@ const UI = () => {
         onClose={closeDiscountModal}
         discountCode={discountCode}
       />
-      {isSettingsModalOpen && <SettingsModal />}
+      {isSettingsModalOpen && <ModalWrapper><SettingsModal /></ModalWrapper>}
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}
