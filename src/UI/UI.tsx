@@ -110,6 +110,17 @@ const UI = () => {
           },
         },
         {
+          popover: {
+            title: "Find products across the experience",
+            description: "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
+          },
+          onHighlightStarted: () => {
+            // Custom logic to handle the camera movement
+            shouldMoveCamera.current = true; // Trigger camera movement
+            setTourComplete(true);
+          },
+        },
+        {
           element: '[alt="Cart"]',
           popover: {
             title: "Shopping Cart",
@@ -126,21 +137,10 @@ const UI = () => {
           },
         },
         {
+          element: '[alt="Settings"]',
           popover: {
-            title: "Find products across the experience",
-            description: "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
-          },
-          onHighlightStarted: () => {
-            // Custom logic to handle the camera movement
-            shouldMoveCamera.current = true; // Trigger camera movement
-            setTourComplete(true);
-          },
-        },
-        {
-          element: '[alt="Info"]',
-          popover: {
-            title: "Information",
-            description: "Get more details about our products and services",
+            title: "Settings",
+            description: "Manage your preferences, explore app features, and customize your experience.",
             side: "bottom",
           },
         },
