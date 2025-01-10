@@ -44,17 +44,24 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
           });
         })
         .catch((err) => {
-          console.error("Failed to copy: ", err);
+          console.error("Clipboard API failed, falling back to execCommand: ", err);
+          fallbackCopyText(couponCode);
         });
     } else {
       // Fallback for unsupported browsers
-      const textarea = document.createElement("textarea");
-      textarea.value = couponCode;
-      document.body.appendChild(textarea);
-      textarea.select();
+      fallbackCopyText(couponCode);
+    }
+  };
+  
+  const fallbackCopyText = (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "absolute";
+    textarea.style.left = "-9999px"; // Make it invisible
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
       document.execCommand("copy");
-      document.body.removeChild(textarea);
-
       Swal.fire({
         title: "Copied!",
         text: "Coupon code copied to clipboard",
@@ -66,8 +73,13 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
           popup: styles.swalPopup,
         },
       });
+    } catch (err) {
+      console.error("Fallback: Failed to copy text: ", err);
+    } finally {
+      document.body.removeChild(textarea);
     }
   };
+  
 
   useEffect(() => {
     if (props.isOpen) {
