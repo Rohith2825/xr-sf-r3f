@@ -222,28 +222,17 @@ const Modal = () => {
 
   const handleBuyNow = async () => {
     try {
-      // Open a new tab immediately to avoid popup blockers
-      const newTab = window.open("", "_blank", "noopener,noreferrer");
-  
-      if (!newTab) {
-        throw new Error("Unable to open a new tab. Check your browser's popup settings.");
-      }
-  
       const checkout = await client.checkout.create();
       const updatedCheckout = await client.checkout.addLineItems(
         checkout.id,
-        [{
-          variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
-          quantity: quantity
-        }]
+        [
+          {
+            variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
+            quantity: quantity,
+          },
+        ]
       );
   
-      const checkoutUrl = updatedCheckout.webUrl;
-  
-      // Redirect the new tab to the checkout URL
-      newTab.location.href = checkoutUrl;
-  
-      // Show success alert
       Swal.fire({
         title: "Checkout Success",
         text: "You will be redirected shortly.",
@@ -254,10 +243,19 @@ const Modal = () => {
           popup: styles.swalPopup,
         },
       });
+  
+      const checkoutUrl = updatedCheckout.webUrl;
+  
+      // Attempt to open the link in a new tab
+      const newTab = window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+  
+      if (!newTab) {
+        console.warn("Failed to open new tab, using fallback method.");
+        fallbackOpenLink(checkoutUrl); // Fallback if `window.open` fails
+      }
     } catch (e) {
       console.error(e);
   
-      // Show error alert
       Swal.fire({
         title: "Failed",
         text: "Failed to redirect to checkout. Please try again.",
@@ -272,7 +270,35 @@ const Modal = () => {
     }
   };
   
-
+  // Fallback function for opening a URL if `window.open` fails
+  const fallbackOpenLink = (url: string) => {
+    try {
+      // Dynamically create an anchor tag and trigger click
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.target = "_blank";
+      anchor.rel = "noopener noreferrer";
+      document.body.appendChild(anchor);
+      anchor.click();
+  
+      // Cleanup the anchor element after clicking
+      document.body.removeChild(anchor);
+    } catch (err) {
+      console.error("Fallback: Failed to open the checkout link.", err);
+  
+      Swal.fire({
+        title: "Error",
+        text: "Unable to open the checkout page. Please try again.",
+        icon: "error",
+        confirmButtonText: "Okay",
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+    }
+  };
+  
   const MediaViewer = () => {
 
 
