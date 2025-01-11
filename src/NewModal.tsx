@@ -109,6 +109,9 @@ const Modal = () => {
         text: "Click 'Proceed' to continue to checkout in a new window",
         icon: "success",
         confirmButtonText: "Proceed",
+        confirmButtonColor: "green",
+        showCancelButton: true,
+        cancelButtonColor: "red",
         allowOutsideClick: false,
         customClass: {
           title: styles.swalTitle,
@@ -215,7 +218,9 @@ const Modal = () => {
           text: "Click 'Continue' to open AR experience in a new window",
           icon: "info",
           confirmButtonText: "Continue",
-          showCancelButton: false,
+          confirmButtonColor: "green",
+          showCancelButton: true,
+          cancelButtonColor: "red",
           allowOutsideClick: true,
           customClass: {
             title: styles.swalTitle,
@@ -982,7 +987,7 @@ const Modal = () => {
           ref={containerRef}
           sx={{
             width: "100%", height: { xs: "85%", md: "100%" }, 
-            display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-evenly", alignItems: { xs: "center", md: "start" },
+            display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: { xs: "space-between", md: "space-evenly" }, alignItems: { xs: "center", md: "start" },
             gap: "2%", boxSizing: "border-box",
             backgroundColor: "rgba(0, 0, 0, 0)",
             overflowY: { xs: "scroll", md: "hidden" }, scrollbarWidth: 0, "&::-webkit-scrollbar": { display: "none" }
