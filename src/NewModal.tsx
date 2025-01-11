@@ -44,6 +44,8 @@ const Modal = () => {
 
     observeModelViewer();
   }, []);
+
+  
   const { lines, checkoutUrl, linesAdd } = useCart();
   const { closeModal, selectedProduct } = useComponentStore();
 
@@ -153,7 +155,7 @@ const Modal = () => {
   // Media type photo or model
   const PHOTOS = "Photos";
   const MODEL = "3D Model";
-  const [mediaType, setMediaType] = useState(MODEL);
+  const [mediaType, setMediaType] = useState(PHOTOS);
 
   useEffect(() => {
     const scrollY = window.scrollY;
@@ -193,14 +195,37 @@ const Modal = () => {
     }
   }, []);
   
-    const handleViewInAR = () => {
-      if (modelViewerElement.current?.activateAR) {
-        modelViewerElement.current.activateAR(); // Trigger AR viewer
-        console.log("AR support exist");
-      } else {
-        console.error("AR is not supported or activateAR is undefined");
-      }
-    };
+  const handleViewInAR = async () => {
+    // If the current media type is not the model, switch to it first
+    if (mediaType !== MODEL) {
+      setMediaType(MODEL); // Switch to 3D View
+  
+      // Wait for the <model-viewer> element to render and be observed
+      await new Promise((resolve) => {
+        const observer = new MutationObserver(() => {
+          const element = containerRef.current?.querySelector("model-viewer");
+          if (element) {
+            modelViewerElement.current = element; // Store reference
+            resolve(); // Resolve the promise
+            observer.disconnect(); // Stop observing once found
+          }
+        });
+  
+        if (containerRef.current) {
+          observer.observe(containerRef.current, { childList: true, subtree: true });
+        }
+      });
+    }
+  
+    // Trigger the AR viewer after ensuring the <model-viewer> is available
+    if (modelViewerElement.current?.activateAR) {
+      modelViewerElement.current.activateAR();
+      console.log("AR support exists");
+    } else {
+      console.error("AR is not supported or activateAR is undefined");
+    }
+  };
+  
 
     const handleARTryOn = () => {
       if (selectedProduct && selectedProduct.arLensLink) {
