@@ -115,6 +115,19 @@ const Modal = () => {
 
   const handleBuyNow = async () => {
     try {
+      // Show loading state first
+      Swal.fire({
+        title: "Starting Checkout",
+        text: "Preparing your order...",
+        icon: "info",
+        showConfirmButton: false,
+        allowOutsideClick: false,
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      });
+  
       const checkout = await client.checkout.create();
       const updatedCheckout = await client.checkout.addLineItems(
         checkout.id,
@@ -124,35 +137,40 @@ const Modal = () => {
         }]
       );
   
-      // Show brief loading message
+      // Create an anchor tag instead of a form
+      const checkoutLink = document.createElement('a');
+      checkoutLink.href = updatedCheckout.webUrl;
+      checkoutLink.target = '_blank';
+      checkoutLink.rel = 'noopener noreferrer';
+      checkoutLink.style.display = 'none';
+      document.body.appendChild(checkoutLink);
+  
+      // Update to success message
       Swal.fire({
-        title: "Starting Checkout",
-        text: "Redirecting to secure checkout...",
+        title: "Order Ready",
+        text: "Click 'Proceed' to continue to checkout in a new window",
         icon: "success",
-        timer: 1000,
-        showConfirmButton: false,
+        confirmButtonText: "Proceed",
+        allowOutsideClick: false,
         customClass: {
           title: styles.swalTitle,
           popup: styles.swalPopup,
         },
-      }).then(() => {
-        // Create a form and submit it programmatically
-        const form = document.createElement('form');
-        form.method = 'GET';
-        form.target = '_blank'; // Open in new window
-        form.action = updatedCheckout.webUrl;
-        
-        // Add a hidden input with a timestamp to help prevent blocking
-        const timestampInput = document.createElement('input');
-        timestampInput.type = 'hidden';
-        timestampInput.name = '_t';
-        timestampInput.value = Date.now().toString();
-        form.appendChild(timestampInput);
-        
-        // Append form to document, submit it, and remove it
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Simulate a natural click event
+          const clickEvent = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true
+          });
+          checkoutLink.dispatchEvent(clickEvent);
+          
+          // Remove the link element after click
+          setTimeout(() => {
+            document.body.removeChild(checkoutLink);
+          }, 100);
+        }
       });
   
     } catch(e) {
