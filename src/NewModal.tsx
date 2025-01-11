@@ -47,7 +47,6 @@ const Modal = () => {
   const { lines, checkoutUrl, linesAdd } = useCart();
   const { closeModal, selectedProduct } = useComponentStore();
 
-  //console.log("Selected Product:", selectedProduct);
 
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
@@ -71,47 +70,6 @@ const Modal = () => {
     setQuantity(1);
   }, [selectedVariant, setQuantity]);
 
-  // const handleBuyNow = async () => {
-  //   try {
-  //     const checkout = await client.checkout.create();
-  //     const updatedCheckout = await client.checkout.addLineItems(
-  //       checkout.id,
-  //       [{
-  //         variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
-  //         quantity: quantity
-  //       }]
-  //     );
-
-  //     // Show brief loading message
-  //     Swal.fire({
-  //       title: "Starting Checkout",
-  //       text: "Redirecting to secure checkout...",
-  //       icon: "success",
-  //       timer: 1000,
-  //       showConfirmButton: false,
-  //       customClass: {
-  //         title: styles.swalTitle,
-  //         popup: styles.swalPopup,
-  //       },
-  //     }).then(() => {
-  //       // Redirect in same window
-  //       window.location.href = updatedCheckout.webUrl;
-  //     });
-
-  //   } catch(e) {
-  //     console.error('Checkout error:', e);
-  //     Swal.fire({
-  //       title: "Checkout Failed",
-  //       text: "Unable to start checkout. Please try again.",
-  //       icon: "error",
-  //       confirmButtonText: "Okay",
-  //       customClass: {
-  //         title: styles.swalTitle,
-  //         popup: styles.swalPopup,
-  //       },
-  //     });
-  //   }
-  // };
 
   const handleBuyNow = async () => {
     try {
@@ -242,12 +200,45 @@ const Modal = () => {
     };
 
     const handleARTryOn = () => {
-      if(selectedProduct && selectedProduct.arLensLink)
-      { 
-        window.open(selectedProduct.arLensLink, "_blank"); // Opens the link in a new tab
-        //window.location.href =selectedProduct.arLensLink; // for opening the arLink in the current tab
+      if (selectedProduct && selectedProduct.arLensLink) {
+        // Create a hidden anchor tag
+        const arLink = document.createElement('a');
+        arLink.href = selectedProduct.arLensLink;
+        arLink.target = '_blank';
+        arLink.rel = 'noopener noreferrer';
+        arLink.style.display = 'none';
+        document.body.appendChild(arLink);
+    
+        // Show loading/confirmation dialog
+        Swal.fire({
+          title: "Opening AR Try-On",
+          text: "Click 'Continue' to open AR experience in a new window",
+          icon: "info",
+          confirmButtonText: "Continue",
+          showCancelButton: false,
+          allowOutsideClick: true,
+          customClass: {
+            title: styles.swalTitle,
+            popup: styles.swalPopup,
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Simulate a natural click event
+            const clickEvent = new MouseEvent('click', {
+              view: window,
+              bubbles: true,
+              cancelable: true
+            });
+            arLink.dispatchEvent(clickEvent);
+            
+            // Clean up by removing the link element
+            setTimeout(() => {
+              document.body.removeChild(arLink);
+            }, 100);
+          }
+        });
       }
-    }
+    };
 
   // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
@@ -306,47 +297,6 @@ const Modal = () => {
     }
   };
 
-  // const handleBuyNow = async () => {
-  //   try {
-  //     const checkout = await client.checkout.create();
-  //     const updatedCheckout = await client.checkout.addLineItems(
-  //       checkout.id,
-  //       [{
-  //         variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
-  //         quantity: quantity
-  //       }]
-  //     );
-
-  //     Swal.fire({
-  //       title: "Checkout Success",
-  //       text: "You will be redirected shortly.",
-  //       icon: "success",
-  //       timer: 5000,
-  //       customClass: {
-  //         title: styles.swalTitle,
-  //         popup: styles.swalPopup,
-  //       },
-  //     });
-
-  //     const checkoutUrl = updatedCheckout.webUrl;
-  //     window.open(checkoutUrl, "_blank", "noopener,noreferrer");
-  //   }
-  //   catch(e){
-  //     console.error(e);
-  //     Swal.fire({
-  //       title: "Failed",
-  //       text: "Failed to redirect to checkout. Please try again.",
-  //       icon: "error",
-  //       timer: 3000,
-  //       confirmButtonText: "Okay",
-  //       customClass: {
-  //         title: styles.swalTitle,
-  //         popup: styles.swalPopup,
-  //       },
-  //     });
-  //   }
-
-  // };
 
   const MediaViewer = () => {
 
