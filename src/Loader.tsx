@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import React from "react";
 import "./styles/loading-animation.css";
 
@@ -6,6 +7,15 @@ interface LoadProps {
 }
 
 const Load: React.FC<LoadProps> = ({ progress }) => {
+
+  // Using useRef to store the previous progress value
+  const prevProgressRef = useRef(0);
+
+  // Ensure progress only increments
+  const displayProgress = Math.max(progress, prevProgressRef.current);
+
+  // Update the reference for the next render
+  prevProgressRef.current = displayProgress;
 
 
   return (
@@ -24,7 +34,7 @@ const Load: React.FC<LoadProps> = ({ progress }) => {
           </div>
           <div className="loading-text-container">
             <div className="loading-text typewriter">Delta XR</div>
-            <div className="loading-text">{Math.round(progress)}%</div>
+            <div className="loading-text">{Math.round(displayProgress)}%</div>
           </div>
           <img
             id="powered-by-loader"
