@@ -69,6 +69,48 @@ const Modal = () => {
     setQuantity(1);
   }, [selectedVariant, setQuantity]);
 
+  // const handleBuyNow = async () => {
+  //   try {
+  //     const checkout = await client.checkout.create();
+  //     const updatedCheckout = await client.checkout.addLineItems(
+  //       checkout.id,
+  //       [{
+  //         variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
+  //         quantity: quantity
+  //       }]
+  //     );
+
+  //     // Show brief loading message
+  //     Swal.fire({
+  //       title: "Starting Checkout",
+  //       text: "Redirecting to secure checkout...",
+  //       icon: "success",
+  //       timer: 1000,
+  //       showConfirmButton: false,
+  //       customClass: {
+  //         title: styles.swalTitle,
+  //         popup: styles.swalPopup,
+  //       },
+  //     }).then(() => {
+  //       // Redirect in same window
+  //       window.location.href = updatedCheckout.webUrl;
+  //     });
+
+  //   } catch(e) {
+  //     console.error('Checkout error:', e);
+  //     Swal.fire({
+  //       title: "Checkout Failed",
+  //       text: "Unable to start checkout. Please try again.",
+  //       icon: "error",
+  //       confirmButtonText: "Okay",
+  //       customClass: {
+  //         title: styles.swalTitle,
+  //         popup: styles.swalPopup,
+  //       },
+  //     });
+  //   }
+  // };
+
   const handleBuyNow = async () => {
     try {
       const checkout = await client.checkout.create();
@@ -79,7 +121,7 @@ const Modal = () => {
           quantity: quantity
         }]
       );
-
+  
       // Show brief loading message
       Swal.fire({
         title: "Starting Checkout",
@@ -92,10 +134,25 @@ const Modal = () => {
           popup: styles.swalPopup,
         },
       }).then(() => {
-        // Redirect in same window
-        window.location.href = updatedCheckout.webUrl;
+        // Create a form and submit it programmatically
+        const form = document.createElement('form');
+        form.method = 'GET';
+        form.target = '_blank'; // Open in new window
+        form.action = updatedCheckout.webUrl;
+        
+        // Add a hidden input with a timestamp to help prevent blocking
+        const timestampInput = document.createElement('input');
+        timestampInput.type = 'hidden';
+        timestampInput.name = '_t';
+        timestampInput.value = Date.now().toString();
+        form.appendChild(timestampInput);
+        
+        // Append form to document, submit it, and remove it
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
       });
-
+  
     } catch(e) {
       console.error('Checkout error:', e);
       Swal.fire({
