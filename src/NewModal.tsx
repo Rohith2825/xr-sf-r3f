@@ -47,7 +47,7 @@ const Modal = () => {
   const { lines, checkoutUrl, linesAdd } = useCart();
   const { closeModal, selectedProduct } = useComponentStore();
 
-  console.log("Selected Product:", selectedProduct);
+  //console.log("Selected Product:", selectedProduct);
 
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
@@ -174,7 +174,7 @@ const Modal = () => {
   // Media type photo or model
   const PHOTOS = "Photos";
   const MODEL = "3D Model";
-  const [mediaType, setMediaType] = useState(PHOTOS);
+  const [mediaType, setMediaType] = useState(MODEL);
 
   useEffect(() => {
     const scrollY = window.scrollY;
@@ -336,7 +336,6 @@ const Modal = () => {
     const MediaButtons = () => {
       return (
         <Box
-        ref={containerRef}
           sx={{
             width: "50%",
             display: "flex", flexDirection: "row", justifyContent: "space-evenly", alignItems: "center",
@@ -502,14 +501,17 @@ const Modal = () => {
       return (
         <Box
           sx={{
-            width: "100%", height: "100%", minHeight: "300px"
+            width: "100%", height: "100%", minHeight: "300px",
+            "& model-viewer": {
+              "--poster-color": "transparent",
+              "--ar-button-display": "none !important",
+            }
           }}
         >
           <ModelViewer
             style={{
               height: "100%",
               width: "100%",
-              "--poster-color": "transparent",
             }}
             data={modelData}
             ar={true} // Enable AR
@@ -1009,6 +1011,7 @@ const Modal = () => {
           &times;
         </Typography>
         <Box
+          ref={containerRef}
           sx={{
             width: "100%", height: { xs: "85%", md: "100%" }, 
             display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-evenly", alignItems: { xs: "center", md: "start" },
