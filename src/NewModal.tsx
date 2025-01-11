@@ -226,8 +226,8 @@ const Modal = () => {
     const handleARTryOn = () => {
       if(selectedProduct && selectedProduct.arLensLink)
       { 
-        // window.open(selectedProduct.arLensLink, "_blank"); // Opens the link in a new tab
-        window.location.href =selectedProduct.arLensLink; // for opening the arLink in the current tab
+        window.open(selectedProduct.arLensLink, "_blank"); // Opens the link in a new tab
+        //window.location.href =selectedProduct.arLensLink; // for opening the arLink in the current tab
       }
     }
 
