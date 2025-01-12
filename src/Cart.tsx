@@ -50,7 +50,24 @@ const Cart = () => {
       });
     }
     else if (checkoutUrl) {
-      window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+      Swal.fire({
+        title: "Order Ready",
+        text: "Click 'Proceed' to continue to checkout in a new window",
+        icon: "success",
+        confirmButtonText: "Proceed",
+        confirmButtonColor: "green",
+        showCancelButton: true,
+        cancelButtonColor: "red",
+        allowOutsideClick: false,
+        customClass: {
+          title: styles.swalTitle,
+          popup: styles.swalPopup,
+        },
+      }).then((result) => {
+        if(result.isConfirmed){
+          window.open(checkoutUrl, "_blank", "noopener,noreferrer");
+        }
+      });
     } else {
       Swal.fire({
         title: "Checkout Session Not Initialized",
