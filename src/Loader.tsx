@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./styles/loading-animation.css";
 
 interface LoadProps {
@@ -7,23 +6,38 @@ interface LoadProps {
 }
 
 const Load: React.FC<LoadProps> = ({ progress }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Using useRef to store the previous progress value
-  const prevProgressRef = useRef(0);
+  useEffect(() => {
+    const video = videoRef.current;
 
-  // Ensure progress only increments
-  const displayProgress = Math.max(progress, prevProgressRef.current);
+    if (video) {
+      // Play the video on load
+      video.play();
 
-  // Update the reference for the next render
-  prevProgressRef.current = displayProgress;
+      // Pause the video after 2 seconds
+      const timeout = setTimeout(() => {
+        video.pause();
+      }, 2000);
 
+      return () => clearTimeout(timeout); // Cleanup the timeout on unmount
+    }
+  }, []);
 
   return (
-    <div
-      className="loader-background"
-    >
-      <div className="loader-container-container">
-        <div className="loader-container" id="loaderContainer">
+    <div className="loader-background">
+      {/* Full-screen video */}
+      <video
+        ref={videoRef}
+        className="loader-video"
+        src="/media/Loading_video.MOV" // Replace with your video file path
+        muted
+        playsInline
+      ></video>
+
+      {/* Loading overlay */}
+      {/* <div className="loader-overlay">
+        <div className="loader-container">
           <div className="spinner">
             <div></div>
             <div></div>
@@ -34,7 +48,7 @@ const Load: React.FC<LoadProps> = ({ progress }) => {
           </div>
           <div className="loading-text-container">
             <div className="loading-text typewriter">Delta XR</div>
-            <div className="loading-text">{Math.round(displayProgress)}%</div>
+            <div className="loading-text">{Math.round(progress)}%</div>
           </div>
           <img
             id="powered-by-loader"
@@ -44,7 +58,7 @@ const Load: React.FC<LoadProps> = ({ progress }) => {
           />
         </div>
         <div className="loading-line"></div>
-      </div>
+      </div> */}
     </div>
   );
 };
