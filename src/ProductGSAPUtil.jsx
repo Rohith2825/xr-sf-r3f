@@ -13,7 +13,7 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
     setAnimating(true);
     const targetPosition = {
       x: searchResult.x,
-      y: searchResult.y+3,
+      y: searchResult.y + 1.9 ,
       z: searchResult.z+3,
     };
 
