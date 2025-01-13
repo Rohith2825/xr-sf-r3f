@@ -15,6 +15,8 @@ import TermsConditionsModal from "@/TermsModal";
 import ContactUsModal from "@/ContactUsModal";
 import ReactAudioPlayer from "react-audio-player";
 import ModalWrapper from "@/ModalWrapper";
+import ProductSearcher from "@/ProductSearcher";
+
 
 const customDriverStyles = `
   .driver-popover {
@@ -64,8 +66,9 @@ const UI = () => {
     isInfoModalOpen, openInfoModal, closeInfoModal,
     discountCode, isDiscountModalOpen, closeDiscountModal,
     isSettingsModalOpen , openSettingsModal, closeSettingsModal,
-    isAudioPlaying,
-    isTermsModalOpen,isContactModalOpen
+    isAudioPlaying,setSearchResult, startSearchGSAP,
+    isTermsModalOpen,isContactModalOpen,
+    isProductSearcherOpen,openProductSearcher,closeProductSearcher
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
   const { setTourComplete } = useTourStore();
@@ -73,6 +76,8 @@ const UI = () => {
   const driverRef = useRef<Driver>(undefined);
   const audioPlayerRef = useRef<any>(null);
   const shouldMoveCamera = useRef(false);
+
+  // const [positionInput, setPositionInput] = useState("");
   
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(
@@ -88,6 +93,22 @@ const UI = () => {
   const closeChatbotModal = () => {
     setChatbotOpen(false);
   };
+
+  // const handleEnterPosition = () => {
+  //   // Parse the position input
+  //   const [x, y, z] = positionInput.split(",").map((v) => parseFloat(v.trim()));
+
+  //   if (isNaN(x) || isNaN(y) || isNaN(z)) {
+  //     alert("Please enter a valid position in the format: x, y, z");
+  //     return;
+  //   }
+
+  //   // Update Zustand store with the position
+  //   setSearchResult({ x, y, z });
+  //   startSearchGSAP();
+  //   console.log("This",x,y,z);
+  //   setPositionInput(""); // Clear the input
+  // };
 
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -181,6 +202,7 @@ const UI = () => {
     if (ChatbotOpen) closeChatbotModal();
     if (isDiscountModalOpen) closeDiscountModal();
     if (isSettingsModalOpen) closeSettingsModal();
+    if (isProductSearcherOpen) closeProductSearcher();
 
     // Start the tour and update the Zustand state
     if (driverRef.current) {
@@ -212,9 +234,23 @@ const UI = () => {
 
   return (
     <div className="ui-root">
+      {/* <div style={{ padding: "20px" , pointerEvents: "auto"}}>
+        <h2>Enter Player Position</h2>
+        <input
+          type="text"
+          placeholder="Enter position as x, y, z"
+          value={positionInput}
+          onChange={(e) => setPositionInput(e.target.value)}
+          style={{ padding: "10px", width: "300px", marginRight: "10px" }}
+        />
+        <button onClick={handleEnterPosition} style={{ padding: "10px" }}>
+          Enter
+        </button>
+      </div> */}
       {crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
+        <img src="/icons/Search.svg" alt="Search" className={styles.icon} onClick={openProductSearcher} />
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
         <img src="/icons/Settings.svg"  alt="Settings" className={styles.icon} onClick={openSettingsModal} />
@@ -276,6 +312,7 @@ const UI = () => {
         discountCode={discountCode}
       />
       {isSettingsModalOpen && <ModalWrapper><SettingsModal /></ModalWrapper>}
+      {isProductSearcherOpen && <ProductSearcher></ProductSearcher>}
       <div>
         <ChatbotModal
           isChatbotModalOpen={ChatbotOpen}

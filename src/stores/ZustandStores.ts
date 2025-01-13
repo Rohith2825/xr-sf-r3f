@@ -13,6 +13,13 @@ interface ComponentStore {
   setProducts: (products: Product[]) => void;
   setSelectedProduct: (productId: number) => void;
 
+  // Search Handling (NEW)
+  searchResult: { x: number; y: number; z: number } | null; // Target position
+  initiateSearchGSAP: boolean; // Trigger GSAP animation
+  setSearchResult: (position: { x: number; y: number; z: number }) => void;
+  startSearchGSAP: () => void;
+  resetSearchGSAP: () => void;
+
   // Modal Handling
   isModalOpen: boolean;
   openModal: () => void;
@@ -56,6 +63,11 @@ interface ComponentStore {
   openDiscountModal: () => void;
   closeDiscountModal: () => void;
   setDiscountCode: (code: string) => void;
+
+  // Search Handling
+  isProductSearcherOpen: boolean;
+  openProductSearcher: () => void;
+  closeProductSearcher: () => void;
 }
 
 const useComponentStore = create<ComponentStore>((set) => ({
@@ -74,6 +86,18 @@ const useComponentStore = create<ComponentStore>((set) => ({
         (product: Product) => product.id === productId
       );
       return { ...state, selectedProduct: finalProduct };
+    }),
+
+  // Search Handling (NEW)
+  searchResult: null,
+  initiateSearchGSAP: false,
+  setSearchResult: (position: { x: number; y: number; z: number }) =>
+    set({ searchResult: position }),
+  startSearchGSAP: () => set({ initiateSearchGSAP: true }),
+  resetSearchGSAP: () =>
+    set({
+      searchResult: null,
+      initiateSearchGSAP: false,
     }),
 
   // Modal Handling
@@ -167,6 +191,11 @@ const useComponentStore = create<ComponentStore>((set) => ({
     set({ isDiscountModalOpen: false });
   },
   setDiscountCode: (code: string) => set({ discountCode: code }),
+
+  // Search Handling
+  isProductSearcherOpen: false,
+  openProductSearcher: () => set({ isProductSearcherOpen: true }),
+  closeProductSearcher: () => set({ isProductSearcherOpen: false }),
 }));
 
 // Pointer lock handling
