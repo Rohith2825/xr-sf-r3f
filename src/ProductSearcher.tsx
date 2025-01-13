@@ -1,5 +1,6 @@
 import { TextField, Typography, Box } from "@mui/material";
 import { useState, useEffect, useRef, useMemo } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 import { useComponentStore } from "./stores/ZustandStores";
 import Product from "./Types/Product";
 import Fuse from "fuse.js";
@@ -38,10 +39,6 @@ const ProductSearcher = () => {
       : filteredProducts;
     setSearchResults(results);
   }, [searchTerm, fuse, filteredProducts]);
-
-  const clearSearch = () => {
-    setSearchTerm("");
-  };
 
   const searcherRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -104,31 +101,22 @@ const ProductSearcher = () => {
               input: {
                 color: "white",
                 fontSize: { md: "24px" },
+                fontFamily: "'Poppins', sans-serif",
               },
             }}
           />
-          <Typography
-            sx={{
-              width: "30px",
-              height: "30px",
-              alignItems: "center",
-              justifyContent: "center",
-              display: "flex",
-              fontSize: "36px",
-              fontFamily: "'Poppins', sans-serif",
-              fontWeight: "300",
-              color: "rgba(255, 255, 255, 0.4)",
-              "&:hover": {
+          <Box sx={{ paddingRight: 2 }}>
+            <CloseIcon
+              sx={{
+                backgroundColor: "#424147",
+                borderRadius: "50%",
+                fontSize: "18px",
+                padding: 0.2,
                 cursor: "pointer",
-                color: "rgba(255, 255, 255, 0.6)",
-              },
-              marginRight: "16px",
-            }}
-            onClick={clearSearch}
-            className="ClearSearchButton"
-          >
-            &times;
-          </Typography>
+              }}
+              onClick={closeProductSearcher}
+            />
+          </Box>
         </Box>
         <Box
           sx={{
@@ -178,8 +166,6 @@ const ProductSearcher = () => {
                         `Position for product ID ${product.id}:`,
                         mannequin.position
                       );
-                      console.log(mannequin.position);
-                      console.log(mannequin.position[0]);
                       const x: number = mannequin.position[0];
                       const y: number = mannequin.position[1];
                       const z: number = mannequin.position[2];
