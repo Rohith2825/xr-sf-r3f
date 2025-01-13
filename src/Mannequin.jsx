@@ -45,9 +45,9 @@ const DraggableMannequin = ({
     return [x, y + 2.5, z];
   }, [position]);
 
-  // On clicking product
-  const handleProductOpen = () => {
-    // Check if products are loaded
+  const handleEvent = (event) => {
+    event.stopPropagation();
+    
     if(products && products.length > 0){
       setSelectedProduct(productId);
       openModal();
@@ -57,7 +57,6 @@ const DraggableMannequin = ({
         try {
           const response = await ProductService.getAllProducts();
           setProducts(response);
-          
         } catch (err) {
           console.error(err);
         }
@@ -88,8 +87,8 @@ const DraggableMannequin = ({
           position={position}
           rotation={computedRotation}
           scale={computedScale}
-          onTouchStart={handleProductOpen}
-          onClick={handleProductOpen}
+          onTouchStart={handleEvent}
+          onClick={handleEvent}
           castShadow
           receiveShadow
         />
