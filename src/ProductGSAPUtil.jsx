@@ -13,8 +13,8 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
     setAnimating(true);
     const targetPosition = {
       x: searchResult.x,
-      y: searchResult.y,
-      z: searchResult.z,
+      y: searchResult.y+3,
+      z: searchResult.z+3,
     };
 
     const timeline = gsap.timeline({
@@ -42,8 +42,8 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
     // Then move camera to new position
     timeline.to(camera.position, {
       x: targetPosition.x,
-      y: targetPosition.y + 1, // Slightly above target
-      z: targetPosition.z + 1, // Behind target
+      y: targetPosition.y ,
+      z: targetPosition.z ,
       duration: 2,
       ease: "power2.inOut",
     });
