@@ -24,10 +24,9 @@
 
 /* Overlay Content */
 .loader-overlay {
-  position: absolute;
-  bottom: "20%";
-  left: "auto";
-  right: "auto";
+  position: "absolute";
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -35,6 +34,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1;
+  margin-top: 25%;
 }
 
 /* Logo Container */

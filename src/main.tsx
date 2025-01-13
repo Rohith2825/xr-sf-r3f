@@ -18,7 +18,6 @@ function CanvasWrapper() {
     try {
       const response = await ProductService.getAllProducts();
       setProducts(response);
-      
     } catch (err) {
       console.error(err);
     }
@@ -29,7 +28,7 @@ function CanvasWrapper() {
 
   return (
     <div id="container">
-      {progress >= 10000000 && <UI />}
+      {progress >= 100 && <UI />}
       <Canvas camera={{ fov: 45 }} shadows>
         <React.Suspense
           fallback={
