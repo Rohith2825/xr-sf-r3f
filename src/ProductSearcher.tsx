@@ -77,7 +77,7 @@ const ProductSearcher = () => {
         <Box
           sx={{
             width: "100%",
-            height: { xs: "5vh", sm: "5vh", md: "5vh", lg: "8vh", xl: "3vh" },
+            height: { xs: "6vh", sm: "6vh", md: "6vh", lg: "8vh", xl: "4vh" },
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -100,18 +100,17 @@ const ProductSearcher = () => {
               },
               input: {
                 color: "white",
-                fontSize: { md: "24px" },
+                fontSize: { md: "16px" },
                 fontFamily: "'Poppins', sans-serif",
               },
             }}
           />
-          <Box sx={{ paddingRight: 2 }}>
+          <Box sx={{ paddingRight: 2 , paddingTop:0.75}}>
             <CloseIcon
               sx={{
                 backgroundColor: "#424147",
-                borderRadius: "50%",
-                fontSize: "18px",
-                padding: 0.2,
+                borderRadius: "100%",
+                fontSize: "16px",
                 cursor: "pointer",
               }}
               onClick={closeProductSearcher}
