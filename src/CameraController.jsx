@@ -12,8 +12,8 @@ export const CameraController = ({ setAnimating, playerRef }) => {
       setAnimating(true);
 
       const targetPosition = {
-        x: 0,
-        y: -1,
+        x: 0.5,
+        y: -4 + 1.95,
         z: -64
       };
 
