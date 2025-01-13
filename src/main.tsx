@@ -29,7 +29,7 @@ function CanvasWrapper() {
 
   return (
     <div id="container">
-      {progress >= 100 && <UI />}
+      {progress >= 10000000 && <UI />}
       <Canvas camera={{ fov: 45 }} shadows>
         <React.Suspense
           fallback={

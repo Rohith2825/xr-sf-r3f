@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./styles/loading-animation.css";
 
 interface LoadProps {
@@ -7,6 +7,7 @@ interface LoadProps {
 
 const Load: React.FC<LoadProps> = ({ progress }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoCompleted, setIsVideoCompleted] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -15,12 +16,16 @@ const Load: React.FC<LoadProps> = ({ progress }) => {
       // Play the video on load
       video.play();
 
-      // Pause the video after 2 seconds
-      const timeout = setTimeout(() => {
-        video.pause();
-      }, 2000);
+      // Event listener to detect when the video ends
+      const handleVideoEnd = () => {
+        setIsVideoCompleted(true); // Show loading overlay after video ends
+      };
 
-      return () => clearTimeout(timeout); // Cleanup the timeout on unmount
+      video.addEventListener("ended", handleVideoEnd);
+
+      return () => {
+        video.removeEventListener("ended", handleVideoEnd); // Cleanup listener
+      };
     }
   }, []);
 
@@ -35,30 +40,18 @@ const Load: React.FC<LoadProps> = ({ progress }) => {
         playsInline
       ></video>
 
-      {/* Loading overlay */}
-      {/* <div className="loader-overlay">
-        <div className="loader-container">
-          <div className="spinner">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+      {/* Show loading message and bar only after video completes */}
+      {isVideoCompleted && (
+        <div className="loader-overlay">
+          <p className="loader-message">Your experience is loading!</p>
+          <div className="loading-bar-container">
+            <div
+              className="loading-bar"
+              style={{ width: `${progress}%` }}
+            ></div>
           </div>
-          <div className="loading-text-container">
-            <div className="loading-text typewriter">Delta XR</div>
-            <div className="loading-text">{Math.round(progress)}%</div>
-          </div>
-          <img
-            id="powered-by-loader"
-            src="logo.avif"
-            alt="Powered By Strategy Fox"
-            className="powered-by-loader"
-          />
         </div>
-        <div className="loading-line"></div>
-      </div> */}
+      )}
     </div>
   );
 };
