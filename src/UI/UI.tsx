@@ -64,7 +64,7 @@ const UI = () => {
     isInfoModalOpen, openInfoModal, closeInfoModal,
     discountCode, isDiscountModalOpen, closeDiscountModal,
     isSettingsModalOpen , openSettingsModal, closeSettingsModal,
-    isAudioPlaying,
+    isAudioPlaying,setSearchResult, startSearchGSAP,
     isTermsModalOpen,isContactModalOpen
   } = useComponentStore();
   const { activateDriver, deactivateDriver} = useDriverStore();
@@ -73,6 +73,8 @@ const UI = () => {
   const driverRef = useRef<Driver>(undefined);
   const audioPlayerRef = useRef<any>(null);
   const shouldMoveCamera = useRef(false);
+
+  const [positionInput, setPositionInput] = useState("");
   
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(
@@ -87,6 +89,22 @@ const UI = () => {
 
   const closeChatbotModal = () => {
     setChatbotOpen(false);
+  };
+
+  const handleEnterPosition = () => {
+    // Parse the position input
+    const [x, y, z] = positionInput.split(",").map((v) => parseFloat(v.trim()));
+
+    if (isNaN(x) || isNaN(y) || isNaN(z)) {
+      alert("Please enter a valid position in the format: x, y, z");
+      return;
+    }
+
+    // Update Zustand store with the position
+    setSearchResult({ x, y, z });
+    startSearchGSAP();
+    console.log("This",x,y,z);
+    setPositionInput(""); // Clear the input
   };
 
   useEffect(() => {
@@ -212,6 +230,19 @@ const UI = () => {
 
   return (
     <div className="ui-root">
+      <div style={{ padding: "20px" , pointerEvents: "auto"}}>
+        <h2>Enter Player Position</h2>
+        <input
+          type="text"
+          placeholder="Enter position as x, y, z"
+          value={positionInput}
+          onChange={(e) => setPositionInput(e.target.value)}
+          style={{ padding: "10px", width: "300px", marginRight: "10px" }}
+        />
+        <button onClick={handleEnterPosition} style={{ padding: "10px" }}>
+          Enter
+        </button>
+      </div>
       {crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
