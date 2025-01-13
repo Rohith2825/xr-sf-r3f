@@ -68,6 +68,7 @@ interface ProductResponse {
               }
             }[]
           },
+          tags:string[],
           metafields:{
             edges:{
               node:{
@@ -143,7 +144,8 @@ export const ProductService = {
         options: product.node.options,
         variants: productVariants,
         models: models,
-        arLensLink: arLensLink
+        arLensLink: arLensLink,
+        tags: product.node.tags.join(" "),
       };
 
       return parsedProduct;

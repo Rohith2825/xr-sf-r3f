@@ -151,7 +151,7 @@ export const Player = () => {
   const initialTourComplete = useRef(false);
   const { 
     isModalOpen, isCartOpen, isWishlistOpen, crosshairVisible ,
-    isInfoModalOpen , isDiscountModalOpen , isSettingsModalOpen , isTermsModalOpen , isContactModalOpen
+    isInfoModalOpen , isDiscountModalOpen , isSettingsModalOpen , isTermsModalOpen , isContactModalOpen , isProductSearcherOpen,
   } = useComponentStore();
 
   const { isTouchEnabled, enableTouch} = useTouchStore();
@@ -205,7 +205,7 @@ export const Player = () => {
   useEffect(() => {
     const handleTouchStart = (e) => {
       if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
-      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || !crosshairVisible) return; // Return if any one of the components is open
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || isProductSearcherOpen || !crosshairVisible) return; // Return if any one of the components is open
 
       if (e.target.closest("#joystickZone")) return;
 
@@ -229,7 +229,7 @@ export const Player = () => {
     const handleTouchMove = (e) => {
       //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
       if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
-      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || !crosshairVisible) return; // Return if any one of the components is open
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || isProductSearcherOpen || !crosshairVisible) return; // Return if any one of the components is open
 
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
@@ -257,7 +257,7 @@ export const Player = () => {
 
     const handleTouchEnd = (e) => {
       if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
-      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || !crosshairVisible) return; // Return if any one of the components is open
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen|| isProductSearcherOpen || !crosshairVisible) return; // Return if any one of the components is open
 
       const remainingTouches = Array.from(e.touches);
       if (
@@ -279,7 +279,7 @@ export const Player = () => {
       document.removeEventListener("touchmove", handleTouchMove);
       document.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [camera, isPortrait, isTouchEnabled, isModalOpen, isCartOpen, isWishlistOpen, isInfoModalOpen,isDiscountModalOpen,isSettingsModalOpen,isTermsModalOpen,isContactModalOpen,crosshairVisible]);
+  }, [camera, isPortrait, isTouchEnabled, isModalOpen, isCartOpen, isWishlistOpen, isInfoModalOpen,isDiscountModalOpen,isSettingsModalOpen,isTermsModalOpen,isContactModalOpen,crosshairVisible,isProductSearcherOpen]);
 
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
@@ -292,7 +292,7 @@ export const Player = () => {
     }
 
     // Only allow movement when no component is open
-    if (!isModalOpen && !isInfoModalOpen && !isCartOpen && !isWishlistOpen && !isDiscountModalOpen && !isSettingsModalOpen && !isTermsModalOpen && !isContactModalOpen && crosshairVisible) {
+    if (!isModalOpen && !isInfoModalOpen && !isCartOpen && !isWishlistOpen && !isDiscountModalOpen && !isSettingsModalOpen && !isTermsModalOpen && !isContactModalOpen && !isProductSearcherOpen && crosshairVisible) {
       const velocity = playerRef.current.linvel();
 
       // Combine joystick and keyboard inputs
