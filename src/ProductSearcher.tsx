@@ -63,7 +63,7 @@ const ProductSearcher = () => {
       <Box
         sx={{
           position: "absolute",
-          top: "2%",
+          top: { xs: "1%", sm: "1%", md: "1%", lg: "3%" },
           right: { xs: "20%", sm: "15%", md: "10%", lg: "10%" },
           display: "flex",
           flexDirection: "column",
