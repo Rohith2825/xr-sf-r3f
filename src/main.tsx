@@ -18,7 +18,6 @@ function CanvasWrapper() {
     try {
       const response = await ProductService.getAllProducts();
       setProducts(response);
-      
     } catch (err) {
       console.error(err);
     }

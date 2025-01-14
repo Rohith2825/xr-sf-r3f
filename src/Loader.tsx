@@ -1,5 +1,4 @@
-import { useRef } from "react";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./styles/loading-animation.css";
 
 interface LoadProps {
@@ -7,44 +6,52 @@ interface LoadProps {
 }
 
 const Load: React.FC<LoadProps> = ({ progress }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoCompleted, setIsVideoCompleted] = useState(false);
 
-  // Using useRef to store the previous progress value
-  const prevProgressRef = useRef(0);
+  useEffect(() => {
+    const video = videoRef.current;
 
-  // Ensure progress only increments
-  const displayProgress = Math.max(progress, prevProgressRef.current);
+    if (video) {
+      // Play the video on load
+      video.play();
 
-  // Update the reference for the next render
-  prevProgressRef.current = displayProgress;
+      // Event listener to detect when the video ends
+      const handleVideoEnd = () => {
+        setIsVideoCompleted(true); // Show loading overlay after video ends
+      };
 
+      video.addEventListener("ended", handleVideoEnd);
+
+      return () => {
+        video.removeEventListener("ended", handleVideoEnd); // Cleanup listener
+      };
+    }
+  }, []);
 
   return (
-    <div
-      className="loader-background"
-    >
-      <div className="loader-container-container">
-        <div className="loader-container" id="loaderContainer">
-          <div className="spinner">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
+    <div className="loader-background">
+      {/* Full-screen video */}
+      <video
+        ref={videoRef}
+        className="loader-video"
+        src="/media/Loading_video.MOV" // Replace with your video file path
+        muted
+        playsInline
+      ></video>
+
+      {/* Show loading message and bar only after video completes */}
+      {isVideoCompleted && (
+        <div className="loader-overlay">
+          <p className="loader-message">Your experience is loading!</p>
+          <div className="loading-bar-container">
+            <div
+              className="loading-bar"
+              style={{ width: `${progress}%` }}
+            ></div>
           </div>
-          <div className="loading-text-container">
-            <div className="loading-text typewriter">Delta XR</div>
-            <div className="loading-text">{Math.round(displayProgress)}%</div>
-          </div>
-          <img
-            id="powered-by-loader"
-            src="logo.avif"
-            alt="Powered By Strategy Fox"
-            className="powered-by-loader"
-          />
         </div>
-        <div className="loading-line"></div>
-      </div>
+      )}
     </div>
   );
 };
