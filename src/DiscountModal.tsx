@@ -3,6 +3,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close"; // Ensure you import the CloseIcon
 import Swal from "sweetalert2";
 import styles from "./UI/UI.module.scss";
+import confetti from "canvas-confetti";
 
 interface DiscountModalProps {
   isOpen: boolean;
@@ -28,6 +29,13 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
       navigator.clipboard
         .writeText(couponCode)
         .then(() => {
+          // Trigger confetti
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { x: 0.5, y: 0.5 }, // Center of the screen
+          });
+  
           Swal.fire({
             title: "Copied!",
             text: "Coupon code copied to clipboard",
@@ -41,7 +49,10 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
           });
         })
         .catch((err) => {
-          console.error("Clipboard API failed, falling back to execCommand: ", err);
+          console.error(
+            "Clipboard API failed, falling back to execCommand: ",
+            err
+          );
           fallbackCopyText(couponCode);
         });
     } else {
@@ -59,6 +70,14 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
     textarea.select();
     try {
       document.execCommand("copy");
+  
+      // Trigger confetti
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { x: 0.5, y: 0.5 },
+      });
+  
       Swal.fire({
         title: "Copied!",
         text: "Coupon code copied to clipboard",
