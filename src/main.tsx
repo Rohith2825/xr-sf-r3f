@@ -28,29 +28,11 @@ function CanvasWrapper() {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    const enterARMode = async () => {
-      try {
-        // Check if XR mode is supported
-        if (navigator.xr) {
-          const isSupported = await navigator.xr.isSessionSupported("immersive-vr");
-          console.log("XR: ",isSupported);
-          if (isSupported) {
-            // Automatically enter XR mode
-            store.enterAR();
-          }
-        }
-      } catch (err) {
-        console.error("Failed to enter XR mode:", err);
-      }
-    };
-
-    enterARMode();
-  }, []);
 
   return (
     <div id="container">
       {progress >= 100 && <UI />}
+      <button onClick={() => store.enterAR()}>Enter AR</button>
       <Canvas camera={{ fov: 45 }} shadows>
         <XR store={store}>
           <React.Suspense
