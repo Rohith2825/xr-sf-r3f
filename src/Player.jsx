@@ -43,9 +43,6 @@ export const Player = () => {
     translationOptions: {
       speed: 10, // Increase speed here
     },
-    rotationOptions: {
-      type: "smooth", // Smooth rotation
-    },
     translationControllerHand: "left", // Use the left controller for movement
   });
   const touchRef = useRef({
