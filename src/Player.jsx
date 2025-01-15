@@ -5,11 +5,11 @@ import { useRef, useState, useEffect } from "react";
 import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
-import { useXR, XROrigin } from "@react-three/xr";
+import { useXR, XROrigin , useXRControllerLocomotion } from "@react-three/xr";
 import gsap from "gsap";
 import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
 import { CameraController } from "./CameraController";
-import { ProductGSAPUtil }  from "./ProductGSAPUtil";
+import { ProductGSAPUtil } from "./ProductGSAPUtil";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -33,16 +33,21 @@ const START_POSITION = new THREE.Vector3(0, 7, -5);
 const combinedInput = new THREE.Vector3();
 const movementDirection = new THREE.Vector3();
 
-// Map thumbstick to WASD logic
-const thumbstickToWASD = (thumbstickX, thumbstickY) => {
-  frontVector.set(0, 0, thumbstickY);
-  sideVector.set(thumbstickX, 0, 0);
-  combinedInput.copy(frontVector).add(sideVector).normalize();
-};
 
 
 export const Player = () => {
   const playerRef = useRef();
+  const originRef = useRef(null); // Ref for XROrigin
+
+  useXRControllerLocomotion(originRef, {
+    translationOptions: {
+      speed: 10, // Increase speed here
+    },
+    rotationOptions: {
+      type: "smooth", // Smooth rotation
+    },
+    translationControllerHand: "left", // Use the left controller for movement
+  });
   const touchRef = useRef({
     cameraTouch: null,
     previousCameraTouch: null,
@@ -308,55 +313,7 @@ export const Player = () => {
       respawnPlayer();
     }
   
-    if (isPresenting) {
-      // VR movement using gamepad
-      const velocity = playerRef.current.linvel();
-      direction.set(0, 0, 0);
-  
-      xrInputSourcesRef.current.forEach((inputSource) => {
-        if (inputSource.gamepad) {
-          const thumbstickX = inputSource.gamepad.axes[2] ?? 0; // X-Axis of thumbstick
-          const thumbstickY = inputSource.gamepad.axes[3] ?? 0; // Y-Axis of thumbstick
-  
-          if (Math.abs(thumbstickX) > 0.1 || Math.abs(thumbstickY) > 0.1) {
-            // Translate thumbstick input into movement relative to the headset's orientation
-            const xrOrigin = state.gl.xr.getCamera().parent; // Get the XROrigin
-            if (xrOrigin) {
-              frontVector.set(0, 0, -thumbstickY); // Forward/Backward
-              sideVector.set(thumbstickX, 0, 0); // Left/Right
-  
-              combinedInput
-                .copy(frontVector)
-                .add(sideVector)
-                .normalize();
-  
-              movementDirection
-                .copy(combinedInput)
-                .applyQuaternion(xrOrigin.quaternion) // Apply headset's orientation
-                .normalize()
-                .multiplyScalar(MOVE_SPEED);
-  
-              direction.set(movementDirection.x, 0, movementDirection.z);
-            }
-          }
-  
-          // Handle jumping with gamepad button
-          if (inputSource.gamepad.buttons[0]?.pressed && canJump) {
-            doJump();
-            setCanJump(false);
-            setTimeout(() => setCanJump(true), 500);
-          }
-        }
-      });
-  
-      // Apply VR movement to the rigid body
-      playerRef.current.wakeUp();
-      playerRef.current.setLinvel({
-        x: direction.x,
-        y: velocity.y,
-        z: direction.z,
-      });
-    } else if (
+    if (
       !isModalOpen &&
       !isInfoModalOpen &&
       !isCartOpen &&
@@ -368,9 +325,9 @@ export const Player = () => {
       !isProductSearcherOpen &&
       crosshairVisible
     ) {
-      // Non-VR movement (keyboard)
       const velocity = playerRef.current.linvel();
   
+      // Movement logic for non-VR modes (keyboard-based)
       frontVector.set(0, 0, backward - forward);
       sideVector.set(right - left, 0, 0);
   
@@ -427,9 +384,7 @@ export const Player = () => {
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>
-      <XROrigin position={-1.5}/>
+      <XROrigin position={-1.5} ref= {originRef}/>
     </RigidBody>
   );
 };
-
-
