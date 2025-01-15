@@ -8,23 +8,28 @@ const Products = () => {
   const { products } = useComponentStore();
 
   // Map through mannequinData and find matching product by id
-  const filteredProducts = mannequinData.map((mannequin) => {
-    // Find the matching product by id
-    const product = products.find((product) => product.id === mannequin.id);
+  const filteredProducts =
+    products.length > 0
+      ? mannequinData.map((mannequin) => {
+          // Find the matching product by id
+          const product = products.find(
+            (product) => product.id === mannequin.id
+          );
 
-    // If a matching product is found, update modelPath with environmentModal
-    if (product) {
-      return {
-        ...mannequin,
-        modelPath: product.environmentModal || mannequin.modelPath, // Update modelPath with environmentModal
-        sale: product.sale || mannequin.sale, // Merge sale status
-      };
-    }
-    return mannequin; // If no match, return original mannequin data
-  });
+          // If a matching product is found, update modelPath with environmentModal
+          if (product) {
+            return {
+              ...mannequin,
+              modelPath: product.environmentModal || mannequin.modelPath, // Update modelPath with environmentModal
+              sale: product.sale || mannequin.sale, // Merge sale status
+            };
+          }
+          return mannequin; // If no match, return original mannequin data
+        })
+      : mannequinData; // If products array is empty, fallback to mannequinData
 
   console.log("Mannequin Data:", mannequinData);
-  console.log("Products Data from the response:", filteredProducts);
+  console.log("Filtered Products Data:", filteredProducts);
 
   return (
     <Suspense fallback={null}>

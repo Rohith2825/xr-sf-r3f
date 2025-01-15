@@ -14,12 +14,12 @@ const mannequinData = [
     scale: 1.2,
     sale: true,
   },
-  {
-    id: 9658662519077,
-    position: [6, -4, -77],
-    modelPath: "/models/inter_elem.glb",
-    scale: 1.2,
-  },
+  // {
+  //   id: 9658662519077,
+  //   position: [6, -4, -77],
+  //   modelPath: "/models/inter_elem.glb",
+  //   scale: 1.2,
+  // },
   {
     id: 9658662682917,
     position: [0, -4, -77],
@@ -43,6 +43,12 @@ const mannequinData = [
     position: [-6, -4, -77],
     modelPath: "/models/finalblack_suit.glb",
     scale: 0.3,
+  },
+  {
+    id: 9658662584613,
+    position: [6, -4, -77],
+    modelPath: "/models/finalblack_suit.glb",
+    scale: 1.2,
   },
   // { id: 9658662060325, position: [45.76, -11.05, 40.64], modelPath: "/models/final_girl.glb", scale: 0.25 },
   // { id: 9658662060325, position: [-21.19, -3, 7.86], modelPath: "/models/finalblack_suit.glb", scale: 0.3 },
