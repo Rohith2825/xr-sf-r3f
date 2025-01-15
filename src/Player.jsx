@@ -38,30 +38,21 @@ export const Player = () => {
   const playerRef = useRef();
   const originRef = useRef(null); // Ref for XROrigin
 
-    // Custom locomotion handler
-    const handleLocomotion = (movementInput, rotationInput) => {
-      if (originRef.current) {
-        // Scale movement input for VR locomotion
-        const scaledMovement = movementInput.clone().multiplyScalar(VR_MOVE_SCALE);
-        originRef.current.position.add(scaledMovement);
-  
-        // Apply rotation input
-        if (rotationInput) {
-          originRef.current.rotation.setFromQuaternion(rotationInput);
-        }
-      }
-    };
-
-    // Integrate XR locomotion
-  useXRControllerLocomotion(handleLocomotion);
+  useXRControllerLocomotion(originRef, {
+    translationOptions: {
+      speed: 10, // Increase speed here
+    },
+    rotationOptions: {
+      type: "smooth", // Smooth rotation
+    },
+    translationControllerHand: "left", // Use the left controller for movement
+  });
 
   const touchRef = useRef({
     cameraTouch: null,
     previousCameraTouch: null,
   });
-  // XR specific hooks
-  const { session, isPresenting } = useXR();
-  const xrInputSourcesRef = useRef([]);
+  
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
   const [isAnimating, setAnimating] = useState(false);
@@ -295,19 +286,6 @@ export const Player = () => {
     };
   }, [camera, isPortrait, isTouchEnabled, isModalOpen, isCartOpen, isWishlistOpen, isInfoModalOpen,isDiscountModalOpen,isSettingsModalOpen,isTermsModalOpen,isContactModalOpen,crosshairVisible,isProductSearcherOpen]);
 
-
-  useEffect(() => {
-    if (!session) return;
-
-    const onInputSourcesChange = (event) => {
-      xrInputSourcesRef.current = event.session.inputSources;
-    };
-
-    session.addEventListener('inputsourceschange', onInputSourcesChange);
-    return () => {
-      session.removeEventListener('inputsourceschange', onInputSourcesChange);
-    };
-  }, [session]);
 
 
   const combinedInput = new THREE.Vector3();
