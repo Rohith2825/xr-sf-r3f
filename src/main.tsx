@@ -10,7 +10,7 @@ import Load from "@/Loader.tsx";
 import { ProductService } from "./api/shopifyAPIService";
 import { useComponentStore } from "./stores/ZustandStores";
 
-const store = createXRStore();
+export const store = createXRStore();
 
 function CanvasWrapper() {
   const { setProducts } = useComponentStore();
@@ -32,7 +32,6 @@ function CanvasWrapper() {
   return (
     <div id="container">
       {progress >= 100 && <UI />}
-      <button onClick={() => store.enterVR()}>Enter AR</button>
       <Canvas camera={{ fov: 45 }} shadows>
         <XR store={store}>
           <React.Suspense

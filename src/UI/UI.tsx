@@ -16,6 +16,7 @@ import ContactUsModal from "@/ContactUsModal";
 import ReactAudioPlayer from "react-audio-player";
 import ModalWrapper from "@/ModalWrapper";
 import ProductSearcher from "@/ProductSearcher";
+import {store} from "@/main";
 
 
 const customDriverStyles = `
@@ -230,6 +231,7 @@ const UI = () => {
           src="/logo.avif"
           alt="Brand Logo"
           className={styles.brandLogo}
+          onClick={() => store.enterVR()}
         />
       </div>
 
