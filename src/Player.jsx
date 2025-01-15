@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
-import { useXR } from "@react-three/xr";
+import { useXR, XROrigin } from "@react-three/xr";
 import gsap from "gsap";
 import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
 import { CameraController } from "./CameraController";
@@ -29,6 +29,17 @@ const sideVector = new THREE.Vector3();
 
 const RESPAWN_HEIGHT = -5;
 const START_POSITION = new THREE.Vector3(0, 7, -5);
+
+const combinedInput = new THREE.Vector3();
+const movementDirection = new THREE.Vector3();
+
+// Map thumbstick to WASD logic
+const thumbstickToWASD = (thumbstickX, thumbstickY) => {
+  frontVector.set(0, 0, thumbstickY);
+  sideVector.set(thumbstickX, 0, 0);
+  combinedInput.copy(frontVector).add(sideVector).normalize();
+};
+
 
 export const Player = () => {
   const playerRef = useRef();
@@ -291,41 +302,44 @@ export const Player = () => {
   const movementDirection = new THREE.Vector3();
   useFrame((state) => {
     if (!playerRef.current || isAnimating) return;
-
+  
     const { y: playerY } = playerRef.current.translation();
     if (playerY < RESPAWN_HEIGHT) {
       respawnPlayer();
     }
-
+  
     if (isPresenting) {
-      // Handle VR/AR movement
+      // VR movement using gamepad
       const velocity = playerRef.current.linvel();
-      
-      // Reset movement vectors
       direction.set(0, 0, 0);
-
-      // Process XR input sources
-      xrInputSourcesRef.current.forEach(inputSource => {
+  
+      xrInputSourcesRef.current.forEach((inputSource) => {
         if (inputSource.gamepad) {
-          const [x, y] = inputSource.gamepad.axes;
-          
-          // Apply movement based on gamepad input
-          if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
-            // Get the controller's transform
-            const targetRaySpace = session.getReferenceSpace();
-            const pose = state.gl.xr.getFrame().getPose(inputSource.targetRaySpace, targetRaySpace);
-            
-            if (pose) {
-              // Convert gamepad movement to world space direction
-              const controllerRotation = new THREE.Quaternion().setFromRotationMatrix(
-                new THREE.Matrix4().fromArray(pose.transform.matrix)
-              );
-              
-              direction.set(x * MOVE_SPEED, 0, -y * MOVE_SPEED)
-                .applyQuaternion(controllerRotation);
+          const thumbstickX = inputSource.gamepad.axes[2] ?? 0; // X-Axis of thumbstick
+          const thumbstickY = inputSource.gamepad.axes[3] ?? 0; // Y-Axis of thumbstick
+  
+          if (Math.abs(thumbstickX) > 0.1 || Math.abs(thumbstickY) > 0.1) {
+            // Translate thumbstick input into movement relative to the headset's orientation
+            const xrOrigin = state.gl.xr.getCamera().parent; // Get the XROrigin
+            if (xrOrigin) {
+              frontVector.set(0, 0, -thumbstickY); // Forward/Backward
+              sideVector.set(thumbstickX, 0, 0); // Left/Right
+  
+              combinedInput
+                .copy(frontVector)
+                .add(sideVector)
+                .normalize();
+  
+              movementDirection
+                .copy(combinedInput)
+                .applyQuaternion(xrOrigin.quaternion) // Apply headset's orientation
+                .normalize()
+                .multiplyScalar(MOVE_SPEED);
+  
+              direction.set(movementDirection.x, 0, movementDirection.z);
             }
           }
-
+  
           // Handle jumping with gamepad button
           if (inputSource.gamepad.buttons[0]?.pressed && canJump) {
             doJump();
@@ -334,8 +348,8 @@ export const Player = () => {
           }
         }
       });
-
-      // Apply XR movement
+  
+      // Apply VR movement to the rigid body
       playerRef.current.wakeUp();
       playerRef.current.setLinvel({
         x: direction.x,
@@ -354,45 +368,37 @@ export const Player = () => {
       !isProductSearcherOpen &&
       crosshairVisible
     ) {
-      // Your existing non-VR movement code
+      // Non-VR movement (keyboard)
       const velocity = playerRef.current.linvel();
-
+  
       frontVector.set(0, 0, backward - forward);
       sideVector.set(right - left, 0, 0);
-
-      combinedInput
-        .copy(frontVector)
-        .add(sideVector)
-        .add(direction)
-        .normalize();
-
+  
+      combinedInput.copy(frontVector).add(sideVector).normalize();
+  
       movementDirection
         .copy(combinedInput)
-        .applyQuaternion(state.camera.quaternion) 
+        .applyQuaternion(state.camera.quaternion)
         .normalize()
         .multiplyScalar(MOVE_SPEED);
-
-    
+  
       playerRef.current.wakeUp();
       playerRef.current.setLinvel({
         x: movementDirection.x,
         y: velocity.y,
         z: movementDirection.z,
       });
-
+  
       if (jump && canJump) {
         doJump();
         setCanJump(false);
         setTimeout(() => setCanJump(true), 500);
       }
     }
-
-    // Camera updates - only in non-VR mode
-    if (!isPresenting) {
-      const { x, y, z } = playerRef.current.translation();
-      const lerpFactor = 0.05;
-      state.camera.position.lerp({ x, y, z }, lerpFactor);
-    }
+  
+    const { x, y, z } = playerRef.current.translation();
+    const lerpFactor = 0.05;
+    state.camera.position.lerp({ x, y, z }, lerpFactor);
   });
 
   const doJump = () => {
@@ -421,6 +427,7 @@ export const Player = () => {
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>
+      <XROrigin position={-1.5}/>
     </RigidBody>
   );
 };
