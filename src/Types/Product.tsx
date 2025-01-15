@@ -27,5 +27,6 @@ export default interface Product {
   position: number[] | undefined;
   sale: boolean | undefined;
   scale: number | undefined;
-  environmentModal: string | undefined;
+  environmentModalUrl: string | undefined;
+  environmentModal: boolean | undefined;
 }

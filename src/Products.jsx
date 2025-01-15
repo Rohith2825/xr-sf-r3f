@@ -7,26 +7,20 @@ const LazyMannequin = React.lazy(() => import("./Mannequin"));
 const Products = () => {
   const { products } = useComponentStore();
 
-  // Map through mannequinData and find matching product by id
-  const filteredProducts =
-    products.length > 0
-      ? mannequinData.map((mannequin) => {
-          // Find the matching product by id
-          const product = products.find(
-            (product) => product.id === mannequin.id
-          );
+  const isLoading = products.length === 0;
 
-          // If a matching product is found, update modelPath with environmentModal
-          if (product) {
-            return {
-              ...mannequin,
-              modelPath: product.environmentModal || mannequin.modelPath, // Update modelPath with environmentModal
-              sale: product.sale || mannequin.sale, // Merge sale status
-            };
-          }
-          return mannequin; // If no match, return original mannequin data
-        })
-      : mannequinData; // If products array is empty, fallback to mannequinData
+  // Filter products to include only those with environmentModal as true
+  const filteredProducts = isLoading
+    ? mannequinData
+    : products
+        .filter((product) => product.environmentModal === true) // Filter for products with environmentModal === true
+        .map((product) => ({
+          id: product.id,
+          position: product.position,
+          scale: product.scale,
+          sale: product.sale,
+          modelPath: product.environmentModalUrl, // Use environmentModalUrl for modelPath
+        }));
 
   console.log("Mannequin Data:", mannequinData);
   console.log("Filtered Products Data:", filteredProducts);
@@ -48,6 +42,11 @@ const Products = () => {
 };
 
 const ModelWrapper = ({ productId, modelPath, position, scale, sale }) => {
+  if (!modelPath) {
+    console.error(`Invalid modelPath for product ID: ${productId}`);
+    return null;
+  }
+
   const { scene } = useGLTFWithKTX2(modelPath);
 
   return scene ? (

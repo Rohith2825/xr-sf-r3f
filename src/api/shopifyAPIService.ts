@@ -168,7 +168,15 @@ export const ProductService = {
 
       const sale = saleString === "true";
 
-      const environmentModal = product.node.media.edges
+      const environmentModalString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "environmentmodal"
+      )?.node.value;
+
+      const environmentModal = environmentModalString === "true";
+
+      const environmentModalUrl = product.node.media.edges
         .filter(
           (edge) =>
             edge.node.mediaContentType === "MODEL_3D" &&
@@ -190,6 +198,7 @@ export const ProductService = {
         position: position,
         sale: sale,
         scale: scale,
+        environmentModalUrl: environmentModalUrl,
         environmentModal: environmentModal,
       };
 
