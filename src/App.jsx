@@ -72,7 +72,7 @@ export const App = () => {
 
   return (
     <>
-      {!isMobile && (
+      {!isMobile && false (
         <PointerLockControls
           onLock={pointerLockControlsLockHandler}
           onUnlock={pointerLockControlsUnlockHandler}
