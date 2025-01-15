@@ -4,15 +4,14 @@ function useWishlist() {
   const [wishlist, setWishlist] = useState(() => {
     const itemString = localStorage.getItem("wishlist");
     try {
-      return itemString ? JSON.parse(itemString) : []; // Use localStorage or an empty array
+      return itemString ? JSON.parse(itemString) : []; 
     } catch (error) {
       console.error("Error parsing wishlist from localStorage:", error);
-      return []; // Fallback to an empty array if parsing fails
+      return []; 
     }
   });
 
   useEffect(() => {
-    // Update local storage
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
 

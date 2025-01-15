@@ -7,7 +7,6 @@ import { styled } from "@mui/material/styles";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 
 const SettingsModal = () => {
-  // Handle click outside the modal
   const modalRef = useRef<HTMLDivElement>(null);
   const {
     closeSettingsModal,
@@ -123,9 +122,9 @@ const SettingsModal = () => {
           },
           backgroundColor: "rgba(0, 0, 0, 0.8)",
           backdropFilter: "blur(10px)",
-          boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
+          boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", 
           borderRadius: { xs: "10px", md: "25px" },
-          border: "1px solid rgba(255, 255, 255, 0.2)", // Border
+          border: "1px solid rgba(255, 255, 255, 0.2)",
           padding: 2,
         }}
       >

@@ -14,32 +14,21 @@ const DraggableMannequin = ({
   modelPath,
   onClick,
   model,
-  sale = false, // New sale prop
+  sale = false, 
 }) => {
   const { openModal, setSelectedProduct, products, setProducts } = useComponentStore();
 
-  //console.log("Position prop in DraggableMannequin:", position);
 
-  // const findProductById = (id) => {
-  //   return products.find(
-  //     (product) => product.node.id === `gid://shopify/Product/${id}`
-  //   );
-  // };
-
-  // Memoize scale
   const computedScale = useMemo(() => {
     return typeof scale === "number" ? [scale, scale, scale] : scale;
   }, [scale]);
 
-  // Memoize rotation
   const computedRotation = useMemo(() => {
     return rotation.map((deg) => (deg * Math.PI) / 180);
   }, [rotation]);
 
-  // Memoize the model.scene
   const memoizedModelScene = useMemo(() => model.scene, [model.scene]);
 
-  // Adjusted position for the SALE text (increase y by 2)
   const saleTextPosition = useMemo(() => {
     const [x, y, z] = position;
     return [x, y + 2.5, z];
@@ -93,14 +82,14 @@ const DraggableMannequin = ({
           receiveShadow
         />
 
-        {/* Conditionally render the SALE text */}
+        
         {sale && (
           <Billboard
             follow={true}
             position={saleTextPosition}
             lockX={false}
             lockY={false}
-            lockZ={false} // Lock the rotation on the z axis (default=false)
+            lockZ={false} 
           >
             <Image url="/icons/Sale.png" transparent scale={[0.75, 0.25]} />
           </Billboard>

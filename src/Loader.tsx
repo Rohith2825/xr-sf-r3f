@@ -3,18 +3,15 @@ import React from "react";
 import "./styles/loading-animation.css";
 
 interface LoadProps {
-  progress: number; // Progress as a percentage
+  progress: number; 
 }
 
 const Load: React.FC<LoadProps> = ({ progress }) => {
 
-  // Using useRef to store the previous progress value
   const prevProgressRef = useRef(0);
 
-  // Ensure progress only increments
   const displayProgress = Math.max(progress, prevProgressRef.current);
 
-  // Update the reference for the next render
   prevProgressRef.current = displayProgress;
 
 

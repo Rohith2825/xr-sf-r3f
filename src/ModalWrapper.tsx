@@ -22,13 +22,11 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
       isTermsModalOpen ||
       isContactModalOpen;
 
-    // Handle joystick visibility and body styles when any modal is open
     if (isAnyModalOpen) {
       if (joystickZone) {
         joystickZone.style.display = "none";
       }
 
-      // Lock body scroll
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
@@ -36,9 +34,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({ children }) => {
       document.body.style.touchAction = "none";
     }
 
-    // Cleanup function
     return () => {
-      // Only show joystick and restore body styles if ALL modals are closed
       
         if (joystickZone) {
           joystickZone.style.display = "block";

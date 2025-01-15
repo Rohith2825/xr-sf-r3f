@@ -38,7 +38,7 @@ const Cart = () => {
   }, []);
 
   const handleCheckout = () => {
-    if ((lines?.length || 0) <= 0) {// Cart empty
+    if ((lines?.length || 0) <= 0) {
       Swal.fire({
         title: "Cart is Empty!",
         text: "Add products to cart before proceeding to the checkout",
@@ -84,7 +84,7 @@ const Cart = () => {
   };
 
   const emptyCart = () => {
-    if ((lines?.length || 0) > 0) { // Cart not empty
+    if ((lines?.length || 0) > 0) { 
       Swal.fire({
         title: `Empty the Cart?`,
         text: "This action is permanent. You cannot recover the cart items once deleted.",
@@ -110,7 +110,7 @@ const Cart = () => {
         }
       });
     }
-    else { // Cart empty
+    else { 
       Swal.fire({
         title: `Cart is Empty`,
         icon: "warning",
@@ -123,7 +123,6 @@ const Cart = () => {
     }
   }
 
-  // Handle Click outside the cart
   const cartRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const cart = cartRef.current;
@@ -144,11 +143,11 @@ const Cart = () => {
       <Card
         ref={cartRef}
         sx={{
-          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "95vw", md: "70vw" },height: { xs: "75vh", sm: "80vh", md: "75vh" },// Size
-          backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
-          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
+          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", 
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", 
+          width: { xs: "95vw", md: "70vw" },height: { xs: "75vh", sm: "80vh", md: "75vh" },
+          backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", 
+          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", 
           overflow: "none"
         }}
         className="Cart"

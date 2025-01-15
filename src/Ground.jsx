@@ -5,7 +5,6 @@ import { useGLTFWithKTX2 } from './useGTLFwithKTX';
 export function Ground() {
   const { nodes, materials } = useGLTFWithKTX2('/Castle4.glb');
 
-  // Memoize nodes and materials to avoid unnecessary recalculations
   const memoizedNodes = useMemo(() => nodes, [nodes]);
   const memoizedMaterials = useMemo(() => materials, [materials]);
 
@@ -42,4 +41,3 @@ export function Ground() {
 }
 
 
-// useGLTF.preload('/Castle4.glb');

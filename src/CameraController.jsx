@@ -17,7 +17,7 @@ export const CameraController = ({ setAnimating, playerRef }) => {
         z: -64
       };
 
-      // Create a timeline for sequential animations
+      
       const timeline = gsap.timeline({
         onComplete: () => {
           if (playerRef.current) {
@@ -31,7 +31,7 @@ export const CameraController = ({ setAnimating, playerRef }) => {
         }
       });
 
-      // First reset rotation
+    
       timeline.to(camera.rotation, {
         x: 0,
         y: 0,
@@ -40,7 +40,7 @@ export const CameraController = ({ setAnimating, playerRef }) => {
         ease: "power2.inOut"
       });
 
-      // Then move to target position
+
       timeline.to(camera.position, {
         x: targetPosition.x,
         y: targetPosition.y,

@@ -37,7 +37,6 @@ export const App = () => {
   const { driverActive } = useDriverStore();
   const { isTouchEnabled } = useTouchStore();
 
-  // Detect mobile devices
   useEffect(() => {
     setIsMobile(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
   }, []);
@@ -73,7 +72,6 @@ export const App = () => {
 
   return (
     <>
-      {/* Conditionally render PointerLockControls */}
       {!isMobile && (
         <PointerLockControls
           onLock={pointerLockControlsLockHandler}
@@ -115,8 +113,8 @@ export const App = () => {
         /> */}
         <BrandPoster
           imageUrl="https://th.bing.com/th/id/OIP.SNik-SOwvsExn4HNF47l2gHaEK?rs=1&pid=ImgDetMain"
-          width={192 * 4} // Width in pixels
-          height={108 * 4} // Height in pixels
+          width={192 * 4} 
+          height={108 * 4} 
           position={[-2.2, 3.2, -55.35]}
           rotation={[0, 90, 1]}
         />

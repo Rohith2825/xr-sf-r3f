@@ -5,36 +5,31 @@ import * as THREE from "three";
 const Skybox = () => {
   const { scene } = useThree();
 
-  // Use useMemo to cache the texture
   const texture = useMemo(() => {
     const loader = new THREE.CubeTextureLoader();
-    // Optional: Add loading manager for progress tracking
-    const loadingManager = new THREE.LoadingManager();
     loader.setPath("/textures/skybox/");
 
     return loader.load(
       [
-        "px.webp", // right
-        "nx.webp", // left
-        "py.webp", // up
-        "ny.webp", // down
-        "pz.webp", // front
-        "nz.webp", // back
+        "px.webp", 
+        "nx.webp", 
+        "py.webp", 
+        "ny.webp", 
+        "pz.webp", 
+        "nz.webp", 
       ],
-      undefined, // onLoad callback
-      undefined, // onProgress callback
+      undefined, 
+      undefined,
       (error) => {
         console.error("Error loading skybox:", error);
       }
     );
   }, []);
 
-  // Set up and cleanup using useEffect
   useEffect(() => {
     const originalBackground = scene.background;
     scene.background = texture;
 
-    // Cleanup when component unmounts
     return () => {
       scene.background = originalBackground;
       texture.dispose();

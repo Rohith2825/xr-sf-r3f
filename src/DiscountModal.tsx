@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { Box, Card, CardContent, Typography } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close"; // Ensure you import the CloseIcon
+import CloseIcon from "@mui/icons-material/Close"; 
 import Swal from "sweetalert2";
 import styles from "./UI/UI.module.scss";
 import confetti from "canvas-confetti";
@@ -12,7 +12,7 @@ interface DiscountModalProps {
 }
 
 const DiscountModal: React.FC<DiscountModalProps> = (props) => {
-  const containerRef = useRef(null); // Reference to the wrapper
+  const containerRef = useRef(null); 
   const modalRef = useRef<HTMLDivElement>(null);
 
   const handleClose = () => {
@@ -29,11 +29,11 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
       navigator.clipboard
         .writeText(couponCode)
         .then(() => {
-          // Trigger confetti
+        
           confetti({
             particleCount: 100,
             spread: 70,
-            origin: { x: 0.5, y: 0.5 }, // Center of the screen
+            origin: { x: 0.5, y: 0.5 }, 
           });
   
           Swal.fire({
@@ -56,7 +56,6 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
           fallbackCopyText(couponCode);
         });
     } else {
-      // Fallback for unsupported browsers
       fallbackCopyText(couponCode);
     }
   };
@@ -65,13 +64,13 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
     const textarea = document.createElement("textarea");
     textarea.value = text;
     textarea.style.position = "absolute";
-    textarea.style.left = "-9999px"; // Make it invisible
+    textarea.style.left = "-9999px"; 
     document.body.appendChild(textarea);
     textarea.select();
     try {
       document.execCommand("copy");
   
-      // Trigger confetti
+  
       confetti({
         particleCount: 100,
         spread: 70,
@@ -99,16 +98,16 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
 
   useEffect(() => {
     if (props.isOpen) {
-      // Save current scroll position
+    
       const scrollY = window.scrollY;
       const joystickZone = document.getElementById("joystickZone");
 
-      // Handle joystick visibility
+      
       if (joystickZone) {
         joystickZone.style.display = "none";
       }
 
-      // Add styles to prevent scrolling
+    
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
@@ -116,12 +115,12 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
       document.body.style.touchAction = "none";
 
       return () => {
-        // Show joystick
+      
         if (joystickZone) {
           joystickZone.style.display = "block";
         }
 
-        // Remove styles and restore scroll position
+    
         document.body.style.position = "";
         document.body.style.top = "";
         document.body.style.width = "";
@@ -141,7 +140,7 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
       }}
     >
       <Box
-        ref={containerRef} // Attach ref to the container
+        ref={containerRef} 
         sx={{
           position: "fixed",
           top: 0,
@@ -158,14 +157,14 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
         <Card
           ref={modalRef}
           sx={{
-            position: "relative", // Needed for positioning the CloseIcon
+            position: "relative",
             gap: "10px",
-            backgroundColor: "rgba(0, 0, 0, 0.75)", // Semi-transparent white
-            backdropFilter: "blur(5px)", // Blur effect for glass morphism
+            backgroundColor: "rgba(0, 0, 0, 0.75)", 
+            backdropFilter: "blur(5px)", 
             borderRadius: { xs: "10px", md: "25px" },
             padding: 2,
-            boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Subtle shadow
-            border: "1px solid rgba(255, 255, 255, 0.2)", // Optional border
+            boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", 
+            border: "1px solid rgba(255, 255, 255, 0.2)", 
             zIndex: 999,
           }}
         >

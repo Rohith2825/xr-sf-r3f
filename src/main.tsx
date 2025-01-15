@@ -13,7 +13,6 @@ function CanvasWrapper() {
   const { setProducts } = useComponentStore();
   const { progress } = useProgress();
 
-  // Fetch products from shopify store
   async function fetchProducts() {
     try {
       const response = await ProductService.getAllProducts();

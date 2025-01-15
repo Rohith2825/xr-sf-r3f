@@ -51,7 +51,7 @@ const Wishlist = () => {
   }, []);
 
   const deleteWishlist = () => {
-    if (wishlist.length > 0) { // Wishlist not empty
+    if (wishlist.length > 0) { 
       Swal.fire({
         title: `Clear your Wishlist?`,
         text: "This action is permanent. You cannot recover the wishlist items once deleted.",
@@ -88,11 +88,11 @@ const Wishlist = () => {
       <Card
         ref={wishlistRef}
         sx={{
-          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "95vw", md: "60vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, // Size
-          backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
-          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
+          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", 
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", 
+          width: { xs: "95vw", md: "60vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, 
+          backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", 
+          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", 
           overflow: "none"
         }}
         className="Wishlist"

@@ -12,8 +12,7 @@ export default function BrandPoster({
   const texture = useLoader(TextureLoader, imageUrl);
   const { viewport } = useThree();
 
-  // Convert pixels to Three.js units
-  // By default, 1 Three.js unit = 100 pixels
+  
   const pixelsToUnits = (pixels) => pixels / 100;
   
   const widthInUnits = pixelsToUnits(width);
@@ -22,7 +21,7 @@ export default function BrandPoster({
   return (
     <group
       position={position}
-      rotation={rotation.map((r) => r * (Math.PI / 180))} // Convert degrees to radians
+      rotation={rotation.map((r) => r * (Math.PI / 180))} 
     >
       <mesh>
         <planeGeometry args={[widthInUnits, heightInUnits]} />

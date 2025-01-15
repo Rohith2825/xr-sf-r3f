@@ -13,9 +13,9 @@ interface ComponentStore {
   setProducts: (products: Product[]) => void;
   setSelectedProduct: (productId: number) => void;
 
-  // Search Handling (NEW)
-  searchResult: { x: number; y: number; z: number } | null; // Target position
-  initiateSearchGSAP: boolean; // Trigger GSAP animation
+  // Search Handling 
+  searchResult: { x: number; y: number; z: number } | null; 
+  initiateSearchGSAP: boolean; 
   setSearchResult: (position: { x: number; y: number; z: number }) => void;
   startSearchGSAP: () => void;
   resetSearchGSAP: () => void;
@@ -88,7 +88,7 @@ const useComponentStore = create<ComponentStore>((set) => ({
       return { ...state, selectedProduct: finalProduct };
     }),
 
-  // Search Handling (NEW)
+  // Search Handling 
   searchResult: null,
   initiateSearchGSAP: false,
   setSearchResult: (position: { x: number; y: number; z: number }) =>

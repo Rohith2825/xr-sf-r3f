@@ -51,13 +51,12 @@ const customDriverStyles = `
 `;
 
 const shopifyConfig = {
-  storeDomain: "gsv01y-gx.myshopify.com", // Replace with your Shopify store domain
+  storeDomain: "gsv01y-gx.myshopify.com", 
   storefrontToken: "b148c0911287ca8a6f23a6d7bab23110",
   storefrontApiVersion: "2024-10",
 };
 
 const UI = () => {
-  // Zustand store for handling different components
   const {
     crosshairVisible, hideCrosshair,
     isModalOpen, closeModal,
@@ -77,7 +76,6 @@ const UI = () => {
   const audioPlayerRef = useRef<any>(null);
   const shouldMoveCamera = useRef(false);
 
-  // const [positionInput, setPositionInput] = useState("");
   
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(
@@ -94,21 +92,6 @@ const UI = () => {
     setChatbotOpen(false);
   };
 
-  // const handleEnterPosition = () => {
-  //   // Parse the position input
-  //   const [x, y, z] = positionInput.split(",").map((v) => parseFloat(v.trim()));
-
-  //   if (isNaN(x) || isNaN(y) || isNaN(z)) {
-  //     alert("Please enter a valid position in the format: x, y, z");
-  //     return;
-  //   }
-
-  //   // Update Zustand store with the position
-  //   setSearchResult({ x, y, z });
-  //   startSearchGSAP();
-  //   console.log("This",x,y,z);
-  //   setPositionInput(""); // Clear the input
-  // };
 
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -116,7 +99,6 @@ const UI = () => {
     styleSheet.innerText = customDriverStyles;
     document.head.appendChild(styleSheet);
 
-    //Initialize the driver instance and assign to ref
     driverRef.current = driver({
       showProgress: true,
       steps: [
@@ -137,8 +119,7 @@ const UI = () => {
             description: "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
           },
           onHighlightStarted: () => {
-            // Custom logic to handle the camera movement
-            shouldMoveCamera.current = true; // Trigger camera movement
+            shouldMoveCamera.current = true; 
             setTourComplete(true);
           },
         },
@@ -194,7 +175,7 @@ const UI = () => {
 
 
   const startTour = () => {
-    // Close any open modals before starting the tour
+
     if (isModalOpen) closeModal();
     if (isCartOpen) closeCart();
     if (isWishlistOpen) closeWishlist();
@@ -204,15 +185,15 @@ const UI = () => {
     if (isSettingsModalOpen) closeSettingsModal();
     if (isProductSearcherOpen) closeProductSearcher();
 
-    // Start the tour and update the Zustand state
+ 
     if (driverRef.current) {
       driverRef.current.drive();
-      activateDriver(); // Set Zustand state to active
+      activateDriver(); 
     }
   };
 
   useEffect(() => {
-    // Listen for driver active state changes and update Zustand
+
     let lastState = driverRef.current?.isActive();
     const checkDriverState = () => {
       const currentState = driverRef.current?.isActive();
@@ -226,7 +207,6 @@ const UI = () => {
       }
     };
 
-    // Poll the state of the driver
     const interval = setInterval(checkDriverState, 100);
 
     return () => clearInterval(interval);
@@ -234,19 +214,6 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {/* <div style={{ padding: "20px" , pointerEvents: "auto"}}>
-        <h2>Enter Player Position</h2>
-        <input
-          type="text"
-          placeholder="Enter position as x, y, z"
-          value={positionInput}
-          onChange={(e) => setPositionInput(e.target.value)}
-          style={{ padding: "10px", width: "300px", marginRight: "10px" }}
-        />
-        <button onClick={handleEnterPosition} style={{ padding: "10px" }}>
-          Enter
-        </button>
-      </div> */}
       {crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
@@ -254,11 +221,10 @@ const UI = () => {
         <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
         <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
         <img src="/icons/Settings.svg"  alt="Settings" className={styles.icon} onClick={openSettingsModal} />
-        {/* <img src="/icons/Info.svg" alt="Info" className={styles.icon} onClick={openInfoModal} /> */}
         <img src="/icons/Help.svg" alt="Help" className={styles.icon} onClick={startTour}/>
       </div>
 
-      {/* Brand logo on bottom-left */}
+  
       <div className={styles.brandLogoContainer}>
         <img
           src="/logo.avif"
@@ -267,7 +233,7 @@ const UI = () => {
         />
       </div>
 
-      {/* Chat logo on bottom-right */}
+    
       <div className={styles.chatLogoContainer}>
         <img
           src="/icons/Chatbot.svg"
@@ -323,7 +289,7 @@ const UI = () => {
       </div>
       <ReactAudioPlayer
           ref={audioPlayerRef}
-          src="/media/Soundtrack.mp3" // Replace with your audio file URL
+          src="/media/Soundtrack.mp3" 
           autoPlay={false}
           loop
       />

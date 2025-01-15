@@ -30,7 +30,7 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
       },
     });
 
-    // Reset camera rotation first
+    
     timeline.to(camera.rotation, {
       x: 0,
       y: 0,
@@ -39,7 +39,7 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
       ease: "power2.inOut",
     });
 
-    // Then move camera to new position
+  
     timeline.to(camera.position, {
       x: targetPosition.x,
       y: targetPosition.y ,

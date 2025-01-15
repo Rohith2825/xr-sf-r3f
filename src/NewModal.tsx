@@ -16,22 +16,22 @@ const client = Client.buildClient({
 });
 
 const Modal = () => {
-  const containerRef = useRef(null); // Reference to the wrapper
-  const modelViewerElement = useRef(null); // Reference to the <model-viewer> element
-  const [arSupported, setArSupported] = useState(false); // Ref for the native <model-viewer> element
+  const containerRef = useRef(null); 
+  const modelViewerElement = useRef(null); 
+  const [arSupported, setArSupported] = useState(false); 
 
   useEffect(() => {
     const observeModelViewer = () => {
       const observer = new MutationObserver(() => {
         const element = containerRef.current?.querySelector("model-viewer");
         if (element) {
-          modelViewerElement.current = element; // Store reference
+          modelViewerElement.current = element; 
           console.log("Found <model-viewer> element:", element);
 
           if (element.activateAR) {
-            setArSupported(true); // AR is supported
+            setArSupported(true); 
           }
-          observer.disconnect(); // Stop observing once found
+          observer.disconnect(); 
         }
       });
 
@@ -57,25 +57,22 @@ const Modal = () => {
   );
   const [isIosChrome, setIsIosChrome] = useState(false);
 
-  // Wishlist Hooks
   const { wishlist, addItemsToWishlist, removeItemsFromWishlist } = useWishlist();
 
-  // Set the initial variant
   const [selectedVariant, setSelectedVariant] = useState<Variant>();
   useEffect(() => {
     selectedProduct && setSelectedVariant(selectedProduct.variants.find((variant) => variant.availableForSale));
   }, [selectedProduct]);
 
-  // Quantity
   const [quantity, setQuantity] = useState<number>(1);
-  useEffect(() => {//Whenever variant changes
+  useEffect(() => {
     setQuantity(1);
   }, [selectedVariant, setQuantity]);
 
 
   const handleBuyNow = async () => {
     try {
-      // Show loading state first
+      
       Swal.fire({
         title: "Starting Checkout",
         text: "Preparing your order...",
@@ -97,7 +94,7 @@ const Modal = () => {
         }]
       );
   
-      // Create an anchor tag instead of a form
+      
       const checkoutLink = document.createElement('a');
       checkoutLink.href = updatedCheckout.webUrl;
       checkoutLink.target = '_blank';
@@ -105,7 +102,7 @@ const Modal = () => {
       checkoutLink.style.display = 'none';
       document.body.appendChild(checkoutLink);
   
-      // Update to success message
+   
       Swal.fire({
         title: "Order Ready",
         text: "Click 'Proceed' to continue to checkout in a new window",
@@ -121,7 +118,7 @@ const Modal = () => {
         },
       }).then((result) => {
         if (result.isConfirmed) {
-          // Simulate a natural click event
+         
           const clickEvent = new MouseEvent('click', {
             view: window,
             bubbles: true,
@@ -129,7 +126,7 @@ const Modal = () => {
           });
           checkoutLink.dispatchEvent(clickEvent);
           
-          // Remove the link element after click
+          
           setTimeout(() => {
             document.body.removeChild(checkoutLink);
           }, 100);
@@ -152,7 +149,7 @@ const Modal = () => {
   };
 
 
-  // Media type photo or model
+  
   const PHOTOS = "Photos";
   const MODEL = "3D Model";
   const [mediaType, setMediaType] = useState(PHOTOS);
@@ -188,7 +185,7 @@ const Modal = () => {
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
     const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-    const isChrome = /CriOS/.test(userAgent); // Chrome on iOS
+    const isChrome = /CriOS/.test(userAgent); 
   
     if (isIOS && isChrome) {
       setIsIosChrome(true);
@@ -196,18 +193,18 @@ const Modal = () => {
   }, []);
   
   const handleViewInAR = async () => {
-    // If the current media type is not the model, switch to it first
-    if (mediaType !== MODEL) {
-      setMediaType(MODEL); // Switch to 3D View
   
-      // Wait for the <model-viewer> element to render and be observed
+    if (mediaType !== MODEL) {
+      setMediaType(MODEL); 
+  
+
       await new Promise((resolve) => {
         const observer = new MutationObserver(() => {
           const element = containerRef.current?.querySelector("model-viewer");
           if (element) {
-            modelViewerElement.current = element; // Store reference
-            resolve(); // Resolve the promise
-            observer.disconnect(); // Stop observing once found
+            modelViewerElement.current = element; 
+            resolve(); 
+            observer.disconnect(); 
           }
         });
   
@@ -217,7 +214,7 @@ const Modal = () => {
       });
     }
   
-    // Trigger the AR viewer after ensuring the <model-viewer> is available
+    
     if (modelViewerElement.current?.activateAR) {
       modelViewerElement.current.activateAR();
       console.log("AR support exists");
@@ -229,7 +226,7 @@ const Modal = () => {
 
     const handleARTryOn = () => {
       if (selectedProduct && selectedProduct.arLensLink) {
-        // Create a hidden anchor tag
+   
         const arLink = document.createElement('a');
         arLink.href = selectedProduct.arLensLink;
         arLink.target = '_blank';
@@ -237,7 +234,7 @@ const Modal = () => {
         arLink.style.display = 'none';
         document.body.appendChild(arLink);
     
-        // Show loading/confirmation dialog
+       
         Swal.fire({
           title: "Opening AR Try-On",
           text: "Click 'Continue' to open AR experience in a new window",
@@ -253,7 +250,7 @@ const Modal = () => {
           },
         }).then((result) => {
           if (result.isConfirmed) {
-            // Simulate a natural click event
+            
             const clickEvent = new MouseEvent('click', {
               view: window,
               bubbles: true,
@@ -261,7 +258,7 @@ const Modal = () => {
             });
             arLink.dispatchEvent(clickEvent);
             
-            // Clean up by removing the link element
+          
             setTimeout(() => {
               document.body.removeChild(arLink);
             }, 100);
@@ -270,7 +267,7 @@ const Modal = () => {
       }
     };
 
-  // Handle click outside the modal
+
   const modalRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
     const modal = modalRef.current;
@@ -512,16 +509,16 @@ const Modal = () => {
               width: "100%",
             }}
             data={modelData}
-            ar={true} // Enable AR
-            arModes="scene-viewer webxr quick-look" // AR modes for Android and iOS
-            arScale="auto" // Automatically scale the model in AR
-            iosSrc={iosSrc} // Link to the .usdz file for iOS
-            cameraControls={true} // Enable camera controls
-            environmentImage="neutral" // Optional: Environment image for lighting
-            poster="" // Optional: Poster image for loading
-            alt="A 3D model of a product" // Accessibility text
-            onArStatus={(event: unknown) => console.log("AR Status:", event)} // Optional: Log AR status
-            onLoad={() => console.log("Model loaded")} // Optional: Log modelloading
+            ar={true} 
+            arModes="scene-viewer webxr quick-look" 
+            arScale="auto" 
+            iosSrc={iosSrc} 
+            cameraControls={true} 
+            environmentImage="neutral" 
+            poster="" 
+            alt="A 3D model of a product"
+            onArStatus={(event: unknown) => console.log("AR Status:", event)} 
+            onLoad={() => console.log("Model loaded")} 
           />
         </Box>
       );
@@ -646,7 +643,7 @@ const Modal = () => {
 
     const VariantSelector = () => {
       const handleVariantSelection = (optionName: string, optionValue: string) => {
-        // Find the position of selected option in options
+
         const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
         if (selectedVariant && selectedProduct) {
           setSelectedVariant(
@@ -661,10 +658,10 @@ const Modal = () => {
       }
 
       const findIfVariantExists = (optionName: string, optionValue: string) => {
-        // Find the position of option in options
+
         const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
 
-        // Check if all the previous option combination exists with the current option
+        
         if (selectedVariant && selectedProduct) {
           return selectedProduct.variants.find((variant) => {
             for (let i = 0; i < num; i++) {
@@ -822,7 +819,7 @@ const Modal = () => {
       );
     };
 
-    // Description
+   
     const sanitizedHtml = DOMPurify.sanitize(selectedProduct?.description || "")
 
     return (
@@ -980,11 +977,11 @@ const Modal = () => {
       <Card
         ref={modalRef}
         sx={{
-          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", // Center the Cart
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", // Flex display
-          width: { xs: "90vw", md: "70vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, // Size
-          backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", // Background Effects
-          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", // Border
+          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", 
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", 
+          width: { xs: "90vw", md: "70vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, 
+          backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", 
+          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", 
           overflow: "none", paddingTop: {xs: 0, md: "5%"}, paddingBottom: {xs: 0, md: "2%"}, boxSizing: "border-box"
 
         }}

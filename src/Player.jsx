@@ -13,12 +13,12 @@ import { ProductGSAPUtil }  from "./ProductGSAPUtil";
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
   PORTRAIT: {
-    x: 0.004, // Reduced horizontal sensitivity in landscape
-    y: 0.004, // Reduced vertical sensitivity in portrait
+    x: 0.004, 
+    y: 0.004, 
   },
   LANDSCAPE: {
-    x: 0.004, // Reduced horizontal sensitivity in landscape
-    y: 0.004, // Increased vertical sensitivity in landscape
+    x: 0.004, 
+    y: 0.004, 
   },
 };
 
@@ -66,48 +66,43 @@ export const Player = () => {
   useEffect(() => {
     if (!isMobile) return;
 
-    // Initialize the joystick
     const joystickZone = document.createElement("div");
     joystickZone.id = "joystickZone";
     joystickZone.style.position = "absolute";
-    joystickZone.style.bottom = "15vh"; // Adjust for visibility
-    joystickZone.style.left = "13vw"; // Adjust for visibility
+    joystickZone.style.bottom = "15vh"; 
+    joystickZone.style.left = "13vw"; 
     joystickZone.style.width = "150px";
     joystickZone.style.height = "150px";
-    joystickZone.style.zIndex = "3"; //Higher than UI wafer z index = 2
-    joystickZone.style.pointerEvents = "all"; // Ensure interactions are captured
+    joystickZone.style.zIndex = "3"; 
+    joystickZone.style.pointerEvents = "all"; 
     document.body.appendChild(joystickZone);
 
-    const JOYSTICK_SIZE = 130; // pixels
+    const JOYSTICK_SIZE = 130; 
     const PORTRAIT_MARGIN = {
-      bottom: 70, // pixels from edge
+      bottom: 70, 
       left: 80,
     };
     const LANDSCAPE_MARGIN = {
-      bottom: 80, // smaller bottom margin for landscape
-      left: 120, // larger left margin for landscape
+      bottom: 80, 
+      left: 120, 
     };
 
-    // Function to calculate position based on screen size and orientation
     const calculatePosition = () => {
-      // Get current viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
-      // Determine if we're in landscape mode
       const isLandscape = viewportWidth > viewportHeight;
 
-      // Use different margins based on orientation
       const margins = isLandscape ? LANDSCAPE_MARGIN : PORTRAIT_MARGIN;
 
-      // Calculate position with orientation-specific adjustments
+
       const bottom = isLandscape
-        ? Math.min(margins.bottom, viewportHeight * 0.45) // 15% in landscape
-        : Math.min(margins.bottom, viewportHeight * 0.01); // 10% in portrait
+        ? Math.min(margins.bottom, viewportHeight * 0.45) 
+        : Math.min(margins.bottom, viewportHeight * 0.01); 
 
       const left = isLandscape
-        ? Math.min(margins.left, viewportWidth * 0.08) // 8% in landscape
-        : Math.min(margins.left, viewportWidth * 0.12); // 12% in portrait
+        ? Math.min(margins.left, viewportWidth * 0.08) 
+        : Math.min(margins.left, viewportWidth * 0.12); 
 
       return {
         bottom: `${bottom}px`,
@@ -119,7 +114,6 @@ export const Player = () => {
       zone: joystickZone,
       size: JOYSTICK_SIZE,
       mode: "static",
-      // position: { bottom: "10vh", left: "12vw" },
       position: calculatePosition(),
       color: "black",
       dynamicPage: true,
@@ -129,7 +123,7 @@ export const Player = () => {
       if (!data) return;
 
       const { angle, distance } = data;
-      const radian = angle.radian; // Align with THREE.js coordinate system
+      const radian = angle.radian; 
       const speed = (distance / 100) * MOVE_SPEED;
 
       direction.set(Math.cos(radian) * speed, 0, -Math.sin(radian) * speed * 2);
@@ -159,24 +153,20 @@ export const Player = () => {
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
   
-    // Set initial position off-screen
     const startPosition = new THREE.Vector3(-3, 55, 80);
     playerRef.current.setTranslation(startPosition);
     camera.position.copy(startPosition);
   
-    // Single smooth transition to spawn point
     const timeline = gsap.timeline({
       onComplete: () => {
         initialTourComplete.current = true;
         enableTouch();
   
-        // Reset physics state
         playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
         playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
       },
     });
   
-    // Direct transition to spawn point
     timeline.to(camera.position, {
       duration: 3,
       x: START_POSITION.x,
@@ -185,7 +175,6 @@ export const Player = () => {
       ease: "power2.inOut",
     });
   
-    // Sync physics body during transition
     const updatePhysicsBody = () => {
       if (!playerRef.current || initialTourComplete.current) return;
       
@@ -204,12 +193,11 @@ export const Player = () => {
 
   useEffect(() => {
     const handleTouchStart = (e) => {
-      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
-      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || isProductSearcherOpen || !crosshairVisible) return; // Return if any one of the components is open
+      if(!isTouchEnabled) return; 
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || isProductSearcherOpen || !crosshairVisible) return; 
 
       if (e.target.closest("#joystickZone")) return;
 
-      // Find the rightmost touch for camera control
       const touches = Array.from(e.touches);
       const rightmostTouch = touches.reduce((rightmost, touch) => {
         return !rightmost || touch.clientX > rightmost.clientX
@@ -227,9 +215,8 @@ export const Player = () => {
     };
 
     const handleTouchMove = (e) => {
-      //if (!touchRef.current.cameraTouch || !touchRef.current.previousCameraTouch) return;
-      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
-      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || isProductSearcherOpen || !crosshairVisible) return; // Return if any one of the components is open
+      if(!isTouchEnabled) return; 
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen || isProductSearcherOpen || !crosshairVisible) return; 
 
       const touch = Array.from(e.touches).find(
         (t) => t.identifier === touchRef.current.cameraTouch
@@ -256,8 +243,8 @@ export const Player = () => {
     };
 
     const handleTouchEnd = (e) => {
-      if(!isTouchEnabled) return; // Return if touch is not enabled (during the GSAP load)
-      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen|| isProductSearcherOpen || !crosshairVisible) return; // Return if any one of the components is open
+      if(!isTouchEnabled) return; 
+      if(isModalOpen || isCartOpen || isWishlistOpen || isInfoModalOpen || isDiscountModalOpen || isSettingsModalOpen || isTermsModalOpen || isContactModalOpen|| isProductSearcherOpen || !crosshairVisible) return; 
 
       const remainingTouches = Array.from(e.touches);
       if (
@@ -291,29 +278,25 @@ export const Player = () => {
       respawnPlayer();
     }
 
-    // Only allow movement when no component is open
     if (!isModalOpen && !isInfoModalOpen && !isCartOpen && !isWishlistOpen && !isDiscountModalOpen && !isSettingsModalOpen && !isTermsModalOpen && !isContactModalOpen && !isProductSearcherOpen && crosshairVisible) {
       const velocity = playerRef.current.linvel();
 
-      // Combine joystick and keyboard inputs
       frontVector.set(0, 0, backward - forward);
       sideVector.set(right - left, 0, 0);
 
-      // Combine inputs into a single movement direction
       combinedInput
         .copy(frontVector)
         .add(sideVector)
         .add(direction)
         .normalize();
 
-      // Apply camera's rotation to align movement with camera orientation
       movementDirection
         .copy(combinedInput)
-        .applyQuaternion(state.camera.quaternion) // Rotate input by the camera's orientation
+        .applyQuaternion(state.camera.quaternion) 
         .normalize()
         .multiplyScalar(MOVE_SPEED);
 
-      // Set the player's velocity based on movement direction
+    
       playerRef.current.wakeUp();
       playerRef.current.setLinvel({
         x: movementDirection.x,
@@ -328,9 +311,9 @@ export const Player = () => {
       }
     }
 
-    // Sync the camera's position with the player
+  
     const { x, y, z } = playerRef.current.translation();
-    const lerpFactor = 0.05; // Adjust this value to control the smoothness (smaller is smoother)
+    const lerpFactor = 0.05; 
     state.camera.position.lerp({ x, y, z }, lerpFactor);
   });
 
@@ -340,7 +323,7 @@ export const Player = () => {
 
 
   const respawnPlayer = () => {
-    if (!initialTourComplete.current) return; // Don't respawn during initial tour
+    if (!initialTourComplete.current) return;
 
     playerRef.current.setTranslation(START_POSITION);
     playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
@@ -353,7 +336,7 @@ export const Player = () => {
       mass={1}
       ref={playerRef}
       lockRotations
-      canSleep={false}
+      canSleep={false} //IMP: May lead to Player Halt
     >
       <ProductGSAPUtil setAnimating={setAnimating} playerRef={playerRef} />
       <CameraController setAnimating={setAnimating} playerRef={playerRef} />
@@ -364,4 +347,4 @@ export const Player = () => {
   );
 };
 
-//canSleep={false} - Sleeping caused problem :(((())))
+

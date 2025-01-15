@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useComponentStore } from "./stores/ZustandStores";
 import Product from "./Types/Product";
 import Fuse from "fuse.js";
-import mannequinData from "./data/MannequinData"; // Import mannequinData
+import mannequinData from "./data/MannequinData"; 
 
 const ProductSearcher = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,7 +12,7 @@ const ProductSearcher = () => {
   const { closeProductSearcher, products, setSearchResult, startSearchGSAP } =
     useComponentStore();
 
-  // Filter products to include only those with IDs present in mannequinData
+  
   const filteredProducts = useMemo(() => {
     const mannequinIds = mannequinData.map((item) => item.id);
     return products.filter((product) => mannequinIds.includes(product.id));
@@ -20,14 +20,14 @@ const ProductSearcher = () => {
 
   const fuseOptions = {
     keys: [
-      { name: "title", weight: 0.7 }, // Title has 70% influence
-      { name: "tags", weight: 0.3 }, // Tags have 30% influence
+      { name: "title", weight: 0.7 }, 
+      { name: "tags", weight: 0.3 }, 
     ],
-    threshold: 0.3, // Lower threshold means stricter matching
-    includeScore: true, // Include match score in results
+    threshold: 0.3,
+    includeScore: true, 
   };
 
-  // Create memoized Fuse instance with filtered products
+
   const fuse = useMemo(
     () => new Fuse(filteredProducts, fuseOptions),
     [filteredProducts]
@@ -156,7 +156,6 @@ const ProductSearcher = () => {
                   }}
                   className="SearchItem"
                   onClick={() => {
-                    // Find the corresponding mannequin
                     const mannequin = mannequinData.find(
                       (item) => item.id === product.id
                     );

@@ -16,11 +16,11 @@ export default function WebPlane({
     },
     iframe: {
       width: '100%',
-      height: '200%', // Ensures there is enough content to scroll
+      height: '200%', 
       border: 'none',
       position: 'absolute',
       top: '0',
-      animation: 'scrolling 20s linear infinite', // Keyframes for scrolling
+      animation: 'scrolling 20s linear infinite', 
     },
     keyframes: `
       @keyframes scrolling {
@@ -39,16 +39,15 @@ export default function WebPlane({
     <group
       scale={scale}
       position={position}
-      rotation={rotation.map((r) => r * (Math.PI / 180))} // Convert degrees to radians
+      rotation={rotation.map((r) => r * (Math.PI / 180))} 
     >
-      {/* Plane geometry */}
       <mesh>
-        <planeGeometry args={[1, 1]} /> {/* Adjust size as needed */}
-        <meshBasicMaterial color="#000000" /> {/* Background material */}
+        <planeGeometry args={[1, 1]} /> 
+        <meshBasicMaterial color="#000000" /> 
         <Html
           className="web-content"
           rotation={[0, 0, 0]}
-          position={[0, 0, 0.01]} // Slight offset to avoid z-fighting
+          position={[0, 0, 0.01]} 
           transform
           occlude
           prepend
@@ -60,7 +59,7 @@ export default function WebPlane({
               style={styles.iframe}
               title="Strategy Fox Website"
             />
-            {/* Inject keyframes */}
+          
             <style>
               {styles.keyframes}
             </style>

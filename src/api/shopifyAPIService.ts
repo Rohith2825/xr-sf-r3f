@@ -91,17 +91,17 @@ export const ProductService = {
   async getAllProducts(): Promise<Product[]> {
     const response = await fetchData<ProductResponse>("GET", "/v1/products");
 
-    // Parse the response to suit the Product and Variant types
+    
     const products: Product[] = response.data.products.edges.map((product) => {
-      // Extract Images
+      
       const productImages: { src: string }[] = product.node.media.edges.filter((edge) =>
-        edge.node.mediaContentType.toUpperCase() === "IMAGE" // Filter images
-        && edge.node.image // Filter images that might not have url
+        edge.node.mediaContentType.toUpperCase() === "IMAGE" 
+        && edge.node.image 
       ).map((edge) => {
         return { src: edge.node.image?.url || "" };
       });
 
-      // Extract 3d Models
+
       const models: {
         id: string|undefined,
         sources: {
@@ -119,7 +119,7 @@ export const ProductService = {
         };
       });
 
-      // Variants
+      
       const productVariants: Variant[] = product.node.variants.edges.map((variant) => {
         return {
           id: Number(variant.node.id.split("/").pop()),
@@ -131,7 +131,7 @@ export const ProductService = {
         };
       });
 
-      // AR Lens link
+    
       const arLensLink = product.node.metafields.edges.find((metafield) => 
         metafield.node.namespace === "custom" && metafield.node.key === "snapchat_lens_link"
       )?.node.value;

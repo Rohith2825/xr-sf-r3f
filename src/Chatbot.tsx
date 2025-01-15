@@ -24,7 +24,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
   >([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const { showCrosshair } = useComponentStore();
-  // Ref to track the chat container
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -37,10 +36,8 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
   const handleSendMessage = async () => {
     if (!currentMessage.trim()) return;
 
-    // Add the user's message to the messages list
     setMessages((prev) => [...prev, { type: "user", text: currentMessage }]);
 
-    // Send the message to the chatbot API
     try {
       const response = await fetch(
         "https://strategy-fox-go-bked.com/api/chatbot/chat",
@@ -58,7 +55,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         const botMessage =
           data.response || "I'm sorry, I couldn't process that.";
 
-        // Add the bot's response to the messages list
         setMessages((prev) => [...prev, { type: "bot", text: botMessage }]);
       } else {
         setMessages((prev) => [
@@ -76,7 +72,6 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
       ]);
     }
 
-    // Clear the input field
     setCurrentMessage("");
   };
 
@@ -147,7 +142,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
       >
         <Box display="flex" alignItems="center" gap={1}>
           <img
-            src="/fox-logo.jpg" // Replace with your logo path
+            src="/fox-logo.jpg" 
             alt="Logo"
             style={{ width: "30px", height: "30px" }}
           />
@@ -171,7 +166,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
           sx={{
             marginLeft: "auto",
             zIndex: 1001,
-            borderRadius: "50%", // Circular button
+            borderRadius: "50%", 
             backgroundColor: "#9f9f9f",
             color: "black",
             width: "1.5rem",
@@ -187,17 +182,16 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
         </IconButton>
       </CardContent>
 
-      {/* Chat Area */}
       <CardContent
-        ref={chatContainerRef} // Attach the ref to the chat container
+        ref={chatContainerRef} 
         sx={{
           flex: 1,
           overflowY: "auto",
           padding: 2,
           display: "flex",
           flexDirection: "column",
-          "&::-webkit-scrollbar": { display: "none" }, // Hide scrollbar for Webkit browsers
-          scrollbarWidth: "none", // Hide scrollbar for Firefox
+          "&::-webkit-scrollbar": { display: "none" }, 
+          scrollbarWidth: "none",
         }}
       >
         {messages.map((message, index) => (

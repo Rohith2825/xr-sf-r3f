@@ -83,24 +83,24 @@ const ChestBoxLoader = ({
   const modelRef = useRef();
   const { openDiscountModal, setDiscountCode } = useComponentStore();
 
-  // Wobble Effect: Only trigger useFrame when the model is hovered
+  
   useFrame((state) => {
     if (!isRotate) return;
-    const time = state.clock.getElapsedTime(); // Total elapsed time in seconds
-    modelRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2 + 0.5; // Add wobble effect
+    const time = state.clock.getElapsedTime(); 
+    modelRef.current.position.y = position[1] + Math.sin(time * 2) * 0.2 + 0.5;
   });
 
-  // Memoize scale
+
   const computedScale = useMemo(() => {
     return typeof scale === "number" ? [scale, scale, scale] : scale;
   }, [scale]);
 
-  // Memoize rotation
+
   const computedRotation = useMemo(() => {
     return rotation.map((deg) => (deg * Math.PI) / 180);
   }, [rotation]);
 
-  // Memoize the model.scene
+
   const memoizedModelScene = useMemo(() => model.scene, [model.scene]);
 
   return (

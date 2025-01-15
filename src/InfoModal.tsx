@@ -165,12 +165,10 @@ const InfoModal = () => {
       <div 
         style={styles.backdrop} 
         onClick={handleClose}
-        //onTouchMove={(e) => e.preventDefault()}
       >
         <div
           className="modalContainer"
           style={styles.modalContainer}
-          //onClick={(e) => e.stopPropagation()}
         >
           <button
             onClick={handleClose}
