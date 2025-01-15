@@ -1,5 +1,5 @@
-import Variant from '@/Types/Variant';
-import Product from '../Types/Product';
+import Variant from "@/Types/Variant";
+import Product from "../Types/Product";
 
 const BASE_URL = "https://strategy-fox-go-bked.com/api/shopify";
 
@@ -28,113 +28,154 @@ interface ProductResponse {
     products: {
       edges: {
         node: {
-          id: string,
-          title: string,
+          id: string;
+          title: string;
           media: {
             edges: {
               node: {
-                mediaContentType: string,
+                mediaContentType: string;
                 image?: {
-                  url: string,
-                  altText: string
-                },
-                id?: string,
+                  url: string;
+                  altText: string;
+                };
+                id?: string;
                 sources?: {
-                  url: string,
-                  format: string,
-                  mimeType: string
-                }[]
-              }
-            }[]
-          }
+                  url: string;
+                  format: string;
+                  mimeType: string;
+                }[];
+              };
+            }[];
+          };
           options: {
-            id: string,
-            name: string,
-            position: number,
-            values: string[]
-          }[],
+            id: string;
+            name: string;
+            position: number;
+            values: string[];
+          }[];
           variants: {
             edges: {
               node: {
-                id: string,
-                title: string,
-                price: string,
-                compareAtPrice?: string,
-                availableForSale: boolean,
+                id: string;
+                title: string;
+                price: string;
+                compareAtPrice?: string;
+                availableForSale: boolean;
                 selectedOptions: {
-                  name: string,
-                  value: string
-                }[],
-              }
-            }[]
-          },
-          tags:string[],
-          metafields:{
-            edges:{
-              node:{
-                namespace: string,
-                key: string,
-                value: string,
-                type: string,
-                description: string,
-              }
-            }[]
-          }
-          bodyHtml: string
-        }
-      }[]
-    }
-  }
+                  name: string;
+                  value: string;
+                }[];
+              };
+            }[];
+          };
+          tags: string[];
+          metafields: {
+            edges: {
+              node: {
+                namespace: string;
+                key: string;
+                value: string;
+                type: string;
+                description: string;
+              };
+            }[];
+          };
+          bodyHtml: string;
+        };
+      }[];
+    };
+  };
 }
 
 export const ProductService = {
   async getAllProducts(): Promise<Product[]> {
     const response = await fetchData<ProductResponse>("GET", "/v1/products");
 
-    
     const products: Product[] = response.data.products.edges.map((product) => {
-      
-      const productImages: { src: string }[] = product.node.media.edges.filter((edge) =>
-        edge.node.mediaContentType.toUpperCase() === "IMAGE" 
-        && edge.node.image 
-      ).map((edge) => {
-        return { src: edge.node.image?.url || "" };
-      });
-
+      const productImages: { src: string }[] = product.node.media.edges
+        .filter(
+          (edge) =>
+            edge.node.mediaContentType.toUpperCase() === "IMAGE" &&
+            edge.node.image
+        )
+        .map((edge) => {
+          return { src: edge.node.image?.url || "" };
+        });
 
       const models: {
-        id: string|undefined,
-        sources: {
-          url: string,
-          format: string,
-          mimeType: string
-        }[] | undefined
-      }[] = product.node.media.edges.filter((edge) => 
-        edge.node.mediaContentType.toUpperCase() === "MODEL_3D"
-        && edge.node.sources
-      ).map((edge) => {
-        return { 
-          id: edge.node.id,
-          sources: edge.node.sources
-        };
-      });
+        id: string | undefined;
+        sources:
+          | {
+              url: string;
+              format: string;
+              mimeType: string;
+            }[]
+          | undefined;
+      }[] = product.node.media.edges
+        .filter(
+          (edge) =>
+            edge.node.mediaContentType.toUpperCase() === "MODEL_3D" &&
+            edge.node.sources
+        )
+        .map((edge) => {
+          return {
+            id: edge.node.id,
+            sources: edge.node.sources,
+          };
+        });
 
-      
-      const productVariants: Variant[] = product.node.variants.edges.map((variant) => {
-        return {
-          id: Number(variant.node.id.split("/").pop()),
-          price: variant.node.price,
-          compareAtPrice: variant.node.compareAtPrice,
-          productId: Number(product.node.id.split("/").pop()),
-          selectedOptions: variant.node.selectedOptions,
-          availableForSale: variant.node.availableForSale
-        };
-      });
+      const productVariants: Variant[] = product.node.variants.edges.map(
+        (variant) => {
+          return {
+            id: Number(variant.node.id.split("/").pop()),
+            price: variant.node.price,
+            compareAtPrice: variant.node.compareAtPrice,
+            productId: Number(product.node.id.split("/").pop()),
+            selectedOptions: variant.node.selectedOptions,
+            availableForSale: variant.node.availableForSale,
+          };
+        }
+      );
 
-    
-      const arLensLink = product.node.metafields.edges.find((metafield) => 
-        metafield.node.namespace === "custom" && metafield.node.key === "snapchat_lens_link"
+      const arLensLink = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "snapchat_lens_link"
       )?.node.value;
+
+      const positionString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "position"
+      )?.node.value;
+
+      const position = positionString
+        ? JSON.parse(positionString).map(Number)
+        : [];
+
+      const scaleString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "scale"
+      )?.node.value;
+
+      const scale = scaleString ? Number(scaleString) : undefined;
+
+      const saleString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" && metafield.node.key === "sale"
+      )?.node.value;
+
+      const sale = saleString === "true";
+
+      const environmentModal = product.node.media.edges
+        .filter(
+          (edge) =>
+            edge.node.mediaContentType === "MODEL_3D" &&
+            edge.node.alt === "environment-modal"
+        )
+        .flatMap((edge) => edge.node.sources)
+        .find((source) => source?.url.endsWith(".glb"))?.url;
 
       const parsedProduct: Product = {
         id: Number(product.node.id.split("/").pop()),
@@ -146,6 +187,10 @@ export const ProductService = {
         models: models,
         arLensLink: arLensLink,
         tags: product.node.tags.join(" "),
+        position: position,
+        sale: sale,
+        scale: scale,
+        environmentModal: environmentModal,
       };
 
       return parsedProduct;
@@ -155,7 +200,10 @@ export const ProductService = {
   },
 
   async getProductById(id: number | string): Promise<Product> {
-    const response = await fetchData<{ product: Product }>("GET", `/products/${id}`);
+    const response = await fetchData<{ product: Product }>(
+      "GET",
+      `/products/${id}`
+    );
     return response.product;
   },
 

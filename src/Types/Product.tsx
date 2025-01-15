@@ -1,4 +1,4 @@
-import Variant from './Variant';
+import Variant from "./Variant";
 
 export default interface Product {
   id: number;
@@ -7,11 +7,13 @@ export default interface Product {
   images: { src: string }[];
   models: {
     id: string | undefined;
-    sources: {
-      url: string,
-      format: string,
-      mimeType: string
-    }[] | undefined;
+    sources:
+      | {
+          url: string;
+          format: string;
+          mimeType: string;
+        }[]
+      | undefined;
   }[];
   options: {
     id: string;
@@ -21,5 +23,9 @@ export default interface Product {
   }[];
   variants: Variant[];
   arLensLink: string | undefined;
-  tags:string;
+  tags: string;
+  position: number[] | undefined;
+  sale: boolean | undefined;
+  scale: number | undefined;
+  environmentModal: string | undefined;
 }

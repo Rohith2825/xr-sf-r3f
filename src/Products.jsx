@@ -1,39 +1,60 @@
 import React, { Suspense } from "react";
 import { useGLTFWithKTX2 } from "./useGTLFwithKTX";
 import mannequinData from "./data/MannequinData";
+import { useComponentStore } from "./stores/ZustandStores";
 const LazyMannequin = React.lazy(() => import("./Mannequin"));
 
 const Products = () => {
+  const { products } = useComponentStore();
+
+  // Map through mannequinData and find matching product by id
+  const filteredProducts = mannequinData.map((mannequin) => {
+    // Find the matching product by id
+    const product = products.find((product) => product.id === mannequin.id);
+
+    // If a matching product is found, update modelPath with environmentModal
+    if (product) {
+      return {
+        ...mannequin,
+        modelPath: product.environmentModal || mannequin.modelPath, // Update modelPath with environmentModal
+        sale: product.sale || mannequin.sale, // Merge sale status
+      };
+    }
+    return mannequin; // If no match, return original mannequin data
+  });
+
+  console.log("Mannequin Data:", mannequinData);
+  console.log("Products Data from the response:", filteredProducts);
+
   return (
     <Suspense fallback={null}>
-      {mannequinData.map((data, index) => (
+      {filteredProducts.map((data, index) => (
         <ModelWrapper
           key={index}
           productId={data.id}
           modelPath={data.modelPath}
           position={data.position}
           scale={data.scale}
-          sale={data.sale || false }
+          sale={data.sale || false}
         />
       ))}
     </Suspense>
   );
 };
 
+const ModelWrapper = ({ productId, modelPath, position, scale, sale }) => {
+  const { scene } = useGLTFWithKTX2(modelPath);
 
-const ModelWrapper = ({ productId, modelPath, position, scale ,sale}) => {
-  const { scene } = useGLTFWithKTX2(modelPath); 
-
-  return scene ? ( 
+  return scene ? (
     <LazyMannequin
       productId={productId}
       position={position}
       modelPath={modelPath}
-      sale = {sale}
+      sale={sale}
       scale={scale}
       model={{ scene }}
     />
-  ) : null; 
+  ) : null;
 };
 
 export default Products;
