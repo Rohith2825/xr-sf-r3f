@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import { Canvas } from "@react-three/fiber";
 import { Html, useProgress } from "@react-three/drei";
-import { XR , createXRStore } from '@react-three/xr';
+import { XR, createXRStore } from "@react-three/xr";
 import App from "@/App.jsx";
 import "@/index.scss";
 import UI from "@/UI/UI.tsx";
@@ -10,7 +10,7 @@ import Load from "@/Loader.tsx";
 import { ProductService } from "./api/shopifyAPIService";
 import { useComponentStore } from "./stores/ZustandStores";
 
-const store = createXRStore()
+const store = createXRStore();
 
 function CanvasWrapper() {
   const { setProducts } = useComponentStore();
@@ -20,13 +20,32 @@ function CanvasWrapper() {
     try {
       const response = await ProductService.getAllProducts();
       setProducts(response);
-      
     } catch (err) {
       console.error(err);
     }
   }
   useEffect(() => {
     fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const enterARMode = async () => {
+      try {
+        // Check if XR mode is supported
+        if (navigator.xr) {
+          const isSupported = await navigator.xr.isSessionSupported("immersive-vr");
+          console.log("XR: ",isSupported);
+          if (isSupported) {
+            // Automatically enter XR mode
+            store.enterAR();
+          }
+        }
+      } catch (err) {
+        console.error("Failed to enter XR mode:", err);
+      }
+    };
+
+    enterARMode();
   }, []);
 
   return (
