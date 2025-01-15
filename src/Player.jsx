@@ -28,10 +28,9 @@ const frontVector = new THREE.Vector3();
 const sideVector = new THREE.Vector3();
 
 const RESPAWN_HEIGHT = -5;
+const VR_MOVE_SCALE = 0.075; 
 const START_POSITION = new THREE.Vector3(0, 7, -5);
 
-const combinedInput = new THREE.Vector3();
-const movementDirection = new THREE.Vector3();
 
 
 
@@ -39,12 +38,23 @@ export const Player = () => {
   const playerRef = useRef();
   const originRef = useRef(null); // Ref for XROrigin
 
-  useXRControllerLocomotion(originRef, {
-    translationOptions: {
-      speed: 10, // Increase speed here
-    },
-    translationControllerHand: "left", // Use the left controller for movement
-  });
+    // Custom locomotion handler
+    const handleLocomotion = (movementInput, rotationInput) => {
+      if (originRef.current) {
+        // Scale movement input for VR locomotion
+        const scaledMovement = movementInput.clone().multiplyScalar(VR_MOVE_SCALE);
+        originRef.current.position.add(scaledMovement);
+  
+        // Apply rotation input
+        if (rotationInput) {
+          originRef.current.rotation.setFromQuaternion(rotationInput);
+        }
+      }
+    };
+
+    // Integrate XR locomotion
+  useXRControllerLocomotion(handleLocomotion);
+
   const touchRef = useRef({
     cameraTouch: null,
     previousCameraTouch: null,
