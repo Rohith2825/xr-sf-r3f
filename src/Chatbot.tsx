@@ -142,7 +142,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
       >
         <Box display="flex" alignItems="center" gap={1}>
           <img
-            src="/fox-logo.jpg" 
+            src="/fox-logo.png" 
             alt="Logo"
             style={{ width: "30px", height: "30px" }}
           />
