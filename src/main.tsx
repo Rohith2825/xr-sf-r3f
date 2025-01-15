@@ -32,7 +32,7 @@ function CanvasWrapper() {
   return (
     <div id="container">
       {progress >= 100 && <UI />}
-      <button onClick={() => store.enterAR()}>Enter AR</button>
+      <button onClick={() => store.enterVR()}>Enter AR</button>
       <Canvas camera={{ fov: 45 }} shadows>
         <XR store={store}>
           <React.Suspense
