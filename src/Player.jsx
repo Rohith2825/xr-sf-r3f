@@ -5,6 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
+import { useXR } from "@react-three/xr";
 import gsap from "gsap";
 import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
 import { CameraController } from "./CameraController";
@@ -35,6 +36,9 @@ export const Player = () => {
     cameraTouch: null,
     previousCameraTouch: null,
   });
+  // XR specific hooks
+  const { session, isPresenting } = useXR();
+  const xrInputSourcesRef = useRef([]);
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
   const [isAnimating, setAnimating] = useState(false);
@@ -268,17 +272,89 @@ export const Player = () => {
     };
   }, [camera, isPortrait, isTouchEnabled, isModalOpen, isCartOpen, isWishlistOpen, isInfoModalOpen,isDiscountModalOpen,isSettingsModalOpen,isTermsModalOpen,isContactModalOpen,crosshairVisible,isProductSearcherOpen]);
 
+
+  useEffect(() => {
+    if (!session) return;
+
+    const onInputSourcesChange = (event) => {
+      xrInputSourcesRef.current = event.session.inputSources;
+    };
+
+    session.addEventListener('inputsourceschange', onInputSourcesChange);
+    return () => {
+      session.removeEventListener('inputsourceschange', onInputSourcesChange);
+    };
+  }, [session]);
+
+
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
   useFrame((state) => {
-    if (!playerRef.current || isAnimating ) return;
+    if (!playerRef.current || isAnimating) return;
 
     const { y: playerY } = playerRef.current.translation();
     if (playerY < RESPAWN_HEIGHT) {
       respawnPlayer();
     }
 
-    if (!isModalOpen && !isInfoModalOpen && !isCartOpen && !isWishlistOpen && !isDiscountModalOpen && !isSettingsModalOpen && !isTermsModalOpen && !isContactModalOpen && !isProductSearcherOpen && crosshairVisible) {
+    if (isPresenting) {
+      // Handle VR/AR movement
+      const velocity = playerRef.current.linvel();
+      
+      // Reset movement vectors
+      direction.set(0, 0, 0);
+
+      // Process XR input sources
+      xrInputSourcesRef.current.forEach(inputSource => {
+        if (inputSource.gamepad) {
+          const [x, y] = inputSource.gamepad.axes;
+          
+          // Apply movement based on gamepad input
+          if (Math.abs(x) > 0.1 || Math.abs(y) > 0.1) {
+            // Get the controller's transform
+            const targetRaySpace = session.getReferenceSpace();
+            const pose = state.gl.xr.getFrame().getPose(inputSource.targetRaySpace, targetRaySpace);
+            
+            if (pose) {
+              // Convert gamepad movement to world space direction
+              const controllerRotation = new THREE.Quaternion().setFromRotationMatrix(
+                new THREE.Matrix4().fromArray(pose.transform.matrix)
+              );
+              
+              direction.set(x * MOVE_SPEED, 0, -y * MOVE_SPEED)
+                .applyQuaternion(controllerRotation);
+            }
+          }
+
+          // Handle jumping with gamepad button
+          if (inputSource.gamepad.buttons[0]?.pressed && canJump) {
+            doJump();
+            setCanJump(false);
+            setTimeout(() => setCanJump(true), 500);
+          }
+        }
+      });
+
+      // Apply XR movement
+      playerRef.current.wakeUp();
+      playerRef.current.setLinvel({
+        x: direction.x,
+        y: velocity.y,
+        z: direction.z,
+      });
+    } else if (
+      !isModalOpen &&
+      !isInfoModalOpen &&
+      !isCartOpen &&
+      !isWishlistOpen &&
+      !isDiscountModalOpen &&
+      !isSettingsModalOpen &&
+      !isTermsModalOpen &&
+      !isContactModalOpen &&
+      !isProductSearcherOpen &&
+      crosshairVisible
+    ) {
+      // Your existing non-VR movement code
       const velocity = playerRef.current.linvel();
 
       frontVector.set(0, 0, backward - forward);
@@ -311,10 +387,12 @@ export const Player = () => {
       }
     }
 
-  
-    const { x, y, z } = playerRef.current.translation();
-    const lerpFactor = 0.05; 
-    state.camera.position.lerp({ x, y, z }, lerpFactor);
+    // Camera updates - only in non-VR mode
+    if (!isPresenting) {
+      const { x, y, z } = playerRef.current.translation();
+      const lerpFactor = 0.05;
+      state.camera.position.lerp({ x, y, z }, lerpFactor);
+    }
   });
 
   const doJump = () => {
