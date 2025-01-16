@@ -10,6 +10,7 @@ import gsap from "gsap";
 import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
 import { CameraController } from "./CameraController";
 import { ProductGSAPUtil } from "./ProductGSAPUtil";
+import { IfInSessionMode } from "@react-three/xr";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -36,16 +37,20 @@ const START_POSITION = new THREE.Vector3(0, 7, -5);
 
 export const Player = () => {
   const playerRef = useRef();
-  const originRef = useRef(null); // Ref for XROrigin
+  const originRef = useRef();
+
 
   useXRControllerLocomotion(originRef, {
     translationOptions: {
-      speed: 10, // Increase speed here
+      speed: 10, // Speed for movement
     },
     rotationOptions: {
-      type: "smooth", // Smooth rotation
+      type: 'smooth', // Enable smooth rotation
+      speed: 1, // Speed for smooth rotation
+      deadZone: 1, // Minimum joystick deflection to trigger rotation
+      degrees:1,
     },
-    translationControllerHand: "left", // Use the left controller for movement
+    translationControllerHand: "left", // Left-hand controller for movement
   });
 
   const touchRef = useRef({
@@ -364,12 +369,14 @@ export const Player = () => {
       lockRotations
       canSleep={false} //IMP: May lead to Player Halt
     >
+      <IfInSessionMode deny={['immersive-ar', 'immersive-vr']} >
       <ProductGSAPUtil setAnimating={setAnimating} playerRef={playerRef} />
       <CameraController setAnimating={setAnimating} playerRef={playerRef} />
+      </IfInSessionMode>
+      <XROrigin position={-1.5} ref= {originRef}/>
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>
-      <XROrigin position={-1.5} ref= {originRef}/>
     </RigidBody>
   );
 };

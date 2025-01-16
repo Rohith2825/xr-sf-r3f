@@ -16,6 +16,7 @@ import {
   useDriverStore,
 } from "./stores/ZustandStores";
 import { useTouchStore } from "./stores/ZustandStores";
+import { IfInSessionMode } from "@react-three/xr";
 
 const shadowOffset = 50;
 
@@ -72,11 +73,13 @@ export const App = () => {
 
   return (
     <>
-      {isMobile &&  (
+      {!isMobile &&  (
+        <IfInSessionMode deny={['immersive-ar', 'immersive-vr']} >
         <PointerLockControls
           onLock={pointerLockControlsLockHandler}
           onUnlock={pointerLockControlsUnlockHandler}
         />
+        </IfInSessionMode>
       )}
       <Skybox />
       <ambientLight intensity={3.5} />
