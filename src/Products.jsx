@@ -48,6 +48,7 @@ const ModelWrapper = ({ productId, modelPath, imagePath, position, scale, sale }
   if (!modelPath) {
     return (
       <ImageShowcase
+        productId={productId}
         url={imagePath}
         position={position}
         transparent={true}
