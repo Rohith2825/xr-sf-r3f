@@ -6,6 +6,7 @@ import { Player } from "@/Player.jsx";
 import { useFrame } from "@react-three/fiber";
 import Television from "./Television";
 import BrandPoster from "./BrandPoster";
+import ImageShowcase from "./ImageShowcase";
 import Products from "./Products";
 import ChestBox from "./Chestbox";
 import { Suspense, useState, useEffect } from "react";
@@ -31,7 +32,7 @@ export const App = () => {
     isSettingsModalOpen,
     isTermsModalOpen,
     isContactModalOpen,
-    isProductSearcherOpen
+    isProductSearcherOpen,
   } = useComponentStore();
   const { lockPointer, unlockPointer } = usePointerLockStore();
   const { driverActive } = useDriverStore();
@@ -54,9 +55,9 @@ export const App = () => {
       !isCartOpen &&
       !isWishlistOpen &&
       !isInfoModalOpen &&
-      !isDiscountModalOpen && 
+      !isDiscountModalOpen &&
       !isSettingsModalOpen &&
-      !isTermsModalOpen && 
+      !isTermsModalOpen &&
       !isContactModalOpen &&
       !isProductSearcherOpen
     ) {
@@ -113,10 +114,17 @@ export const App = () => {
         /> */}
         <BrandPoster
           imageUrl="https://th.bing.com/th/id/OIP.SNik-SOwvsExn4HNF47l2gHaEK?rs=1&pid=ImgDetMain"
-          width={192 * 4} 
-          height={108 * 4} 
+          width={192 * 4}
+          height={108 * 4}
           position={[-2.2, 3.2, -55.35]}
           rotation={[0, 90, 1]}
+        />
+        <ImageShowcase
+          url="https://cdn.shopify.com/s/files/1/0901/2222/3909/files/image_7.png?v=1736493908"
+          width={108 * 1.5}
+          height={192 * 1.5}
+          position={[-14, -2.5, -70.35]}
+          transparent
         />
       </Physics>
     </>
