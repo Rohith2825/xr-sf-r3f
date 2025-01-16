@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { useGLTFWithKTX2 } from "./useGTLFwithKTX";
 import mannequinData from "./data/MannequinData";
 import { useComponentStore } from "./stores/ZustandStores";
+import ImageShowcase from "./ImageShowcase";
 const LazyMannequin = React.lazy(() => import("./Mannequin"));
 
 const Products = () => {
@@ -11,7 +12,7 @@ const Products = () => {
 
   // Filter products to include only those with environmentModal as true
   const filteredProducts = isLoading
-    ? mannequinData
+    ? []
     : products
         .filter((product) => product.environmentModal === true) // Filter for products with environmentModal === true
         .map((product) => ({
@@ -20,6 +21,7 @@ const Products = () => {
           scale: product.scale,
           sale: product.sale,
           modelPath: product.environmentModalUrl, // Use environmentModalUrl for modelPath
+          imagePath: product.images[1].src
         }));
 
   console.log("Mannequin Data:", mannequinData);
@@ -32,6 +34,7 @@ const Products = () => {
           key={index}
           productId={data.id}
           modelPath={data.modelPath}
+          imagePath={data.imagePath}
           position={data.position}
           scale={data.scale}
           sale={data.sale || false}
@@ -41,10 +44,18 @@ const Products = () => {
   );
 };
 
-const ModelWrapper = ({ productId, modelPath, position, scale, sale }) => {
+const ModelWrapper = ({ productId, modelPath, imagePath, position, scale, sale }) => {
   if (!modelPath) {
-    console.error(`Invalid modelPath for product ID: ${productId}`);
-    return null;
+    return (
+      <ImageShowcase
+        url={imagePath}
+        position={position}
+        transparent={true}
+        scale={[scale, scale]}
+        width={1080}
+        height={1080}
+      />
+    );
   }
 
   const { scene } = useGLTFWithKTX2(modelPath);

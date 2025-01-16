@@ -81,8 +81,7 @@ const DraggableMannequin = ({
           castShadow
           receiveShadow
         />
-
-        
+ 
         {sale && (
           <Billboard
             follow={true}
