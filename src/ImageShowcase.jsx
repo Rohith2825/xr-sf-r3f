@@ -1,5 +1,6 @@
 import React from 'react';
 import { Billboard, Image as DreiImage } from '@react-three/drei';
+import { RigidBody } from "@react-three/rapier";
 
 export default function Image({
   url,
@@ -15,6 +16,7 @@ export default function Image({
   const heightInUnits = pixelsToUnits(height) * scale[1];
 
   return (
+    <RigidBody mass={1}>
     <Billboard position={position} follow={true} lockX={false} lockY={false} lockZ={false}>
       <DreiImage 
         url={url}
@@ -22,5 +24,6 @@ export default function Image({
         transparent={transparent} 
       />
     </Billboard>
+    </RigidBody>
   );
 }
