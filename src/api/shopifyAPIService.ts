@@ -185,6 +185,40 @@ export const ProductService = {
         .flatMap((edge) => edge.node.sources)
         .find((source) => source?.url.endsWith(".glb"))?.url;
 
+      const predefindedString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "predefinded"
+      )?.node.value;
+
+      const predefinded = predefindedString === "true";
+
+      const placeholderString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "placeholder"
+      )?.node.value;
+
+      const placeholder = placeholderString
+        ? Number(placeholderString)
+        : undefined;
+
+      const environmentModal3DString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "environmentmodal3d"
+      )?.node.value;
+
+      const environmentModal3D = environmentModal3DString === "true";
+
+      const environmentModalImageString = product.node.metafields.edges.find(
+        (metafield) =>
+          metafield.node.namespace === "custom" &&
+          metafield.node.key === "environmentmodalimage"
+      )?.node.value;
+
+      const environmentModalImage = environmentModalImageString === "true";
+
       const parsedProduct: Product = {
         id: Number(product.node.id.split("/").pop()),
         title: product.node.title,
@@ -200,6 +234,10 @@ export const ProductService = {
         scale: scale,
         environmentModalUrl: environmentModalUrl,
         environmentModal: environmentModal,
+        predefinded: predefinded,
+        placeholder: placeholder,
+        environmentModal3D: environmentModal3D,
+        environmentModalImage: environmentModalImage,
       };
 
       return parsedProduct;

@@ -29,4 +29,8 @@ export default interface Product {
   scale: number | undefined;
   environmentModalUrl: string | undefined;
   environmentModal: boolean | undefined;
+  predefinded : boolean | undefined;
+  placeholder : number | undefined;
+  environmentModal3D : boolean | undefined;
+  environmentModalImage : boolean | undefined;
 }
