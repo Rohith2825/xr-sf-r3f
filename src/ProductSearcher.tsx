@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useComponentStore } from "./stores/ZustandStores";
 import Product from "./Types/Product";
 import Fuse from "fuse.js";
-import mannequinData from "./data/MannequinData"; 
+import mannequinData from "./data/MannequinData";
 
 const ProductSearcher = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,21 +12,18 @@ const ProductSearcher = () => {
   const { closeProductSearcher, products, setSearchResult, startSearchGSAP } =
     useComponentStore();
 
-  
   const filteredProducts = useMemo(() => {
-    const mannequinIds = mannequinData.map((item) => item.id);
-    return products.filter((product) => mannequinIds.includes(product.id));
+    return products.filter((product) => product.environmentModal === true);
   }, [products]);
 
   const fuseOptions = {
     keys: [
-      { name: "title", weight: 0.7 }, 
-      { name: "tags", weight: 0.3 }, 
+      { name: "title", weight: 0.7 },
+      { name: "tags", weight: 0.3 },
     ],
     threshold: 0.3,
-    includeScore: true, 
+    includeScore: true,
   };
-
 
   const fuse = useMemo(
     () => new Fuse(filteredProducts, fuseOptions),
@@ -105,7 +102,7 @@ const ProductSearcher = () => {
               },
             }}
           />
-          <Box sx={{ paddingRight: 2 , paddingTop:0.75}}>
+          <Box sx={{ paddingRight: 2, paddingTop: 0.75 }}>
             <CloseIcon
               sx={{
                 backgroundColor: "#424147",
@@ -156,23 +153,15 @@ const ProductSearcher = () => {
                   }}
                   className="SearchItem"
                   onClick={() => {
-                    const mannequin = mannequinData.find(
-                      (item) => item.id === product.id
+                    const item = filteredProducts.find(
+                      (filteredProduct) => filteredProduct.id === product.id
                     );
-                    if (mannequin) {
-                      console.log(
-                        `Position for product ID ${product.id}:`,
-                        mannequin.position
-                      );
-                      const x: number = mannequin.position[0];
-                      const y: number = mannequin.position[1];
-                      const z: number = mannequin.position[2];
+                    if (item) {
+                      const x: number = item.position[0];
+                      const y: number = item.position[1];
+                      const z: number = item.position[2];
                       setSearchResult({ x, y, z });
                       startSearchGSAP();
-                    } else {
-                      console.log(
-                        `No position found for product ID ${product.id}`
-                      );
                     }
                   }}
                 >
