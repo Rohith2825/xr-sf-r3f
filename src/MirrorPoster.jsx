@@ -10,13 +10,37 @@ const MirrorPoster = forwardRef(({
   constraints,
   transparent = true,
   flipHorizontal = true,
+  isMobile = false,
   ...props
 }, ref) => {
   const { viewport } = useThree();
   
   const pixelsToUnits = (pixels) => pixels / 100;
-  const widthInUnits = pixelsToUnits(width);
-  const heightInUnits = pixelsToUnits(height);
+  
+  // If mobile, swap width and height for portrait mode
+  // and adjust the scale to maintain aspect ratio within viewport
+  let widthInUnits, heightInUnits;
+  if (isMobile) {
+    // For mobile, we'll use a 9:16 aspect ratio
+    const mobileWidth = 108;
+    const mobileHeight = 192;
+    
+    widthInUnits = pixelsToUnits(mobileWidth);
+    heightInUnits = pixelsToUnits(mobileHeight);
+    
+    // Default mobile constraints if none provided
+    constraints = constraints || {
+      video: {
+        facingMode: "user",
+        width: { ideal: mobileWidth },
+        height: { ideal: mobileHeight },
+        aspectRatio: 9/16
+      }
+    };
+  } else {
+    widthInUnits = pixelsToUnits(width);
+    heightInUnits = pixelsToUnits(height);
+  }
 
   // Apply horizontal flip if needed
   const scale = [flipHorizontal ? -1 : 1, 1, 1];

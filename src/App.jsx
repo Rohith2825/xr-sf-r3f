@@ -127,11 +127,12 @@ export const App = () => {
           position={[-14, -2.5, -70.35]}
           transparent
         />
-        {/* <MirrorPoster
+        <MirrorPoster
           width={192}
           height={108}
           position={[-2.2, -2.2, -55.35]}
           rotation={[0, 90, 1]}
+          isMobile={isMobile}
           constraints={{
             video: {
               facingMode: "user", // front camera
@@ -139,7 +140,7 @@ export const App = () => {
               height: 720,
             },
           }}
-        /> */}
+        />
       </Physics>
     </>
   );
