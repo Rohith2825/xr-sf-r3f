@@ -5,10 +5,11 @@ import { useRef, useState, useEffect } from "react";
 import { usePersonControls } from "@/hooks.js";
 import { useFrame, useThree } from "@react-three/fiber";
 import nipplejs from "nipplejs";
+import { useXR, XROrigin , useXRControllerLocomotion } from "@react-three/xr";
 import gsap from "gsap";
 import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
 import { CameraController } from "./CameraController";
-import { ProductGSAPUtil }  from "./ProductGSAPUtil";
+import { ProductGSAPUtil } from "./ProductGSAPUtil";
 
 const MOVE_SPEED = 12;
 const TOUCH_SENSITIVITY = {
@@ -27,14 +28,31 @@ const frontVector = new THREE.Vector3();
 const sideVector = new THREE.Vector3();
 
 const RESPAWN_HEIGHT = -5;
+const VR_MOVE_SCALE = 0.075; 
 const START_POSITION = new THREE.Vector3(0, 7, -5);
+
+
+
 
 export const Player = () => {
   const playerRef = useRef();
+  const originRef = useRef(null); // Ref for XROrigin
+
+  useXRControllerLocomotion(originRef, {
+    translationOptions: {
+      speed: 10, // Increase speed here
+    },
+    rotationOptions: {
+      type: "smooth", // Smooth rotation
+    },
+    translationControllerHand: "left", // Use the left controller for movement
+  });
+
   const touchRef = useRef({
     cameraTouch: null,
     previousCameraTouch: null,
   });
+  
   const { forward, backward, left, right, jump } = usePersonControls();
   const [canJump, setCanJump] = useState(true);
   const [isAnimating, setAnimating] = useState(false);
@@ -268,52 +286,60 @@ export const Player = () => {
     };
   }, [camera, isPortrait, isTouchEnabled, isModalOpen, isCartOpen, isWishlistOpen, isInfoModalOpen,isDiscountModalOpen,isSettingsModalOpen,isTermsModalOpen,isContactModalOpen,crosshairVisible,isProductSearcherOpen]);
 
+
+
   const combinedInput = new THREE.Vector3();
   const movementDirection = new THREE.Vector3();
   useFrame((state) => {
-    if (!playerRef.current || isAnimating ) return;
-
+    if (!playerRef.current || isAnimating) return;
+  
     const { y: playerY } = playerRef.current.translation();
     if (playerY < RESPAWN_HEIGHT) {
       respawnPlayer();
     }
-
-    if (!isModalOpen && !isInfoModalOpen && !isCartOpen && !isWishlistOpen && !isDiscountModalOpen && !isSettingsModalOpen && !isTermsModalOpen && !isContactModalOpen && !isProductSearcherOpen && crosshairVisible) {
+  
+    if (
+      !isModalOpen &&
+      !isInfoModalOpen &&
+      !isCartOpen &&
+      !isWishlistOpen &&
+      !isDiscountModalOpen &&
+      !isSettingsModalOpen &&
+      !isTermsModalOpen &&
+      !isContactModalOpen &&
+      !isProductSearcherOpen &&
+      crosshairVisible
+    ) {
       const velocity = playerRef.current.linvel();
-
+  
+      // Movement logic for non-VR modes (keyboard-based)
       frontVector.set(0, 0, backward - forward);
       sideVector.set(right - left, 0, 0);
-
-      combinedInput
-        .copy(frontVector)
-        .add(sideVector)
-        .add(direction)
-        .normalize();
-
+  
+      combinedInput.copy(frontVector).add(sideVector).normalize();
+  
       movementDirection
         .copy(combinedInput)
-        .applyQuaternion(state.camera.quaternion) 
+        .applyQuaternion(state.camera.quaternion)
         .normalize()
         .multiplyScalar(MOVE_SPEED);
-
-    
+  
       playerRef.current.wakeUp();
       playerRef.current.setLinvel({
         x: movementDirection.x,
         y: velocity.y,
         z: movementDirection.z,
       });
-
+  
       if (jump && canJump) {
         doJump();
         setCanJump(false);
         setTimeout(() => setCanJump(true), 500);
       }
     }
-
   
     const { x, y, z } = playerRef.current.translation();
-    const lerpFactor = 0.05; 
+    const lerpFactor = 0.05;
     state.camera.position.lerp({ x, y, z }, lerpFactor);
   });
 
@@ -343,8 +369,7 @@ export const Player = () => {
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>
+      <XROrigin position={-1.5} ref= {originRef}/>
     </RigidBody>
   );
 };
-
-
