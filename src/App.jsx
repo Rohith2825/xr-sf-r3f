@@ -7,6 +7,7 @@ import { useFrame } from "@react-three/fiber";
 import Television from "./Television";
 import BrandPoster from "./BrandPoster";
 import ImageShowcase from "./ImageShowcase";
+import MirrorPoster from "./MirrorPoster";
 import Products from "./Products";
 import ChestBox from "./Chestbox";
 import { Suspense, useState, useEffect } from "react";
@@ -125,6 +126,19 @@ export const App = () => {
           height={192 * 1.5}
           position={[-14, -2.5, -70.35]}
           transparent
+        />
+        <MirrorPoster
+          width={192}
+          height={108}
+          position={[-2.2, -2.2, -55.35]}
+          rotation={[0, 90, 1]}
+          constraints={{
+            video: {
+              facingMode: "user", // front camera
+              width: 1280,
+              height: 720,
+            },
+          }}
         />
       </Physics>
     </>
