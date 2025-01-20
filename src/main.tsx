@@ -85,7 +85,7 @@ function CanvasWrapper() {
         <div className="video-loader">
           <video
             ref={videoRef}
-            src={isMobile ? "/media/Intro.MP4" : "/media/Intro.MOV"}
+            src={isMobile ? "/media/Intro.mp4" : "/media/Intro.MOV"}
             autoPlay
             muted
             playsInline
