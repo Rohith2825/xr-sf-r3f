@@ -13,6 +13,7 @@ function CanvasWrapper() {
   const { progress } = useProgress();
   const [videoLoaded, setVideoLoaded] = useState(false);
   const videoRef = useRef(null);
+  const [maxProgress, setMaxProgress] = useState(0); 
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
   async function fetchProducts() {
@@ -67,6 +68,13 @@ function CanvasWrapper() {
       window.scrollTo(0, scrollY);
     };
   }, [progress, videoLoaded]);
+
+  useEffect(() => {
+    // Update maxProgress only if progress exceeds the current maxProgress
+    if (progress > maxProgress) {
+      setMaxProgress(progress);
+    }
+  }, [progress]);
   
 
   return (
@@ -81,15 +89,20 @@ function CanvasWrapper() {
             autoPlay
             muted
             playsInline
-            onEnded={() => setVideoLoaded(true)}
+            onEnded={() => setVideoLoaded(true)} // Set videoLoaded to true when the video ends
           />
-          <div className="loading-text">Your experience is loading!</div>
-          <div className="progress-bar">
-            <div
-              className="progress-bar-inner"
-              style={{ width: `${Math.min(progress, 100)}%` }}
-            />
-          </div>
+          {/* Show progress bar and text only after the video finishes */}
+          {videoLoaded && (
+            <>
+              <div className="loading-text">Your experience is loading!</div>
+              <div className="progress-bar">
+                <div
+                  className="progress-bar-inner"
+                  style={{ width: `${Math.min(maxProgress, 100)}%` }}
+                />
+              </div>
+            </>
+          )}
         </div>
       )}
       <Canvas camera={{ fov: 45 }} shadows>
