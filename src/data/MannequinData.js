@@ -22,9 +22,9 @@ const mannequinData = [
   },
   {
     id: 9002463658229,
-    position: [0.7, -5, -75],
-    modelPath: "/models/Sause Hoodie.glb",
-    scale: 2.0,
+    position: [0, -4, -77],
+    modelPath: "/models/Sause Hoodie Man.glb",
+    scale: 1.0,
   },
   {
     id: 9002465165557,
