@@ -3,22 +3,21 @@ import { useCart, ModelViewer } from "@shopify/hydrogen-react";
 import { useEffect, useRef, useState } from "react";
 import { useComponentStore } from "./stores/ZustandStores";
 import Variant from "./Types/Variant";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 import useWishlist from "./WishlistHook";
 import Swal from "sweetalert2";
 import styles from "@/UI/UI.module.scss";
-import Client from "shopify-buy";
-
-const client = Client.buildClient({
-  domain: "htphzk-um.myshopify.com",
-  storefrontAccessToken: "446cb8f8327b9074dcc7c158332ca146",
-  apiVersion: "2023-10"
-});
 
 const Modal = () => {
-  const containerRef = useRef(null); 
-  const modelViewerElement = useRef(null); 
-  const [arSupported, setArSupported] = useState(false); 
+  const client = {
+    domain: "htphzk-um.myshopify.com",
+    storefrontAccessToken: "446cb8f8327b9074dcc7c158332ca146",
+    apiVersion: "2023-10",
+  };
+
+  const containerRef = useRef(null);
+  const modelViewerElement = useRef(null);
+  const [arSupported, setArSupported] = useState(false);
 
   useEffect(() => {
     const observeModelViewer = () => {
@@ -84,22 +83,56 @@ const Modal = () => {
           popup: styles.swalPopup,
         },
       });
-  
-      const checkout = await client.checkout.create();
-      const updatedCheckout = await client.checkout.addLineItems(
-        checkout.id,
-        [{
-          variantId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
-          quantity: quantity
-        }]
+
+      // Step 1: Create Cart
+      const createCartResponse = await fetch(
+        `https://${client.domain}/api/${client.apiVersion}/graphql.json`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Shopify-Storefront-Access-Token": client.storefrontAccessToken,
+          },
+          body: JSON.stringify({
+            query: `
+              mutation cartCreate($input: CartInput!) {
+                cartCreate(input: $input) {
+                  cart {
+                    id
+                    checkoutUrl
+                  }
+                  userErrors {
+                    message
+                  }
+                }
+              }
+            `,
+            variables: {
+              input: {
+                lines: [
+                  {
+                    merchandiseId: `gid://shopify/ProductVariant/${selectedVariant?.id}`,
+                    quantity: quantity,
+                  },
+                ],
+              },
+            },
+          }),
+        }
       );
-  
-      
-      const checkoutLink = document.createElement('a');
-      checkoutLink.href = updatedCheckout.webUrl;
-      checkoutLink.target = '_blank';
-      checkoutLink.rel = 'noopener noreferrer';
-      checkoutLink.style.display = 'none';
+
+      const createCartData = await createCartResponse.json();
+
+      if (createCartData.errors) {
+        throw new Error(createCartData.errors[0].message);
+      }
+
+      const checkoutUrl = createCartData.data.cartCreate.cart.checkoutUrl;
+      const checkoutLink = document.createElement("a");
+      checkoutLink.href = checkoutUrl;
+      checkoutLink.target = "_blank";
+      checkoutLink.rel = "noopener noreferrer";
+      checkoutLink.style.display = "none";
       document.body.appendChild(checkoutLink);
   
    
@@ -527,8 +560,12 @@ const Modal = () => {
     return (
       <Box
         sx={{
-          width: { xs: "100%", md: "50%" }, height: { md: "100%" },
-          display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center",
+          width: { xs: "100%", md: "50%" },
+          height: { md: "100%" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "center",
           gap: { xs: "30px", md: "5%" },
         }}
         className="MediaViewer"
@@ -536,151 +573,194 @@ const Modal = () => {
         <MediaButtons />
         <Box
           sx={{
-            width: "100%", height: "60%",
-            display: "flex", justifyContent: "center", alignItems: "center"
+            width: "100%",
+            height: "60%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
           className="MediaContainer"
         >
-          {mediaType === PHOTOS &&
-            <PhotosCarousel />
-          }
-          {mediaType === MODEL &&
-            <ModelViewerComponent />
-          }
+          {mediaType === PHOTOS && <PhotosCarousel />}
+          {mediaType === MODEL && <ModelViewerComponent />}
         </Box>
-        <Box sx={{display: "flex", flexDirection: "row",width: "100%",justifyContent:"center",gap:"10px"}}>
-        <Button
-        disabled={!isMobile || isIosChrome}
-        onPointerDown={handleViewInAR}
+        <Box
           sx={{
-            minWidth: "30%",
-            backgroundColor: "#424147",
-            borderRadius: "100px",
-            color: "white", fontWeight: "normal",
-            fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)"
-            },
-            padding: "auto 35px auto 35px", boxSizing: "border-box",
-            whiteSpace: "nowrap",
-            overflow: "hidden"
+            display: "flex",
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "center",
+            gap: "10px",
           }}
-          className="ARViewButton"
         >
-          View in AR
-        </Button>
-        <Button
-        onPointerDown={handleARTryOn}
-          sx={{
-            minWidth: "30%",
-            backgroundColor: "#424147",
-            borderRadius: "100px",
-            color: "white", fontWeight: "normal",
-            fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)"
-            },
-            padding: "auto 35px auto 35px", boxSizing: "border-box",
-            whiteSpace: "nowrap",
-            overflow: "hidden"
-          }}
-          className="ARViewButton"
-        >
-          AR Try On
-        </Button>
+          <Button
+            disabled={!isMobile || isIosChrome}
+            onPointerDown={handleViewInAR}
+            sx={{
+              minWidth: "30%",
+              backgroundColor: "#424147",
+              borderRadius: "100px",
+              color: "white",
+              fontWeight: "normal",
+              fontSize: { xs: "12px", md: "16px" },
+              fontFamily: "'Poppins', sans-serif",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)",
+              },
+              padding: "auto 35px auto 35px",
+              boxSizing: "border-box",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+            }}
+            className="ARViewButton"
+          >
+            View in AR
+          </Button>
+          <Button
+            onPointerDown={handleARTryOn}
+            sx={{
+              minWidth: "30%",
+              backgroundColor: "#424147",
+              borderRadius: "100px",
+              color: "white",
+              fontWeight: "normal",
+              fontSize: { xs: "12px", md: "16px" },
+              fontFamily: "'Poppins', sans-serif",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.3)",
+              },
+              padding: "auto 35px auto 35px",
+              boxSizing: "border-box",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+            }}
+            className="ARViewButton"
+          >
+            AR Try On
+          </Button>
         </Box>
-
       </Box>
     );
-  }
+  };
 
   const ContentViewer = () => {
     const PriceContainer = () => {
       return (
         <Box
           sx={{
-            width: "100%", height: "auto",
-            display: "flex", flexDirection: "row", justifyContent: "start", alignItems: "center",
-            gap: "10px"
+            width: "100%",
+            height: "auto",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "start",
+            alignItems: "center",
+            gap: "10px",
           }}
           className="PriceContainer"
         >
           <Typography
             sx={{
               color: "rgba(255, 255, 255)",
-              fontFamily: "'Poppins', sans-seriff", fontSize: "20px", fontWeight: 500,
-              display: { xs: "block", md: "none" }
+              fontFamily: "'Poppins', sans-seriff",
+              fontSize: "20px",
+              fontWeight: 500,
+              display: { xs: "block", md: "none" },
             }}
           >
             Price :
           </Typography>
           <Typography
             sx={{
-              fontSize: { xs: "18px", md: "20px" }, fontFamily: "'Poppins', sans-serif",
-              color: "rgb(194, 194, 194)"
+              fontSize: { xs: "18px", md: "20px" },
+              fontFamily: "'Poppins', sans-serif",
+              color: "rgb(194, 194, 194)",
             }}
             className="ProductPrice"
           >
             &#8377; {selectedVariant && selectedVariant.price}
           </Typography>
-          {selectedVariant && selectedVariant.compareAtPrice &&
+          {selectedVariant && selectedVariant.compareAtPrice && (
             <Typography
               sx={{
-                fontSize: { md: "14px" }, fontFamily: "'Poppins', sans-serif",
+                fontSize: { md: "14px" },
+                fontFamily: "'Poppins', sans-serif",
                 color: "rgb(255, 0, 0)",
-                textDecoration: "line-through"
+                textDecoration: "line-through",
               }}
               className="Price"
             >
               {selectedVariant.compareAtPrice}
             </Typography>
-          }
+          )}
         </Box>
       );
     };
 
     const VariantSelector = () => {
-      const handleVariantSelection = (optionName: string, optionValue: string) => {
-
-        const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
+      const handleVariantSelection = (
+        optionName: string,
+        optionValue: string
+      ) => {
+        const num =
+          selectedProduct?.options
+            .map((option) => option.name)
+            .indexOf(optionName) || 0;
         if (selectedVariant && selectedProduct) {
           setSelectedVariant(
             selectedProduct.variants.find((variant) => {
               for (let i = 0; i < num; i++) {
-                if (variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
+                if (
+                  variant.selectedOptions[i].value !==
+                  selectedVariant.selectedOptions[i].value
+                )
+                  return false;
               }
-              return variant.selectedOptions[num].value === optionValue && variant.availableForSale;
+              return (
+                variant.selectedOptions[num].value === optionValue &&
+                variant.availableForSale
+              );
             })
           );
         }
-      }
+      };
 
       const findIfVariantExists = (optionName: string, optionValue: string) => {
+        const num =
+          selectedProduct?.options
+            .map((option) => option.name)
+            .indexOf(optionName) || 0;
 
-        const num = selectedProduct?.options.map((option) => option.name).indexOf(optionName) || 0;
-
-        
         if (selectedVariant && selectedProduct) {
           return selectedProduct.variants.find((variant) => {
             for (let i = 0; i < num; i++) {
-              if (variant.selectedOptions[i].value !== selectedVariant.selectedOptions[i].value) return false;
+              if (
+                variant.selectedOptions[i].value !==
+                selectedVariant.selectedOptions[i].value
+              )
+                return false;
             }
-            return variant.selectedOptions[num].value === optionValue && variant.availableForSale;
+            return (
+              variant.selectedOptions[num].value === optionValue &&
+              variant.availableForSale
+            );
           });
-        }
-        else {
+        } else {
           return false;
         }
-      }
+      };
 
       return (
         <Box
           sx={{
             width: "100%",
-            display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center",
-            gap: "25px", marginTop: "20px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+            alignItems: "center",
+            gap: "25px",
+            marginTop: "20px",
           }}
           className="VariantSelector"
         >
@@ -690,7 +770,10 @@ const Modal = () => {
                 <Box
                   sx={{
                     width: "100%",
-                    display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "flex-start",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "start",
+                    alignItems: "flex-start",
                     gap: "10px",
                   }}
                   className="VariantOption"
@@ -698,9 +781,11 @@ const Modal = () => {
                 >
                   <Typography
                     sx={{
-                      maxWidth: "30%", width: "30%",
+                      maxWidth: "30%",
+                      width: "30%",
                       overflowWrap: "break-word",
-                      fontSize: "20px", fontFamily: "'Poppins', sans-serif",
+                      fontSize: "20px",
+                      fontFamily: "'Poppins', sans-serif",
                       color: "rgb(255, 255, 255)",
                     }}
                   >
@@ -708,8 +793,12 @@ const Modal = () => {
                   </Typography>
                   <Box
                     sx={{
-                      display: "flex", flexDirection: "row", justifyContent: "start", alignItems: 'center',
-                      flexWrap: "wrap", gap: "10px"
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "start",
+                      alignItems: "center",
+                      flexWrap: "wrap",
+                      gap: "10px",
                     }}
                     className="ListofValues"
                   >
@@ -719,14 +808,31 @@ const Modal = () => {
                           id={option.id + value}
                           sx={{
                             padding: "5px",
-                            fontSize: "16px", fontFamily: "'Poppins', sans-serif",
-                            backgroundColor: selectedVariant?.selectedOptions.find((op) => op.name === option.name)?.value === value ? "rgb(20, 20, 20)" : "#424147",
-                            border: selectedVariant?.selectedOptions.find((op) => op.name === option.name)?.value === value ? "1px solid white" : "none",
+                            fontSize: "16px",
+                            fontFamily: "'Poppins', sans-serif",
+                            backgroundColor:
+                              selectedVariant?.selectedOptions.find(
+                                (op) => op.name === option.name
+                              )?.value === value
+                                ? "rgb(20, 20, 20)"
+                                : "#424147",
+                            border:
+                              selectedVariant?.selectedOptions.find(
+                                (op) => op.name === option.name
+                              )?.value === value
+                                ? "1px solid white"
+                                : "none",
                             color: "rgb(215, 215, 215)",
-                            textTransform: "none"
+                            textTransform: "none",
                           }}
-                          disabled={findIfVariantExists(option.name, value) ? false : true}
-                          onClick={() => { handleVariantSelection(option.name, value) }}
+                          disabled={
+                            findIfVariantExists(option.name, value)
+                              ? false
+                              : true
+                          }
+                          onClick={() => {
+                            handleVariantSelection(option.name, value);
+                          }}
                           key={option.name + value}
                         >
                           {value}
@@ -736,8 +842,7 @@ const Modal = () => {
                   </Box>
                 </Box>
               );
-            })
-          }
+            })}
         </Box>
       );
     };
@@ -757,16 +862,22 @@ const Modal = () => {
       return (
         <Box
           sx={{
-            width: { xs: "80%", md: "65%" }, height: "30px",
-            display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between",
-            marginTop: "25px"
+            width: { xs: "80%", md: "65%" },
+            height: "30px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            marginTop: "25px",
           }}
           className="QuantitySelector"
         >
           <Typography
             sx={{
               color: "rgba(255, 255, 255)",
-              fontFamily: "'Poppins', sans-seriff", fontSize: "20px", fontWeight: 500,
+              fontFamily: "'Poppins', sans-seriff",
+              fontSize: "20px",
+              fontWeight: 500,
             }}
           >
             Quantity :
@@ -777,13 +888,16 @@ const Modal = () => {
               width: "24px",
               height: "24px",
               padding: 1,
-              fontSize: "20px", fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
-              color: "rgba(255, 255, 255, 0.74)", backgroundColor: "rgba(149, 149, 149, 0.21)",
+              fontSize: "20px",
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: "bold",
+              color: "rgba(255, 255, 255, 0.74)",
+              backgroundColor: "rgba(149, 149, 149, 0.21)",
               borderRadius: "50%",
               "&:hover": {
                 backgroundColor: "rgba(149, 149, 149, 0.53)",
-                transitionDuration: "0s"
-              }
+                transitionDuration: "0s",
+              },
             }}
             onClick={decrement}
           >
@@ -792,7 +906,8 @@ const Modal = () => {
           <Typography
             sx={{
               color: "rgb(194, 194, 194)",
-              fontFamily: "'Poppins', sans-seriff", fontSize: "20px"
+              fontFamily: "'Poppins', sans-seriff",
+              fontSize: "20px",
             }}
           >
             {quantity}
@@ -803,13 +918,16 @@ const Modal = () => {
               width: "24px",
               height: "24px",
               padding: 1,
-              fontSize: { xs: "20px", sm: "16px" }, fontFamily: "'Poppins', sans-serif", fontWeight: "bold",
-              color: "rgba(255, 255, 255, 0.74)", backgroundColor: "rgba(149, 149, 149, 0.21)",
+              fontSize: { xs: "20px", sm: "16px" },
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: "bold",
+              color: "rgba(255, 255, 255, 0.74)",
+              backgroundColor: "rgba(149, 149, 149, 0.21)",
               borderRadius: "50%",
               "&:hover": {
                 backgroundColor: "rgba(149, 149, 149, 0.53)",
-                transitionDuration: "0s"
-              }
+                transitionDuration: "0s",
+              },
             }}
             onClick={increment}
           >
@@ -819,31 +937,46 @@ const Modal = () => {
       );
     };
 
-   
-    const sanitizedHtml = DOMPurify.sanitize(selectedProduct?.description || "")
+    const sanitizedHtml = DOMPurify.sanitize(
+      selectedProduct?.description || ""
+    );
 
     return (
       <Box
         sx={{
-          width: { xs: "100%", md: "50%" }, height: { xs: "auto", md: "100%" },
-          display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "left",
+          width: { xs: "100%", md: "50%" },
+          height: { xs: "auto", md: "100%" },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "left",
         }}
       >
         <Box
           sx={{
-            width: "100%", height: "calc(100% - 70px)",
-            display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "left",
+            width: "100%",
+            height: "calc(100% - 70px)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "start",
+            alignItems: "left",
             gap: "2%",
-            overflowY: { md: "scroll" }, scrollbarWidth: "0", "&::-webkit-scrollbar": { display: "none" },
-            padding: { xs: "7%", md: "0" }, paddingRight: {md: "15%"}, boxSizing: "border-box"
+            overflowY: { md: "scroll" },
+            scrollbarWidth: "0",
+            "&::-webkit-scrollbar": { display: "none" },
+            padding: { xs: "7%", md: "0" },
+            paddingRight: { md: "15%" },
+            boxSizing: "border-box",
           }}
           className="ContentScroller"
         >
           <Typography
             sx={{
-              fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+              fontSize: "24px",
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: 600,
               color: "rgb(255, 255, 255)",
-              display: { xs: "none", md: "block" }
+              display: { xs: "none", md: "block" },
             }}
             className="ProductTitle"
           >
@@ -854,9 +987,11 @@ const Modal = () => {
           <QuantitySelector />
           <Typography
             sx={{
-              fontSize: "24px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+              fontSize: "24px",
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: 600,
               color: "rgb(255, 255, 255)",
-              marginTop: "20px"
+              marginTop: "20px",
             }}
             className="DescriptionTitle"
           >
@@ -866,48 +1001,55 @@ const Modal = () => {
             dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
             sx={{
               width: { xs: "100%", md: "100%" },
-              fontSize: { xs: "16px", md: "18px" }, fontFamily: "'Poppins', sans-serif", fontWeight: { xs: "300", md: "400" },
+              fontSize: { xs: "16px", md: "18px" },
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: { xs: "300", md: "400" },
               color: "rgb(255, 255, 255)",
-              textAlign: "justify"
+              textAlign: "justify",
             }}
-          >
-          </Box>
+          ></Box>
         </Box>
         <Box
           sx={{
-            display: {xs: "none", md: "block"}
+            display: { xs: "none", md: "block" },
           }}
         >
           <ShopifyButtons />
         </Box>
       </Box>
     );
-  }
+  };
 
   const ShopifyButtons = () => {
     return (
       <Box
         sx={{
           width: "100%",
-          display: "flex", flexDirection: "row", justifyContent: { xs: "center", md: "start" }, alignItems: "center",
-          gap: { xs: "10px", md: "20px" }
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: { xs: "center", md: "start" },
+          alignItems: "center",
+          gap: { xs: "10px", md: "20px" },
         }}
         className="ShopifyButtonsContainer"
       >
         <Button
           sx={{
-            minWidth: {xs: "40%", md: "30%"},
+            minWidth: { xs: "40%", md: "30%" },
             backgroundColor: "#424147",
             borderRadius: "100px",
-            color: "white", fontWeight: "normal",
-            fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
+            color: "white",
+            fontWeight: "normal",
+            fontSize: { xs: "12px", md: "16px" },
+            fontFamily: "'Poppins', sans-serif",
             textTransform: "none",
             "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)"
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
             },
-            padding: {md: "auto 35px auto 35px"}, boxSizing: "border-box",
+            padding: { md: "auto 35px auto 35px" },
+            boxSizing: "border-box",
             whiteSpace: "nowrap",
-            overflow: "hidden"
+            overflow: "hidden",
           }}
           className="AddToCartButton"
           onClick={handleAddToCart}
@@ -916,18 +1058,21 @@ const Modal = () => {
         </Button>
         <Button
           sx={{
-            minWidth: {xs: "40%", md: "30%"},
+            minWidth: { xs: "40%", md: "30%" },
             backgroundColor: "#424147",
             borderRadius: "100px",
-            color: "white", fontWeight: "normal",
-            fontSize: { xs: "12px", md: "16px" }, fontFamily: "'Poppins', sans-serif",
+            color: "white",
+            fontWeight: "normal",
+            fontSize: { xs: "12px", md: "16px" },
+            fontFamily: "'Poppins', sans-serif",
             textTransform: "none",
             "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)"
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
             },
-            padding: {md: "auto 35px auto 35px"}, boxSizing: "border-box",
+            padding: { md: "auto 35px auto 35px" },
+            boxSizing: "border-box",
             whiteSpace: "nowrap",
-            overflow: "hidden"
+            overflow: "hidden",
           }}
           className="BuyNowButton"
           onClick={handleBuyNow}
@@ -936,39 +1081,54 @@ const Modal = () => {
         </Button>
         <Button
           sx={{
-            minWidth: "35px", width: "35px", height: "35px",
+            minWidth: "35px",
+            width: "35px",
+            height: "35px",
             padding: "5px",
             backgroundColor: "#424147",
             borderRadius: "50%",
-            color: "white", fontWeight: "bold",
-            fontSize: { xs: "16px", md: "18px" }, fontFamily: "'Poppins', sans-serif",
+            color: "white",
+            fontWeight: "bold",
+            fontSize: { xs: "16px", md: "18px" },
+            fontFamily: "'Poppins', sans-serif",
             textTransform: "none",
             "&:hover": {
-              backgroundColor: "rgba(255, 255, 255, 0.3)"
-            }
+              backgroundColor: "rgba(255, 255, 255, 0.3)",
+            },
           }}
           className="WishlistButton"
           onClick={() => {
-            if (selectedProduct && wishlist.find((productId: number) => productId === selectedProduct.id)) {
+            if (
+              selectedProduct &&
+              wishlist.find(
+                (productId: number) => productId === selectedProduct.id
+              )
+            ) {
               removeItemsFromWishlist([selectedProduct.id]);
-            }
-            else if (selectedProduct) {
+            } else if (selectedProduct) {
               addItemsToWishlist([selectedProduct.id]);
             }
           }}
         >
-          {!wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="far fa-heart"></i>}
-          {wishlist.find((productId: number) => productId === selectedProduct?.id) && <i className="fas fa-heart"></i>}
+          {!wishlist.find(
+            (productId: number) => productId === selectedProduct?.id
+          ) && <i className="far fa-heart"></i>}
+          {wishlist.find(
+            (productId: number) => productId === selectedProduct?.id
+          ) && <i className="fas fa-heart"></i>}
         </Button>
       </Box>
     );
-  }
+  };
 
   return (
     <div
       style={{
-        position: "fixed", top: 0, left: 0,
-        width: "100vw", height: "100vh",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
         backgroundColor: "rgba(0, 0, 0, 0)",
         pointerEvents: "auto",
       }}
@@ -977,28 +1137,47 @@ const Modal = () => {
       <Card
         ref={modalRef}
         sx={{
-          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)", 
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-between", 
-          width: { xs: "90vw", md: "70vw" }, height: { xs: "75vh", sm: "80vh", md: "75vh" }, 
-          backgroundColor: "rgba(0, 0, 0, 0.8)", backdropFilter: "blur(10px)", boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", 
-          borderRadius: { xs: "10px", md: "25px" }, border: "1px solid rgba(255, 255, 255, 0.2)", 
-          overflow: "none", paddingTop: {xs: 0, md: "5%"}, paddingBottom: {xs: 0, md: "2%"}, boxSizing: "border-box"
-
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: { xs: "90vw", md: "70vw" },
+          height: { xs: "75vh", sm: "80vh", md: "75vh" },
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          backdropFilter: "blur(10px)",
+          boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)",
+          borderRadius: { xs: "10px", md: "25px" },
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+          overflow: "none",
+          paddingTop: { xs: 0, md: "5%" },
+          paddingBottom: { xs: 0, md: "2%" },
+          boxSizing: "border-box",
         }}
         className="Modal"
       >
         <Typography
           sx={{
             position: "fixed",
-            top: "3%", right: "3%",
-            width: "30px", height: "30px",
+            top: "3%",
+            right: "3%",
+            width: "30px",
+            height: "30px",
             borderRadius: "50%",
-            backgroundColor: "rgba(255, 255, 255, 0.05)", color: "rgba(255, 255, 255, .7)",
-            alignItems: "center", justifyContent: "center", display: "flex",
-            fontSize: "26px", fontWeight: "normal", fontFamily: "'Poppins', sans-serif",
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            color: "rgba(255, 255, 255, .7)",
+            alignItems: "center",
+            justifyContent: "center",
+            display: "flex",
+            fontSize: "26px",
+            fontWeight: "normal",
+            fontFamily: "'Poppins', sans-serif",
             "&:hover": {
-              cursor: "pointer"
-            }
+              cursor: "pointer",
+            },
           }}
           className="ModalCloseButton"
           onClick={closeModal}
@@ -1008,20 +1187,32 @@ const Modal = () => {
         <Box
           ref={containerRef}
           sx={{
-            width: "100%", height: { xs: "85%", md: "100%" }, 
-            display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: { xs: "space-between", md: "space-evenly" }, alignItems: { xs: "center", md: "start" },
-            gap: "2%", boxSizing: "border-box",
+            width: "100%",
+            height: { xs: "85%", md: "100%" },
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: { xs: "space-between", md: "space-evenly" },
+            alignItems: { xs: "center", md: "start" },
+            gap: "2%",
+            boxSizing: "border-box",
             backgroundColor: "rgba(0, 0, 0, 0)",
-            overflowY: { xs: "scroll", md: "hidden" }, scrollbarWidth: 0, "&::-webkit-scrollbar": { display: "none" }
+            overflowY: { xs: "scroll", md: "hidden" },
+            scrollbarWidth: 0,
+            "&::-webkit-scrollbar": { display: "none" },
           }}
           className="MediaAndDetails"
         >
           <Typography
             sx={{
-              fontSize: "22px", fontFamily: "'Poppins', sans-serif", fontWeight: 600,
+              fontSize: "22px",
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: 600,
               color: "rgb(255, 255, 255)",
-              display: { xs: "block", md: "none" }, marginTop: { xs: "20px" },
-              padding: "20px", paddingBottom: 0, textAlign: "center"
+              display: { xs: "block", md: "none" },
+              marginTop: { xs: "20px" },
+              padding: "20px",
+              paddingBottom: 0,
+              textAlign: "center",
             }}
             className="ProductTitle"
           >
@@ -1032,9 +1223,11 @@ const Modal = () => {
         </Box>
         <Box
           sx={{
-            width: "100%", padding: "0 20px 0 20px", boxSizing: "border-box",
-            display: {xs: "block", md: "none"},
-            marginBottom: "30px"
+            width: "100%",
+            padding: "0 20px 0 20px",
+            boxSizing: "border-box",
+            display: { xs: "block", md: "none" },
+            marginBottom: "30px",
           }}
         >
           <ShopifyButtons />
@@ -1042,6 +1235,6 @@ const Modal = () => {
       </Card>
     </div>
   );
-}
+};
 
 export default Modal;
