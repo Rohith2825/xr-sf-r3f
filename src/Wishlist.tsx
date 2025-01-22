@@ -12,7 +12,7 @@ import { useComponentStore } from '@/stores/ZustandStores';
 
 const Wishlist = () => {
   const { wishlist, removeItemsFromWishlist, clearWishlist } = useWishlist();
-  const { closeWishlist, products } = useComponentStore();
+  const { closeWishlist, products,openModal,setSelectedProduct } = useComponentStore();
 
   const wishlistRef = useRef<HTMLDivElement>(null);
   const onClickOutside = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -157,6 +157,11 @@ const Wishlist = () => {
                     boxSizing: "border-box"
                   }}
                   className="WishlistItem"
+                  onClick={() => {
+                    setSelectedProduct(product.id);
+                    closeWishlist();
+                    openModal();
+                  }}
                   key={product.id}
                 >
                   <Box
@@ -230,7 +235,9 @@ const Wishlist = () => {
                           background: "rgba(255, 255, 255, 0.1)"
                         }
                       }}
-                      onClick={deleteItem}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        deleteItem();}}
                       className="WishlistItemDustbinIcon"
                     ></Box>
                   </Box>
