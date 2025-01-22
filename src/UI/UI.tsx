@@ -3,7 +3,11 @@ import { driver, Driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import styles from "@/UI/UI.module.scss";
 import ChatbotModal from "../Chatbot";
-import { useComponentStore, useDriverStore, useTourStore } from "../stores/ZustandStores";
+import {
+  useComponentStore,
+  useDriverStore,
+  useTourStore,
+} from "../stores/ZustandStores";
 import { ShopifyProvider, CartProvider } from "@shopify/hydrogen-react";
 import Modal from "@/NewModal";
 import Cart from "@/Cart";
@@ -16,7 +20,6 @@ import ContactUsModal from "@/ContactUsModal";
 import ReactAudioPlayer from "react-audio-player";
 import ModalWrapper from "@/ModalWrapper";
 import ProductSearcher from "@/ProductSearcher";
-
 
 const customDriverStyles = `
   .driver-popover {
@@ -51,32 +54,48 @@ const customDriverStyles = `
 `;
 
 const shopifyConfig = {
-  storeDomain: "gsv01y-gx.myshopify.com", 
-  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110",
+  storeDomain: "htphzk-um.myshopify.com",
+  storefrontToken: "446cb8f8327b9074dcc7c158332ca146",
   storefrontApiVersion: "2024-10",
 };
 
 const UI = () => {
   const {
-    crosshairVisible, hideCrosshair,
-    isModalOpen, closeModal,
-    isCartOpen, openCart, closeCart,
-    isWishlistOpen, openWishlist, closeWishlist,
-    isInfoModalOpen, openInfoModal, closeInfoModal,
-    discountCode, isDiscountModalOpen, closeDiscountModal,
-    isSettingsModalOpen , openSettingsModal, closeSettingsModal,
-    isAudioPlaying,setSearchResult, startSearchGSAP,
-    isTermsModalOpen,isContactModalOpen,
-    isProductSearcherOpen,openProductSearcher,closeProductSearcher
+    crosshairVisible,
+    hideCrosshair,
+    isModalOpen,
+    closeModal,
+    isCartOpen,
+    openCart,
+    closeCart,
+    isWishlistOpen,
+    openWishlist,
+    closeWishlist,
+    isInfoModalOpen,
+    openInfoModal,
+    closeInfoModal,
+    discountCode,
+    isDiscountModalOpen,
+    closeDiscountModal,
+    isSettingsModalOpen,
+    openSettingsModal,
+    closeSettingsModal,
+    isAudioPlaying,
+    setSearchResult,
+    startSearchGSAP,
+    isTermsModalOpen,
+    isContactModalOpen,
+    isProductSearcherOpen,
+    openProductSearcher,
+    closeProductSearcher,
   } = useComponentStore();
-  const { activateDriver, deactivateDriver} = useDriverStore();
+  const { activateDriver, deactivateDriver } = useDriverStore();
   const { setTourComplete } = useTourStore();
 
   const driverRef = useRef<Driver>(undefined);
   const audioPlayerRef = useRef<any>(null);
   const shouldMoveCamera = useRef(false);
 
-  
   const [ChatbotOpen, setChatbotOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone|Opera Mini|Kindle|Silk|Mobile|Tablet|Touch/i.test(
@@ -91,7 +110,6 @@ const UI = () => {
   const closeChatbotModal = () => {
     setChatbotOpen(false);
   };
-
 
   useEffect(() => {
     const styleSheet = document.createElement("style");
@@ -116,10 +134,11 @@ const UI = () => {
         {
           popover: {
             title: "Find products across the experience",
-            description: "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
+            description:
+              "Walk to these products to essentially buy or add them to cart, I'll drop you off for now!",
           },
           onHighlightStarted: () => {
-            shouldMoveCamera.current = true; 
+            shouldMoveCamera.current = true;
             setTourComplete(true);
           },
         },
@@ -143,7 +162,8 @@ const UI = () => {
           element: '[alt="Settings"]',
           popover: {
             title: "Settings",
-            description: "Manage your preferences, explore app features, and customize your experience.",
+            description:
+              "Manage your preferences, explore app features, and customize your experience.",
             side: "bottom",
           },
         },
@@ -164,18 +184,14 @@ const UI = () => {
   }, [isMobile]);
 
   useEffect(() => {
-    if(isAudioPlaying)
-    {
+    if (isAudioPlaying) {
       audioPlayerRef.current.audioEl.current.play();
-    }
-    else {
+    } else {
       audioPlayerRef.current.audioEl.current.pause();
     }
-  },[isAudioPlaying])
-
+  }, [isAudioPlaying]);
 
   const startTour = () => {
-
     if (isModalOpen) closeModal();
     if (isCartOpen) closeCart();
     if (isWishlistOpen) closeWishlist();
@@ -185,19 +201,17 @@ const UI = () => {
     if (isSettingsModalOpen) closeSettingsModal();
     if (isProductSearcherOpen) closeProductSearcher();
 
- 
     if (driverRef.current) {
       driverRef.current.drive();
-      activateDriver(); 
+      activateDriver();
     }
   };
 
   useEffect(() => {
-
     let lastState = driverRef.current?.isActive();
     const checkDriverState = () => {
       const currentState = driverRef.current?.isActive();
-      if(currentState !== lastState){
+      if (currentState !== lastState) {
         lastState = currentState;
         if (currentState) {
           activateDriver();
@@ -217,23 +231,42 @@ const UI = () => {
       {crosshairVisible && !isMobile && <div className={styles.aim} />}
 
       <div className={styles.iconsContainer}>
-        <img src="/icons/Search.svg" alt="Search" className={styles.icon} onClick={openProductSearcher} />
-        <img src="/icons/Cart.svg" alt="Cart" className={styles.icon} onClick={openCart} />
-        <img src="/icons/Wishlist.svg" alt="Wishlist" className={styles.icon} onClick={openWishlist} />
-        <img src="/icons/Settings.svg"  alt="Settings" className={styles.icon} onClick={openSettingsModal} />
-        <img src="/icons/Help.svg" alt="Help" className={styles.icon} onClick={startTour}/>
-      </div>
-
-  
-      <div className={styles.brandLogoContainer}>
         <img
-          src="/logo.avif"
-          alt="Brand Logo"
-          className={styles.brandLogo}
+          src="/icons/Search.svg"
+          alt="Search"
+          className={styles.icon}
+          onClick={openProductSearcher}
+        />
+        <img
+          src="/icons/Cart.svg"
+          alt="Cart"
+          className={styles.icon}
+          onClick={openCart}
+        />
+        <img
+          src="/icons/Wishlist.svg"
+          alt="Wishlist"
+          className={styles.icon}
+          onClick={openWishlist}
+        />
+        <img
+          src="/icons/Settings.svg"
+          alt="Settings"
+          className={styles.icon}
+          onClick={openSettingsModal}
+        />
+        <img
+          src="/icons/Help.svg"
+          alt="Help"
+          className={styles.icon}
+          onClick={startTour}
         />
       </div>
 
-    
+      <div className={styles.brandLogoContainer}>
+        <img src="/logo.avif" alt="Brand Logo" className={styles.brandLogo} />
+      </div>
+
       <div className={styles.chatLogoContainer}>
         <img
           src="/icons/Chatbot.svg"
@@ -252,32 +285,24 @@ const UI = () => {
         {...shopifyConfig}
       >
         <CartProvider>
-          {isModalOpen && (
-            <Modal />
-          )}
-          {isCartOpen && (
-            <Cart></Cart>
-          )}
+          {isModalOpen && <Modal />}
+          {isCartOpen && <Cart></Cart>}
         </CartProvider>
       </ShopifyProvider>
-      {isWishlistOpen && (
-        <Wishlist></Wishlist>
-      )}
-      {isInfoModalOpen && (
-        <InfoModal></InfoModal>
-      )}
-      {isTermsModalOpen && (
-        <TermsConditionsModal />
-      )}
-      {isContactModalOpen && (
-        <ContactUsModal />
-      )}
+      {isWishlistOpen && <Wishlist></Wishlist>}
+      {isInfoModalOpen && <InfoModal></InfoModal>}
+      {isTermsModalOpen && <TermsConditionsModal />}
+      {isContactModalOpen && <ContactUsModal />}
       <DiscountModal
         isOpen={isDiscountModalOpen}
         onClose={closeDiscountModal}
         discountCode={discountCode}
       />
-      {isSettingsModalOpen && <ModalWrapper><SettingsModal /></ModalWrapper>}
+      {isSettingsModalOpen && (
+        <ModalWrapper>
+          <SettingsModal />
+        </ModalWrapper>
+      )}
       {isProductSearcherOpen && <ProductSearcher></ProductSearcher>}
       <div>
         <ChatbotModal
@@ -288,10 +313,10 @@ const UI = () => {
         />
       </div>
       <ReactAudioPlayer
-          ref={audioPlayerRef}
-          src="/media/Soundtrack.mp3" 
-          autoPlay={false}
-          loop
+        ref={audioPlayerRef}
+        src="/media/Soundtrack.mp3"
+        autoPlay={false}
+        loop
       />
     </div>
   );
