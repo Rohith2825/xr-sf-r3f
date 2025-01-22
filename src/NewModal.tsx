@@ -10,8 +10,8 @@ import styles from "@/UI/UI.module.scss";
 import Client from "shopify-buy";
 
 const client = Client.buildClient({
-  domain: "gsv01y-gx.myshopify.com",
-  storefrontAccessToken: "88cb90ff39b35d1a63ba94e866dba36a",
+  domain: "htphzk-um.myshopify.com",
+  storefrontAccessToken: "446cb8f8327b9074dcc7c158332ca146",
   apiVersion: "2023-10"
 });
 
