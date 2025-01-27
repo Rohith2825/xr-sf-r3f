@@ -44,12 +44,6 @@ export const Player = () => {
     translationOptions: {
       speed: 10, // Speed for movement
     },
-    rotationOptions: {
-      type: 'smooth', // Enable smooth rotation
-      speed: 1, // Speed for smooth rotation
-      deadZone: 1, // Minimum joystick deflection to trigger rotation
-      degrees:1,
-    },
     translationControllerHand: "left", // Left-hand controller for movement
   });
 
