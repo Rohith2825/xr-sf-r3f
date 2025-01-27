@@ -120,13 +120,13 @@ export const App = () => {
           position={[-2.2, 3.2, -55.35]}
           rotation={[0, 90, 1]}
         />
-        <ImageShowcase
+        {/* <ImageShowcase
           url="https://cdn.shopify.com/s/files/1/0901/2222/3909/files/image_7.png?v=1736493908"
           width={108 * 1.5}
           height={192 * 1.5}
           position={[-14, -2.5, -70.35]}
           transparent
-        />
+        /> */}
         {/* <MirrorPoster
           width={192}
           height={108}
