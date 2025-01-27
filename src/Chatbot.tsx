@@ -40,7 +40,7 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
 
     try {
       const response = await fetch(
-        "https://strategy-fox-go-bked.com/api/chatbot/chat",
+        "https://us-central1-global-road-449105-e7.cloudfunctions.net/function-1",
         {
           method: "POST",
           headers: {

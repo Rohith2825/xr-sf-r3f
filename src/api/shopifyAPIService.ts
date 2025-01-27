@@ -1,7 +1,7 @@
 import Variant from '@/Types/Variant';
 import Product from '../Types/Product';
 
-const BASE_URL = "https://strategy-fox-go-bked.com/api/shopify";
+const BASE_URL = "https://us-central1-global-road-449105-e7.cloudfunctions.net/function-2";
 
 async function fetchData<T>(method: "GET", endpoint: string): Promise<T> {
   try {
@@ -89,7 +89,7 @@ interface ProductResponse {
 
 export const ProductService = {
   async getAllProducts(): Promise<Product[]> {
-    const response = await fetchData<ProductResponse>("GET", "/v1/products");
+    const response = await fetchData<ProductResponse>("GET", "");
 
     
     const products: Product[] = response.data.products.edges.map((product) => {
@@ -139,7 +139,7 @@ export const ProductService = {
       const parsedProduct: Product = {
         id: Number(product.node.id.split("/").pop()),
         title: product.node.title,
-        description: product.node.bodyHtml,
+        description: product.node.descriptionHtml,
         images: productImages,
         options: product.node.options,
         variants: productVariants,
@@ -154,12 +154,12 @@ export const ProductService = {
     return products;
   },
 
-  async getProductById(id: number | string): Promise<Product> {
-    const response = await fetchData<{ product: Product }>("GET", `/products/${id}`);
-    return response.product;
-  },
+  // async getProductById(id: number | string): Promise<Product> {
+  //   const response = await fetchData<{ product: Product }>("GET", `/products/${id}`);
+  //   return response.product;
+  // },
 
-  async getProductModel(id: number | string): Promise<Product> {
-    return fetchData<Product>("GET", `/products/${id}/model`);
-  },
+  // async getProductModel(id: number | string): Promise<Product> {
+  //   return fetchData<Product>("GET", `/products/${id}/model`);
+  // },
 };
