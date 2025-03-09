@@ -10,7 +10,7 @@ import { useComponentStore, useTouchStore } from "./stores/ZustandStores";
 import { CameraController } from "./CameraController";
 import { ProductGSAPUtil }  from "./ProductGSAPUtil";
 
-const MOVE_SPEED = 12;
+const MOVE_SPEED = 4;
 const TOUCH_SENSITIVITY = {
   PORTRAIT: {
     x: 0.004, 
@@ -153,7 +153,7 @@ export const Player = () => {
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
   
-    const startPosition = new THREE.Vector3(-3, 55, 80);
+    const startPosition = new THREE.Vector3(0, 0, 0);
     playerRef.current.setTranslation(startPosition);
     camera.position.copy(startPosition);
   
@@ -341,7 +341,7 @@ export const Player = () => {
       <ProductGSAPUtil setAnimating={setAnimating} playerRef={playerRef} />
       <CameraController setAnimating={setAnimating} playerRef={playerRef} />
       <mesh castShadow>
-        <CapsuleCollider args={[1.2, 1]} />
+        <CapsuleCollider args={[1.7, 0.3]} />
       </mesh>
     </RigidBody>
   );

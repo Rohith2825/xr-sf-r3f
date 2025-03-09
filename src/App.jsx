@@ -98,14 +98,14 @@ export const App = () => {
         <Suspense fallback={null}>
           <Player />
         </Suspense>
-        <Products />
+        {/* <Products />
         <ChestBox />
         <Television
           videoPath="/media/backhome.mp4"
           scale={[0.9, 0.9, 0.9]}
           position={[-4.5, 11, -91]}
           rotation={[0, -82.79, 0]}
-        />
+        /> */}
 
         {/*May crash if external website*/}
         {/* <WebPlane
@@ -113,13 +113,13 @@ export const App = () => {
           position={[-5, 0, 5.1]}
           rotation={[0, 162.5, 0]}
         /> */}
-        <BrandPoster
+        {/* <BrandPoster
           imageUrl="https://th.bing.com/th/id/OIP.SNik-SOwvsExn4HNF47l2gHaEK?rs=1&pid=ImgDetMain"
           width={192 * 4}
           height={108 * 4}
           position={[-2.2, 3.2, -55.35]}
           rotation={[0, 90, 1]}
-        />
+        /> */}
         {/* <ImageShowcase
           url="https://cdn.shopify.com/s/files/1/0901/2222/3909/files/image_7.png?v=1736493908"
           width={108 * 1.5}
