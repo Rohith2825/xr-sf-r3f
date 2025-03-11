@@ -9,7 +9,9 @@ html, body, #root, #container, canvas {
     width: 100%;
     overflow: hidden;
     position: fixed; 
-    touch-action: none 
+    touch-action: none ;
+    background-color: #000000; 
+    color-scheme: dark
 }
 
 canvas {
