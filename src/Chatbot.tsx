@@ -115,156 +115,173 @@ const ChatBotModal: React.FC<ChatbotProps> = (props) => {
   if (!props.isChatbotModalOpen) return null;
 
   return (
-    <Card
-      sx={{
+    <div
+      style={{
         position: "fixed",
-        bottom: "1.5%",
-        right: "1.5%",
-        width: { xs: "90vw", sm: "40vw", lg: "25vw", md: "30vw" },
-        height: "60vh",
-        display: "flex",
-        flexDirection: "column",
-        backdropFilter: "blur(10px)",
-        borderRadius: "10px",
-        boxShadow: 4,
-        overflow: "hidden",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "rgba(0, 0, 0, 0)",
         pointerEvents: "auto",
+        zIndex: 1000,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
-      <CardContent
+      <Card
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderBottom: "3px solid rgba(0, 0, 0, 0.1)",
-          padding: "16px",
-        }}
-      >
-        <Box display="flex" alignItems="center" gap={1}>
-          <img
-            src="/fox-logo.png" 
-            alt="Logo"
-            style={{ width: "30px", height: "30px" }}
-          />
-          <Typography
-            sx={{
-              fontWeight: "bold",
-              fontSize: "1.2rem",
-              fontFamily: "'Poppins', sans-serif",
-              paddingLeft: "10px",
-            }}
-          >
-            CHAT WITH FOX
-          </Typography>
-        </Box>
-        <IconButton
-          onPointerDown={() => {
-            props.onChatbotModalClose();
-            showCrosshair();
-          }}
-          size="small"
-          sx={{
-            marginLeft: "auto",
-            zIndex: 1001,
-            borderRadius: "50%", 
-            backgroundColor: "#9f9f9f",
-            color: "black",
-            width: "1.5rem",
-            height: "1.5rem",
-            "&:hover": { backgroundColor: "#eeeeee", color: "black" },
-          }}
-        >
-          <CloseIcon
-            sx={{
-              height: "1rem",
-            }}
-          />
-        </IconButton>
-      </CardContent>
-
-      <CardContent
-        ref={chatContainerRef} 
-        sx={{
-          flex: 1,
-          overflowY: "auto",
-          padding: 2,
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "90vw", sm: "40vw", lg: "25vw", md: "30vw" },
+          height: "60vh",
           display: "flex",
           flexDirection: "column",
-          "&::-webkit-scrollbar": { display: "none" }, 
-          scrollbarWidth: "none",
+          backdropFilter: "blur(10px)",
+          borderRadius: "10px",
+          boxShadow: 4,
+          overflow: "hidden",
+          pointerEvents: "auto",
         }}
       >
-        {messages.map((message, index) => (
-          <Box
-            key={index}
-            sx={{
-              display: "flex",
-              justifyContent:
-                message.type === "user" ? "flex-end" : "flex-start",
-              marginBottom: 1,
-            }}
-          >
-            <Box
+        <CardContent
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            borderBottom: "3px solid rgba(0, 0, 0, 0.1)",
+            padding: "16px",
+          }}
+        >
+          <Box display="flex" alignItems="center" gap={1}>
+            <img
+              src="/fox-logo.png" 
+              alt="Logo"
+              style={{ width: "30px", height: "30px" }}
+            />
+            <Typography
               sx={{
-                maxWidth: "70%",
-                padding: 1,
-                borderRadius: "10px",
-                backgroundColor:
-                  message.type === "user" ? "#e2441e" : "rgba(0, 0, 0, 0.1)",
-                color: message.type === "user" ? "white" : "black",
-                wordWrap: "break-word",
+                fontWeight: "bold",
+                fontSize: "1.2rem",
+                fontFamily: "'Poppins', sans-serif",
+                paddingLeft: "10px",
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: "1rem",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                <ReactMarkdown>{message.text}</ReactMarkdown>
-              </Typography>
-            </Box>
+              CHAT WITH FOX
+            </Typography>
           </Box>
-        ))}
-      </CardContent>
+          <IconButton
+            onPointerDown={() => {
+              props.onChatbotModalClose();
+              showCrosshair();
+            }}
+            size="small"
+            sx={{
+              marginLeft: "auto",
+              zIndex: 1001,
+              borderRadius: "50%", 
+              backgroundColor: "#9f9f9f",
+              color: "black",
+              width: "1.5rem",
+              height: "1.5rem",
+              "&:hover": { backgroundColor: "#eeeeee", color: "black" },
+            }}
+          >
+            <CloseIcon
+              sx={{
+                height: "1rem",
+              }}
+            />
+          </IconButton>
+        </CardContent>
 
-      {/* Footer */}
-      <CardActions
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          padding: "8px",
-          borderTop: "3px solid rgba(0, 0, 0, 0.1)",
-          gap: 1,
-        }}
-      >
-        <Input
-          placeholder="Enter your message"
-          value={currentMessage}
-          ref={inputRef}
-          onChange={(e) => setCurrentMessage(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === "Enter") handleSendMessage();
-          }}
+        <CardContent
+          ref={chatContainerRef} 
           sx={{
             flex: 1,
-            padding: 1.5,
-            fontFamily: "'Poppins', sans-serif",
+            overflowY: "auto",
+            padding: 2,
+            display: "flex",
+            flexDirection: "column",
+            "&::-webkit-scrollbar": { display: "none" }, 
+            scrollbarWidth: "none",
           }}
-        />
-        <Button
-          sx={{
-            color: "white",
-            backgroundColor: "#e2441e",
-            padding: 1.5,
-            fontFamily: "'Poppins', sans-serif",
-          }}
-          onPointerDown={handleSendMessage}
         >
-          Send
-        </Button>
-      </CardActions>
-    </Card>
+          {messages.map((message, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: "flex",
+                justifyContent:
+                  message.type === "user" ? "flex-end" : "flex-start",
+                marginBottom: 1,
+              }}
+            >
+              <Box
+                sx={{
+                  maxWidth: "70%",
+                  padding: 1,
+                  borderRadius: "10px",
+                  backgroundColor:
+                    message.type === "user" ? "#e2441e" : "rgba(0, 0, 0, 0.1)",
+                  color: message.type === "user" ? "white" : "black",
+                  wordWrap: "break-word",
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: "1rem",
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
+                >
+                  <ReactMarkdown>{message.text}</ReactMarkdown>
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+        </CardContent>
+
+        {/* Footer */}
+        <CardActions
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            padding: "8px",
+            borderTop: "3px solid rgba(0, 0, 0, 0.1)",
+            gap: 1,
+          }}
+        >
+          <Input
+            placeholder="Enter your message"
+            value={currentMessage}
+            ref={inputRef}
+            onChange={(e) => setCurrentMessage(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") handleSendMessage();
+            }}
+            sx={{
+              flex: 1,
+              padding: 1.5,
+              fontFamily: "'Poppins', sans-serif",
+            }}
+          />
+          <Button
+            sx={{
+              color: "white",
+              backgroundColor: "#e2441e",
+              padding: 1.5,
+              fontFamily: "'Poppins', sans-serif",
+            }}
+            onPointerDown={handleSendMessage}
+          >
+            Send
+          </Button>
+        </CardActions>
+      </Card>
+    </div>
   );
 };
 

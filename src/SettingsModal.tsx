@@ -90,8 +90,6 @@ const SettingsModal = () => {
     },
   }));
 
-
-
   return (
     <div
       style={{
@@ -102,15 +100,17 @@ const SettingsModal = () => {
         height: "100vh",
         backgroundColor: "rgba(0, 0, 0, 0)",
         pointerEvents: "auto",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        zIndex: 1000,
       }}
       onClick={onClickOutside}
     >
       <Card
         ref={modalRef}
         sx={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
           display: "flex",
           flexDirection: "column",
           width: {

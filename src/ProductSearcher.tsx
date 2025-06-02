@@ -57,19 +57,27 @@ const ProductSearcher = () => {
         height: "100vh",
         backgroundColor: "rgba(0, 0, 0, 0)",
         pointerEvents: "auto",
+        zIndex: 1000,
       }}
       onClick={onClickOutside}
     >
       <Box
         sx={{
-          position: "absolute",
-          top: { xs: "1%", sm: "1%", md: "1%", lg: "3%" },
-          right: { xs: "20%", sm: "15%", md: "10%", lg: "10%" },
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          width: { xs: "90vw", sm: "60vw", md: "50vw", lg: "35vw" },
+          maxWidth: "600px",
+          maxHeight: "80vh",
+          overflowY: "auto",
+          gap: "10px",
           display: "flex",
           flexDirection: "column",
-          width: { xs: "70%", sm: "55%", md: "50%", lg: "30%" },
-          height: { xs: "50%", sm: "50%", md: "40%", lg: "50%" },
-          gap: "10px",
+          backgroundColor: "rgba(0,0,0,0.8)",
+          borderRadius: "16px",
+          boxShadow: 4,
+          padding: 2,
         }}
         className="ProductSearcher"
         ref={searcherRef}

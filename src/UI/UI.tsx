@@ -17,7 +17,6 @@ import ReactAudioPlayer from "react-audio-player";
 import ModalWrapper from "@/ModalWrapper";
 import ProductSearcher from "@/ProductSearcher";
 import {store} from "@/main";
-import { Html } from "@react-three/drei";
 
 
 const customDriverStyles = `
