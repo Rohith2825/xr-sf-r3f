@@ -6,6 +6,7 @@ import { XR, createXRStore } from "@react-three/xr";
 import App from "@/App.jsx";
 import "@/index.scss";
 import UI from "@/UI/UI.tsx";
+import UIInFrontOfCamera from "@/UI/UIInFrontOfCamera";
 import Load from "@/Loader.tsx";
 import { ProductService } from "./api/shopifyAPIService";
 import { useComponentStore } from "./stores/ZustandStores";
@@ -28,10 +29,8 @@ function CanvasWrapper() {
     fetchProducts();
   }, []);
 
-
   return (
     <div id="container">
-      {progress >= 100 && <UI />}
       <Canvas camera={{ fov: 45 }} shadows>
         <XR store={store}>
           <React.Suspense
@@ -42,6 +41,11 @@ function CanvasWrapper() {
             }
           >
             <App />
+            {progress >= 100 && (
+              <UIInFrontOfCamera>
+                <UI />
+              </UIInFrontOfCamera>
+            )}
           </React.Suspense>
         </XR>
       </Canvas>

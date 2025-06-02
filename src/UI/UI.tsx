@@ -17,6 +17,7 @@ import ReactAudioPlayer from "react-audio-player";
 import ModalWrapper from "@/ModalWrapper";
 import ProductSearcher from "@/ProductSearcher";
 import {store} from "@/main";
+import { Html } from "@react-three/drei";
 
 
 const customDriverStyles = `
@@ -52,8 +53,8 @@ const customDriverStyles = `
 `;
 
 const shopifyConfig = {
-  storeDomain: "gsv01y-gx.myshopify.com", 
-  storefrontToken: "b148c0911287ca8a6f23a6d7bab23110",
+  storeDomain: "htphzk-um.myshopify.com", 
+  storefrontToken: "446cb8f8327b9074dcc7c158332ca146",
   storefrontApiVersion: "2024-10",
 };
 
@@ -165,11 +166,11 @@ const UI = () => {
   }, [isMobile]);
 
   useEffect(() => {
-    if(isAudioPlaying)
+    if(isAudioPlaying && audioPlayerRef.current?.audioEl?.current)
     {
       audioPlayerRef.current.audioEl.current.play();
     }
-    else {
+    else if (audioPlayerRef.current?.audioEl?.current) {
       audioPlayerRef.current.audioEl.current.pause();
     }
   },[isAudioPlaying])
@@ -247,7 +248,6 @@ const UI = () => {
           }}
         />
       </div>
-
       <ShopifyProvider
         countryIsoCode="ID"
         languageIsoCode="ID"
@@ -294,6 +294,12 @@ const UI = () => {
           src="/media/Soundtrack.mp3" 
           autoPlay={false}
           loop
+          onError={(e) => console.error('Audio player error:', e)}
+          onCanPlay={() => {
+            if (isAudioPlaying && audioPlayerRef.current?.audioEl?.current) {
+              audioPlayerRef.current.audioEl.current.play();
+            }
+          }}
       />
     </div>
   );
