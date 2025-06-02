@@ -170,42 +170,12 @@ export const Player = () => {
   useEffect(() => {
     if (!playerRef.current || initialTourComplete.current) return;
   
-    const startPosition = new THREE.Vector3(-3, 55, 80);
-    playerRef.current.setTranslation(startPosition);
-    camera.position.copy(startPosition);
-  
-    const timeline = gsap.timeline({
-      onComplete: () => {
-        initialTourComplete.current = true;
-        enableTouch();
-  
-        playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
-        playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
-      },
-    });
-  
-    timeline.to(camera.position, {
-      duration: 3,
-      x: START_POSITION.x,
-      y: START_POSITION.y,
-      z: START_POSITION.z,
-      ease: "power2.inOut",
-    });
-  
-    const updatePhysicsBody = () => {
-      if (!playerRef.current || initialTourComplete.current) return;
-      
-      playerRef.current.wakeUp();
-      playerRef.current.setTranslation(camera.position);
-      playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
-    };
-  
-    const animationFrameId = setInterval(updatePhysicsBody, 1000 / 60);
-  
-    return () => {
-      timeline.kill();
-      clearInterval(animationFrameId);
-    };
+    playerRef.current.setTranslation(START_POSITION);
+    camera.position.copy(START_POSITION);
+    initialTourComplete.current = true;
+    enableTouch();
+    playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
+    playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
   }, [camera]);
 
   useEffect(() => {
@@ -338,7 +308,7 @@ export const Player = () => {
     }
   
     const { x, y, z } = playerRef.current.translation();
-    const lerpFactor = 0.05;
+    const lerpFactor = 0.02;
     state.camera.position.lerp({ x, y, z }, lerpFactor);
   });
 

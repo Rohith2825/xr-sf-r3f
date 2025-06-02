@@ -1,7 +1,7 @@
 import Variant from '@/Types/Variant';
 import Product from '../Types/Product';
 
-const BASE_URL = "https://strategy-fox-go-bked.com/api/shopify";
+const BASE_URL = "https://function-2-201137466588.asia-south1.run.app";
 
 async function fetchData<T>(method: "GET", endpoint: string): Promise<T> {
   try {
@@ -80,7 +80,7 @@ interface ProductResponse {
               }
             }[]
           }
-          bodyHtml: string
+          descriptionHtml: string
         }
       }[]
     }
@@ -136,10 +136,11 @@ export const ProductService = {
         metafield.node.namespace === "custom" && metafield.node.key === "snapchat_lens_link"
       )?.node.value;
 
+
       const parsedProduct: Product = {
         id: Number(product.node.id.split("/").pop()),
         title: product.node.title,
-        description: product.node.bodyHtml,
+        description: product.node.descriptionHtml,
         images: productImages,
         options: product.node.options,
         variants: productVariants,
