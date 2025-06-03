@@ -75,10 +75,10 @@ export const App = () => {
     <>
       {!isMobile &&  (
         <IfInSessionMode deny={['immersive-ar', 'immersive-vr']} >
-        <PointerLockControls
+        {/* <PointerLockControls
           onLock={pointerLockControlsLockHandler}
           onUnlock={pointerLockControlsUnlockHandler}
-        />
+        /> */}
         </IfInSessionMode>
       )}
       <Skybox />
