@@ -145,19 +145,21 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100vw",
-          height: "100vh",
+          right: 0,
+          bottom: 0,
+          width: "100%",
+          height: "100%",
           backgroundColor: "rgba(0, 0, 0, 0)",
           pointerEvents: "auto",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          zIndex: 1000,
         }}
       >
         <Card
           ref={modalRef}
           sx={{
-            position: "relative",
             gap: "10px",
             backgroundColor: "rgba(0, 0, 0, 0.75)", 
             backdropFilter: "blur(5px)", 
@@ -165,7 +167,11 @@ const DiscountModal: React.FC<DiscountModalProps> = (props) => {
             padding: 2,
             boxShadow: "0 0 15px rgba(0, 0, 0, 0.2)", 
             border: "1px solid rgba(255, 255, 255, 0.2)", 
-            zIndex: 999,
+            zIndex: 1001,
+            transform: "translate(-50%, -50%)",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
           }}
         >
           <CloseIcon

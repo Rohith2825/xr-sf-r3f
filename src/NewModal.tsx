@@ -971,12 +971,12 @@ const Modal = () => {
             flexDirection: "column",
             justifyContent: "start",
             alignItems: "left",
-            gap: "2%",
+            gap: "20px",
             overflowY: { md: "scroll" },
             scrollbarWidth: "0",
             "&::-webkit-scrollbar": { display: "none" },
-            padding: { xs: "7%", md: "0" },
-            paddingRight: { md: "15%" },
+            padding: { xs: "20px", md: "30px" },
+            paddingRight: { md: "40px" },
             boxSizing: "border-box",
           }}
           className="ContentScroller"
@@ -1164,17 +1164,16 @@ const Modal = () => {
           borderRadius: { xs: "10px", md: "25px" },
           border: "1px solid rgba(255, 255, 255, 0.2)",
           overflow: "none",
-          paddingTop: { xs: 0, md: "5%" },
-          paddingBottom: { xs: 0, md: "2%" },
+          padding: { xs: "20px", md: "40px" },
           boxSizing: "border-box",
         }}
         className="Modal"
       >
         <Typography
           sx={{
-            position: "fixed",
-            top: "3%",
-            right: "3%",
+            position: "absolute",
+            top: "20px",
+            right: "20px",
             width: "30px",
             height: "30px",
             borderRadius: "50%",
@@ -1204,12 +1203,13 @@ const Modal = () => {
             flexDirection: { xs: "column", md: "row" },
             justifyContent: { xs: "space-between", md: "space-evenly" },
             alignItems: { xs: "center", md: "start" },
-            gap: "2%",
+            gap: { xs: "20px", md: "40px" },
             boxSizing: "border-box",
             backgroundColor: "rgba(0, 0, 0, 0)",
             overflowY: { xs: "scroll", md: "hidden" },
             scrollbarWidth: 0,
             "&::-webkit-scrollbar": { display: "none" },
+            padding: { xs: "10px", md: "20px" },
           }}
           className="MediaAndDetails"
         >
@@ -1235,7 +1235,7 @@ const Modal = () => {
         <Box
           sx={{
             width: "100%",
-            padding: "0 20px 0 20px",
+            padding: "20px",
             boxSizing: "border-box",
             display: { xs: "block", md: "none" },
             marginBottom: "30px",

@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useThree } from "@react-three/fiber";
+import { useXR } from "@react-three/xr";
 import gsap from "gsap";
 import { useComponentStore } from "./stores/ZustandStores";
 
 export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
-  const { camera } = useThree();
+  const { camera: defaultCamera } = useThree();
+  const { player, isPresenting } = useXR();
   const { searchResult, initiateSearchGSAP, resetSearchGSAP } = useComponentStore();
 
   useEffect(() => {
@@ -12,16 +14,18 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
 
     setAnimating(true);
     const targetPosition = {
-      x: searchResult.x,
-      y: searchResult.y + 1.9 ,
-      z: searchResult.z+3,
+      x: searchResult.x + 1.5,
+      y: searchResult.y + 1.9,
+      z: searchResult.z +3,
     };
+
+    // Use XR camera if in VR, otherwise use default camera
+    const camera = isPresenting && player?.camera ? player.camera : defaultCamera;
 
     const timeline = gsap.timeline({
       onComplete: () => {
         if (playerRef.current) {
           playerRef.current.setTranslation(targetPosition);
-          console.log(targetPosition);
           playerRef.current.setLinvel({ x: 0, y: 0, z: 0 });
           playerRef.current.setAngvel({ x: 0, y: 0, z: 0 });
           setAnimating(false);
@@ -30,7 +34,6 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
       },
     });
 
-    
     timeline.to(camera.rotation, {
       x: 0,
       y: 0,
@@ -39,11 +42,10 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
       ease: "power2.inOut",
     });
 
-  
     timeline.to(camera.position, {
       x: targetPosition.x,
-      y: targetPosition.y ,
-      z: targetPosition.z ,
+      y: targetPosition.y,
+      z: targetPosition.z,
       duration: 2,
       ease: "power2.inOut",
     });
@@ -52,7 +54,7 @@ export const ProductGSAPUtil = ({ setAnimating, playerRef }) => {
       timeline.kill();
       setAnimating(false);
     };
-  }, [initiateSearchGSAP, searchResult, playerRef, camera, resetSearchGSAP, setAnimating]);
+  }, [initiateSearchGSAP, searchResult, playerRef, defaultCamera, resetSearchGSAP, setAnimating, player, isPresenting]);
 
   return null;
 };

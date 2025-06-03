@@ -333,10 +333,10 @@ export const Player = () => {
       lockRotations
       canSleep={false} //IMP: May lead to Player Halt
     >
-      <IfInSessionMode deny={['immersive-ar', 'immersive-vr']} >
+      
       <ProductGSAPUtil setAnimating={setAnimating} playerRef={playerRef} />
       <CameraController setAnimating={setAnimating} playerRef={playerRef} />
-      </IfInSessionMode>
+
       <XROrigin position={-1.5} ref= {originRef}/>
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
