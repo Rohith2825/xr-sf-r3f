@@ -215,7 +215,7 @@ const UI = () => {
 
   return (
     <div className="ui-root">
-      {crosshairVisible && !isMobile && <div className={styles.aim} />}
+      <div className={styles.aim} />
 
       <div className={styles.iconsContainer}>
         <img src="/icons/Search.svg" alt="Search" className={styles.icon} onClick={openProductSearcher} />
