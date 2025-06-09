@@ -15,20 +15,19 @@ export const store = createXRStore();
 
 function VRDetector() {
   const { isPresenting } = useXR();
-  const { setVRMode } = useComponentStore();
 
-  useEffect(() => {
-    const checkVRSupport = async () => {
-      if (navigator.xr) {
-        const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
-        if (isSupported && !isPresenting) {
-          store.enterVR();
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const checkVRSupport = async () => {
+  //     if (navigator.xr) {
+  //       const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+  //       if (isSupported && !isPresenting) {
+  //         store.enterVR();
+  //       }
+  //     }
+  //   };
 
-    checkVRSupport();
-  }, [isPresenting]);
+  //   checkVRSupport();
+  // }, [isPresenting]);
 
   return null;
 }
