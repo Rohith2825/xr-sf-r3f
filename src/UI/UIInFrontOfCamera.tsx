@@ -45,11 +45,7 @@ const UIInFrontOfCamera = ({
             pointerEvents: 'auto',
             maxWidth: '800px',
             maxHeight: '600px',
-            padding: '20px',
-            boxSizing: 'border-box',
-            background: 'white',
-            borderRadius: '8px',
-            boxShadow: '0 0 10px rgba(0,0,0,0.5)'
+            padding: '20px'
           }}>
             {children}
           </div>
