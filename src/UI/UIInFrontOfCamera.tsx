@@ -11,7 +11,7 @@ interface UIInFrontOfCameraProps {
 
 const UIInFrontOfCamera = ({ 
   children, 
-  position = [0, 0, -2], // Default position in front of user
+  position = [0, 0, -15], // Default position in front of user
   scale = 1
 }: UIInFrontOfCameraProps) => {
   const groupRef = useRef<THREE.Group>(null);
