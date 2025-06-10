@@ -337,7 +337,7 @@ export const Player = () => {
       <ProductGSAPUtil setAnimating={setAnimating} playerRef={playerRef} />
       <CameraController setAnimating={setAnimating} playerRef={playerRef} />
 
-      <XROrigin position={[0, -1.5, 0]} ref={originRef}/>
+      <XROrigin position={[0, -1.5, -5]} ref={originRef}/>
       <mesh castShadow>
         <CapsuleCollider args={[1.2, 1]} />
       </mesh>
