@@ -44,36 +44,36 @@ export default function VRUI() {
   return (
     <Fullscreen flexDirection="column" alignItems="center" justifyContent="center" padding={0}>
       {/* Overlay grid for positioning */}
-      <Container width={400} height={250} flexDirection="row" alignItems="center" justifyContent="center">
+      <Container width={280} height={160} flexDirection="row" alignItems="center" justifyContent="center">
         {/* Left column: logo near bottom left */}
-        <Container flexDirection="column" alignItems="flex-start" justifyContent="flex-end" width={100} height={250} padding={8}>
-          <Container marginBottom={8}>
+        <Container flexDirection="column" alignItems="flex-start" justifyContent="flex-end" width={60} height={160} padding={4}>
+          <Container marginBottom={4}>
             <Image
               src="/logo.avif"
-              width={48}
-              height={48}
+              width={28}
+              height={28}
               onClick={() => store.enterVR()}
             />
           </Container>
         </Container>
         {/* Center column: empty for spacing */}
-        <Container width={200} height={250} />
+        <Container width={80} height={160} />
         {/* Right column: icons top right, chat bottom right */}
-        <Container flexDirection="column" alignItems="flex-end" justifyContent="space-between" width={100} height={250} padding={8}>
+        <Container flexDirection="column" alignItems="flex-end" justifyContent="space-between" width={60} height={160} padding={4}>
           {/* Top right: vertical icons */}
-          <Container flexDirection="column" alignItems="flex-end" gap={6} marginTop={6}>
-            <Image src="/icons/Search.svg" width={28} height={28} onClick={openProductSearcher} />
-            <Image src="/icons/Cart.svg" width={28} height={28} onClick={openCart} />
-            <Image src="/icons/Wishlist.svg" width={28} height={28} onClick={openWishlist} />
-            <Image src="/icons/Settings.svg" width={28} height={28} onClick={openSettingsModal} />
-            <Image src="/icons/Help.svg" width={28} height={28} onClick={() => {/* startTour logic */}} />
+          <Container flexDirection="column" alignItems="flex-end" gap={3} marginTop={3}>
+            <Image src="/icons/Search.svg" width={16} height={16} onClick={openProductSearcher} />
+            <Image src="/icons/Cart.svg" width={16} height={16} onClick={openCart} />
+            <Image src="/icons/Wishlist.svg" width={16} height={16} onClick={openWishlist} />
+            <Image src="/icons/Settings.svg" width={16} height={16} onClick={openSettingsModal} />
+            <Image src="/icons/Help.svg" width={16} height={16} onClick={() => {/* startTour logic */}} />
           </Container>
           {/* Bottom right: chatbot icon */}
-          <Container marginBottom={6}>
+          <Container marginBottom={3}>
             <Image
               src="/icons/Chatbot.svg"
-              width={40}
-              height={40}
+              width={20}
+              height={20}
               onPointerDown={() => {
                 setChatbotOpen(true);
                 hideCrosshair();
