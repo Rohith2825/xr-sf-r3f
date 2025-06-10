@@ -10,6 +10,7 @@ import UIInFrontOfCamera from "@/UI/UIInFrontOfCamera";
 import Load from "@/Loader.tsx";
 import { ProductService } from "./api/shopifyAPIService";
 import { useComponentStore } from "./stores/ZustandStores";
+import VRUI from "@/UI/VRUI";
 
 export const store = createXRStore();
 
@@ -17,18 +18,18 @@ function VRDetector() {
   const { isPresenting } = useXR();
   const { setVRMode } = useComponentStore();
 
-  useEffect(() => {
-    const checkVRSupport = async () => {
-      if (navigator.xr) {
-        const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
-        if (isSupported && !isPresenting) {
-          store.enterVR();
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const checkVRSupport = async () => {
+  //     if (navigator.xr) {
+  //       const isSupported = await navigator.xr.isSessionSupported('immersive-vr');
+  //       if (isSupported && !isPresenting) {
+  //         store.enterVR();
+  //       }
+  //     }
+  //   };
 
-    checkVRSupport();
-  }, [isPresenting]);
+  //   checkVRSupport();
+  // }, [isPresenting]);
 
   return null;
 }
@@ -64,7 +65,7 @@ function CanvasWrapper() {
         }}
       >
         <XR store={store}>
-          <VRDetector />
+          {/* <VRDetector /> */}
           <React.Suspense
             fallback={
               <Html center>
@@ -72,12 +73,9 @@ function CanvasWrapper() {
               </Html>
             }
           >
+            <VRUI /> 
             <App />
-            {progress >= 100 && (
-              <UIInFrontOfCamera>
-                <UI />
-              </UIInFrontOfCamera>
-            )}
+           
           </React.Suspense>
         </XR>
       </Canvas>
