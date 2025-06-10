@@ -45,8 +45,8 @@ export default function VRUI() {
     <Fullscreen flexDirection="column" alignItems="center" justifyContent="center" padding={0}>
       {/* Overlay grid for positioning */}
       <Container width={280} height={160} flexDirection="row" alignItems="center" justifyContent="center">
-        {/* Left column: logo near bottom left */}
-        <Container flexDirection="column" alignItems="flex-start" justifyContent="flex-end" width={60} height={160} padding={4}>
+        {/* Left column: logo a bit further left */}
+        <Container flexDirection="column" alignItems="flex-start" justifyContent="flex-end" width={80} height={160} padding={4}>
           <Container marginBottom={4}>
             <Image
               src="/logo.avif"
@@ -57,9 +57,9 @@ export default function VRUI() {
           </Container>
         </Container>
         {/* Center column: empty for spacing */}
-        <Container width={80} height={160} />
-        {/* Right column: icons top right, chat bottom right */}
-        <Container flexDirection="column" alignItems="flex-end" justifyContent="space-between" width={60} height={160} padding={4}>
+        <Container width={120} height={160} />
+        {/* Right column: icons top right, chat bottom right, a bit further right */}
+        <Container flexDirection="column" alignItems="flex-end" justifyContent="space-between" width={80} height={160} padding={4}>
           {/* Top right: vertical icons */}
           <Container flexDirection="column" alignItems="flex-end" gap={3} marginTop={3}>
             <Image src="/icons/Search.svg" width={16} height={16} onClick={openProductSearcher} />
