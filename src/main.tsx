@@ -53,7 +53,7 @@ function CanvasWrapper() {
   return (
     <div id="container">
       <Canvas 
-        camera={{ fov: 75 }} 
+        camera={{ fov: 45 }} 
         shadows
         dpr={[1, 2]}
         gl={{
